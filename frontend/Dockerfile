@@ -1,11 +1,16 @@
 FROM node:20-alpine AS base
-# Install pnpm globally using corepack
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 FROM base AS development-dependencies-env
-COPY . /app
+COPY ./package.json pnpm-lock.yaml /app/
 WORKDIR /app
 RUN pnpm install --frozen-lockfile
+
+FROM base AS development
+COPY . /app
+COPY --from=development-dependencies-env /app/node_modules /app/node_modules
+WORKDIR /app
+CMD ["pnpm", "run", "dev", "--host"]
 
 FROM base AS production-dependencies-env
 COPY ./package.json pnpm-lock.yaml /app/
@@ -18,10 +23,9 @@ COPY --from=development-dependencies-env /app/node_modules /app/node_modules
 WORKDIR /app
 RUN pnpm run build
 
-FROM base
+FROM base AS production
 COPY ./package.json pnpm-lock.yaml /app/
 COPY --from=production-dependencies-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/build /app/build
 WORKDIR /app
 CMD ["pnpm", "run", "start"]
-

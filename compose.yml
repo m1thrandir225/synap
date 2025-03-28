@@ -1,3 +1,4 @@
+version: "3.8"
 services:
   backend:
     platform: linux/amd64
@@ -5,11 +6,27 @@ services:
       context: backend
     ports:
       - "3000:3000"
-  frontend:
+  frontend-prod:
     platform: linux/amd64
     build:
       context: frontend
+      target: production
     ports:
-      - "5173:3000"
+      - "80:3000"
     depends_on:
       - backend
+
+  frontend-dev:
+    platform: linux/amd64
+    build:
+      context: frontend
+      target: development
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    environment:
+      - CHOKIDAR_USEPOLLING=true
