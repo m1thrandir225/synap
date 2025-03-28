@@ -1,0 +1,15 @@
+services:
+  backend:
+    platform: linux/amd64
+    build:
+      context: backend
+    ports:
+      - "3000:3000"
+  frontend:
+    platform: linux/amd64
+    build:
+      context: frontend
+    ports:
+      - "5173:3000"
+    depends_on:
+      - backend
