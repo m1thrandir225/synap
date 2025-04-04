@@ -10,6 +10,8 @@ services:
       DATABASE_URL: ${DATABASE_URL}
     ports:
       - "3000:3000"
+    networks:
+        - backend_network
 
   backend-db:
     image: postgres
