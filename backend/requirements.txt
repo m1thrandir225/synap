@@ -1,2 +1,7 @@
 fastapi[standard]==0.113.0
 pydantic==2.8.0
+sqlalchemy
+psycopg2
+asyncpg
+databases
+
