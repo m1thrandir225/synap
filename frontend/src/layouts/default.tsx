@@ -4,10 +4,10 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"; /*
  */
 const DefaultLayout: React.FC<React.PropsWithChildren> = (props) => {
   return (
-    <div className="w-full bg-blue-200">
-      <div className="container mx-auto h-full w-full">
+    <div className="w-full">
+      <main className="h-full w-full">
         <Outlet />
-      </div>
+      </main>
       <TanStackRouterDevtools />
     </div>
   );
