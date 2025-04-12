@@ -1,46 +1,44 @@
-version: "3.8"
 services:
   backend:
     platform: linux/amd64
     build:
       context: backend
     depends_on:
-      - backend-db
-    environment:
-      DATABASE_URL: ${DATABASE_URL}
+      - db
+    env_file: .env
     ports:
       - "3000:3000"
     networks:
-        - backend_network
-
-  backend-db:
-    image: postgres
-    environment:
-        POSTGRES_USER: ${POSTGRES_USER}  # Set your postgres username
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  # Set your postgres password
-        POSTGRES_DB: ${POSTGRES_DB}  # Set your database name
+      - synap-network
+  db:
+    platform: linux/amd64
+    image: postgres:17
+    env_file: .env
     volumes:
-        - postgres_data:/var/lib/postgresql/data  # Volume to persist data
+      - postgres_data:/var/lib/postgresql/data # Volume to persist data
     ports:
-        - "5432:5432"  # Expose PostgreSQL port
+      - "5432:5432" # Expose PostgreSQL port
     networks:
-        - backend_network
+      - synap-network
 
   frontend-prod:
     platform: linux/amd64
     build:
       context: frontend
-      target: production
+      target: prod
     ports:
-      - "80:3000"
+      - "80:80"
     depends_on:
       - backend
+      - db
+    networks:
+      - synap-network
 
   frontend-dev:
     platform: linux/amd64
     build:
       context: frontend
-      target: development
+      target: dev
     ports:
       - "5173:5173"
     volumes:
@@ -51,11 +49,9 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
 
-# Volume to persist PostgreSQL data
 volumes:
   postgres_data:
 
-# Network for inter-container communication
 networks:
-  backend_network:
+  synap-network:
     driver: bridge

@@ -1,5 +1,16 @@
-.react-router
-build
+
+# .dockerignore
 node_modules
-README.md
+dist
+.git
 .env
+.env.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.local
+
+# Docker specific
+Dockerfile
+docker-compose.yml
+.dockerignore
