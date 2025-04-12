@@ -15,6 +15,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as dashboardDashboardImport } from './routes/(dashboard)/dashboard'
 import { Route as authRegisterImport } from './routes/(auth)/register'
 import { Route as authLoginImport } from './routes/(auth)/login'
+import { Route as dashboardDashboardIndexImport } from './routes/(dashboard)/dashboard.index'
 
 // Create/Update Routes
 
@@ -40,6 +41,12 @@ const authLoginRoute = authLoginImport.update({
   id: '/(auth)/login',
   path: '/login',
   getParentRoute: () => rootRoute,
+} as any)
+
+const dashboardDashboardIndexRoute = dashboardDashboardIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => dashboardDashboardRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -74,23 +81,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof dashboardDashboardImport
       parentRoute: typeof rootRoute
     }
+    '/(dashboard)/dashboard/': {
+      id: '/(dashboard)/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof dashboardDashboardIndexImport
+      parentRoute: typeof dashboardDashboardImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface dashboardDashboardRouteChildren {
+  dashboardDashboardIndexRoute: typeof dashboardDashboardIndexRoute
+}
+
+const dashboardDashboardRouteChildren: dashboardDashboardRouteChildren = {
+  dashboardDashboardIndexRoute: dashboardDashboardIndexRoute,
+}
+
+const dashboardDashboardRouteWithChildren =
+  dashboardDashboardRoute._addFileChildren(dashboardDashboardRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
-  '/dashboard': typeof dashboardDashboardRoute
+  '/dashboard': typeof dashboardDashboardRouteWithChildren
+  '/dashboard/': typeof dashboardDashboardIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
-  '/dashboard': typeof dashboardDashboardRoute
+  '/dashboard': typeof dashboardDashboardIndexRoute
 }
 
 export interface FileRoutesById {
@@ -98,12 +124,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
-  '/(dashboard)/dashboard': typeof dashboardDashboardRoute
+  '/(dashboard)/dashboard': typeof dashboardDashboardRouteWithChildren
+  '/(dashboard)/dashboard/': typeof dashboardDashboardIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register' | '/dashboard'
+  fullPaths: '/' | '/login' | '/register' | '/dashboard' | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/login' | '/register' | '/dashboard'
   id:
@@ -112,6 +139,7 @@ export interface FileRouteTypes {
     | '/(auth)/login'
     | '/(auth)/register'
     | '/(dashboard)/dashboard'
+    | '/(dashboard)/dashboard/'
   fileRoutesById: FileRoutesById
 }
 
@@ -119,14 +147,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   authLoginRoute: typeof authLoginRoute
   authRegisterRoute: typeof authRegisterRoute
-  dashboardDashboardRoute: typeof dashboardDashboardRoute
+  dashboardDashboardRoute: typeof dashboardDashboardRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authLoginRoute: authLoginRoute,
   authRegisterRoute: authRegisterRoute,
-  dashboardDashboardRoute: dashboardDashboardRoute,
+  dashboardDashboardRoute: dashboardDashboardRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -155,7 +183,14 @@ export const routeTree = rootRoute
       "filePath": "(auth)/register.tsx"
     },
     "/(dashboard)/dashboard": {
-      "filePath": "(dashboard)/dashboard.tsx"
+      "filePath": "(dashboard)/dashboard.tsx",
+      "children": [
+        "/(dashboard)/dashboard/"
+      ]
+    },
+    "/(dashboard)/dashboard/": {
+      "filePath": "(dashboard)/dashboard.index.tsx",
+      "parent": "/(dashboard)/dashboard"
     }
   }
 }
