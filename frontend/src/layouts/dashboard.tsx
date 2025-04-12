@@ -1,9 +1,29 @@
-//TODO: implement layout
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarInset,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Outlet } from "@tanstack/react-router";
+
 const DashboardLayout: React.FC = () => {
   return (
-    <div>
-      <h1> Dashboard</h1>
-    </div>
+    <SidebarProvider>
+      <Sidebar className="border-r-0">
+        <SidebarHeader></SidebarHeader>
+        <SidebarContent></SidebarContent>
+        <SidebarRail />
+      </Sidebar>
+      <SidebarInset>
+        <SidebarTrigger />
+        <div className="bg-gray-300">
+          <Outlet />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 };
 
