@@ -1,15 +1,18 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { Outlet, createRootRoute } from "@tanstack/react-router";
 
-import Header from '../components/Header'
+import Header from "../components/Header";
+import DefaultLayout from "@/layouts/default";
+import { useAuthStore } from "@/stores/auth.store";
 
 export const Route = createRootRoute({
-  component: () => (
-    <>
-      <Header />
+  component: () => <App />,
+});
 
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
-})
+const App: React.FC = () => {
+  const hasHydrated = useAuthStore((state) => state._hasHydrated);
+
+  if (!hasHydrated) {
+    return <p> Loading ... </p>;
+  }
+  return <DefaultLayout />;
+};
