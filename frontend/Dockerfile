@@ -1,31 +1,30 @@
-FROM node:20-alpine AS base
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-FROM base AS development-dependencies-env
-COPY ./package.json pnpm-lock.yaml /app/
+FROM node:20-alpine as base
 WORKDIR /app
+
+RUN npm install -g pnpm
+
+COPY package.json pnpm-lock.yaml ./
+ENV NODE_ENV=development
+
+# ---- Dependencies Stage ----
+FROM base as dependencies
 RUN pnpm install --frozen-lockfile
+COPY . .
 
-FROM base AS development
-COPY . /app
-COPY --from=development-dependencies-env /app/node_modules /app/node_modules
-WORKDIR /app
-CMD ["pnpm", "run", "dev", "--host"]
+# ---- Development Stage ----
+FROM dependencies as dev
+EXPOSE 5173
+CMD ["pnpm", "run", "start"]
 
-FROM base AS production-dependencies-env
-COPY ./package.json pnpm-lock.yaml /app/
-WORKDIR /app
-RUN pnpm install --frozen-lockfile --prod
-
-FROM base AS build-env
-COPY . /app/
-COPY --from=development-dependencies-env /app/node_modules /app/node_modules
-WORKDIR /app
+# ---- Build Stage ----
+FROM dependencies as builder
+ENV NODE_ENV=production
 RUN pnpm run build
 
-FROM base AS production
-COPY ./package.json pnpm-lock.yaml /app/
-COPY --from=production-dependencies-env /app/node_modules /app/node_modules
-COPY --from=build-env /app/build /app/build
-WORKDIR /app
-CMD ["pnpm", "run", "start"]
+# ---- Production Stage ----
+FROM nginx:1.25-alpine as prod
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+COPY --from=builder /app/dist .
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
