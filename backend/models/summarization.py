@@ -1,5 +1,13 @@
 from operator import index
-from sqlalchemy import UUID, Column, DateTime, ForeignKey, String, func
+from sqlalchemy import (
+    UUID,
+    Column,
+    DateTime,
+    ForeignKey,
+    String,
+    UniqueConstraint,
+    func,
+)
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -20,3 +28,5 @@ class Summarization(Base):
     )
 
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=False)
+
+    __table_args__ = (UniqueConstraint("file_id"),)
