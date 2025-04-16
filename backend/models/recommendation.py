@@ -23,3 +23,7 @@ class Recommendation(Base):
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+    interactions = relationship(
+        "RecommendationInteraction", back_populates="recommendation"
+    )
