@@ -30,6 +30,7 @@ from models import (
     Tag,
     FileTag,
     LearningMaterial,
+    LearningMaterialTag,
 )
 
 target_metadata = Base.metadata
