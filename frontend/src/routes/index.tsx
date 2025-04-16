@@ -1,6 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import logo from "../logo.svg";
-import DefaultLayout from "@/layouts/default";
 
 export const Route = createFileRoute("/")({
   component: App,
