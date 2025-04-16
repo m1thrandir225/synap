@@ -4,3 +4,4 @@ from models.note import Note
 from models.file import UploadedFile
 from models.summarization import Summarization
 from models.tag import Tag
+from models.file_tag import FileTag
