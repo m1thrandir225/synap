@@ -13,6 +13,8 @@ class Course(Base):
     user_id = Column(UUID, ForeignKey("users.id"))
     user = relationship("User", back_populates="courses")
 
+    notes = relationship("Note", back_populates="course")
+
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
