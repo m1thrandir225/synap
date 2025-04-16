@@ -9,3 +9,4 @@ from models.learning_material import LearningMaterial
 from models.learning_material_tag import LearningMaterialTag
 from models.recommendation import Recommendation
 from models.recommendation_interaction import RecommendationInteraction
+from models.lecture import Lecture

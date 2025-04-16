@@ -33,6 +33,7 @@ from models import (
     LearningMaterialTag,
     Recommendation,
     RecommendationInteraction,
+    Lecture,
 )
 
 target_metadata = Base.metadata
