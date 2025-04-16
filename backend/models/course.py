@@ -15,8 +15,9 @@ class Course(Base):
 
     notes = relationship("Note", back_populates="course")
 
+    uploaded_files = relationship("UploadedFile", back_populates="course")
+
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=False)

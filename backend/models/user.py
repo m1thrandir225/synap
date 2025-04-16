@@ -19,3 +19,4 @@ class User(Base):
 
     courses = relationship("Course", back_populates="user")
     notes = relationship("Note", back_populates="user")
+    uploaded_files = relationship("UploadedFile", back_populates="user")
