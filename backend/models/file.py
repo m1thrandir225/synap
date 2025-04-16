@@ -17,6 +17,8 @@ class UploadedFile(Base):
     user_id = Column(UUID, ForeignKey("users.id"), nullable=False)
     user = relationship("User", back_populates="uploaded_files")
 
+    summarization = relationship("Summarization", back_populates="file")
+
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
