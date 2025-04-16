@@ -1,0 +1,2 @@
+class SQLAlchemyException(Exception):
+    pass

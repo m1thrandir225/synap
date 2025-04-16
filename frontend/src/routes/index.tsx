@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import logo from "../logo.svg";
 import DefaultLayout from "@/layouts/default";
 
@@ -7,5 +7,11 @@ export const Route = createFileRoute("/")({
 });
 
 function App() {
-  return <h1> Hello from Synap!</h1>;
+  return (
+    <div>
+      <h1> Hello from synap !</h1>
+      <p> Backend {import.meta.env.VITE_BACKEND_URL}</p>
+      <Link to="/dashboard"> Dashboard </Link>
+    </div>
+  );
 }

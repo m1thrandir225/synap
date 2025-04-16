@@ -1,9 +1,9 @@
 import uvicorn
-from config import settings
+from backend.config import settings
 
 if __name__ == "__main__":
     uvicorn.run(
-        "main:app",
+        "backend.main:app",
         host=settings.SERVER_HOST,
         port=settings.SERVER_PORT,
         reload=settings.ENV in ["test", "dev"],

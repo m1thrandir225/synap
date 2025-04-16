@@ -5,7 +5,7 @@ services:
       context: backend
     depends_on:
       - db
-    env_file: .env
+    env_file: .env.dev
     ports:
       - "3000:80"
     networks:
@@ -13,7 +13,7 @@ services:
   db:
     platform: linux/amd64
     image: postgres:17
-    env_file: .env
+    env_file: .env.dev
     volumes:
       - postgres_data:/var/lib/postgresql/data # Volume to persist data
     ports:
@@ -21,21 +21,19 @@ services:
     networks:
       - synap-network
 
-  frontend-prod:
+  frontend-dev:
     platform: linux/amd64
     build:
       context: frontend
-      target: prod
-      args:
-        - VITE_BACKEND_URL=${VITE_BACKEND_URL}
+      target: dev
     ports:
-      - "80:80"
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
-      - db
-    networks:
-      - synap-network
-    env_file: .env
+    env_file: .env.dev
 
 volumes:
   postgres_data:
