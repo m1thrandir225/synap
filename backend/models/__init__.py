@@ -7,3 +7,4 @@ from models.tag import Tag
 from models.file_tag import FileTag
 from models.learning_material import LearningMaterial
 from models.learning_material_tag import LearningMaterialTag
+from models.recommendation import Recommendation

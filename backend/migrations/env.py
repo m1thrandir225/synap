@@ -31,6 +31,7 @@ from models import (
     FileTag,
     LearningMaterial,
     LearningMaterialTag,
+    Recommendation,
 )
 
 target_metadata = Base.metadata

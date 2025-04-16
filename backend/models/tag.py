@@ -10,3 +10,5 @@ class Tag(Base):
     name = Column(String, nullable=False)
 
     files = relationship("UploadedFile", back_populates="tag")
+
+    learning_materials = relationship("LearningMaterialTag", back_populates="tags")
