@@ -1,7 +1,6 @@
 from sqlalchemy import UUID, Column, ForeignKey, PrimaryKeyConstraint, null
 from sqlalchemy.orm import relationship
 from database import Base
-from models import learning_material
 
 
 class LearningMaterialTag(Base):
