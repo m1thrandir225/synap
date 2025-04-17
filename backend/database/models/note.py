@@ -1,6 +1,6 @@
 from sqlalchemy import UUID, Column, DateTime, ForeignKey, String, func
 from sqlalchemy.orm import relationship
-from database.base import Base
+from database import Base
 
 
 class Note(Base):
