@@ -1,6 +1,8 @@
 FROM node:20-alpine as base
 WORKDIR /app
 
+ARG VITE_BACKEND_URL
+
 RUN npm install -g pnpm
 
 COPY package.json pnpm-lock.yaml ./
