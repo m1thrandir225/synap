@@ -1,0 +1,43 @@
+services:
+  backend:
+    platform: linux/amd64
+    build:
+      context: backend
+    depends_on:
+      - db
+    env_file: .env.dev
+    ports:
+      - "3000:80"
+    networks:
+      - synap-network
+  db:
+    platform: linux/amd64
+    image: postgres:17
+    env_file: .env.dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Volume to persist data
+    ports:
+      - "5432:5432" # Expose PostgreSQL port
+    networks:
+      - synap-network
+
+  frontend-dev:
+    platform: linux/amd64
+    build:
+      context: frontend
+      target: dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    env_file: .env.dev
+
+volumes:
+  postgres_data:
+
+networks:
+  synap-network:
+    driver: bridge
