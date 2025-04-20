@@ -1,5 +1,8 @@
-from typing import Optional
-from pydantic import BaseModel, ConfigDict
+from datetime import datetime
+from typing import List, Optional
+from pydantic import UUID4, BaseModel, ConfigDict
+
+from models.recommendation import RecommendationDTO
 
 
 class LearningMaterialBase(BaseModel):
@@ -21,5 +24,8 @@ class UpdateLearningMaterialDTO(BaseModel):
 
 
 class LearningMaterialDTO(BaseModel):
+    id: UUID4
     url: str
-    created_at: str
+    created_at: datetime
+
+    recommendations: List[RecommendationDTO]

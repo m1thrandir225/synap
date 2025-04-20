@@ -1,10 +1,12 @@
+from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import UUID4, BaseModel, ConfigDict
+from .summarization import SummarizationDTO
 
 
 class LectureBase(BaseModel):
     name: str
-    summarization_id: str
+    summarization_id: UUID4
 
     model_config = ConfigDict(from_attributes=True, str_max_length=255)
 
@@ -19,5 +21,7 @@ class UpdateLectureDTO(BaseModel):
 
 
 class LectureDTO(LectureBase):
-    id: str
-    created_at: str
+    id: UUID4
+    created_at: datetime
+
+    summarization: SummarizationDTO
