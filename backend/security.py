@@ -1,6 +1,6 @@
 from typing import Any, Optional, Union
 from passlib.context import CryptContext
-from jose import jwt
+from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
 from .config import settings
 
@@ -29,6 +29,37 @@ def create_access_token(
     encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm="HS256")
 
     return encoded_jwt
+
+
+def decode_token(
+    token: str, key: Optional[str] = None, type: str = "access"
+) -> Optional[str]:
+    """
+    Decode a JWT Token
+
+    Parameters:
+        token (str): The token
+        key (str | None, optional): A key to extract from the token. Defaults to
+        None.
+        type (str, optional): The type of the token [access or refresh].
+        Defaults to access
+
+    Return:
+        str | None: The extracted data from the token or None if the token is
+        invalid
+    """
+    try:
+        if type == "refresh":
+            payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+        else:
+            payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+        if key:
+            return payload.get(key)
+
+        return payload.get("sub")
+    except JWTError as e:
+        print(e)
+        return None
 
 
 def generate_password_hash(raw: str) -> str:
