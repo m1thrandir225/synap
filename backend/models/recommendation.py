@@ -1,10 +1,14 @@
-from typing import Optional
-from pydantic import BaseModel, ConfigDict
+from datetime import datetime
+from typing import List, Optional
+from pydantic import UUID4, BaseModel, ConfigDict
+from .recommendation_interaction import RecommendationInteractionDTO
 
 
 class RecommendationBase(BaseModel):
-    file_id: str
-    learning_material_id: str
+    file_id: UUID4
+    learning_material_id: UUID4
+
+    model_config = ConfigDict(from_attributes=True, str_max_length=255)
 
 
 class CreateRecommendationDTO(RecommendationBase):
@@ -17,6 +21,8 @@ class UpdateRecommendationDTO(BaseModel):
 
 
 class RecommendationDTO(RecommendationBase):
-    id: str
+    id: UUID4
     relevance_score: float
-    created_at: str
+    interactions: List[RecommendationInteractionDTO]
+
+    created_at: datetime

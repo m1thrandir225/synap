@@ -1,4 +1,5 @@
-from pydantic import BaseModel, ConfigDict
+from datetime import datetime
+from pydantic import UUID4, BaseModel, ConfigDict
 
 
 class UploadedFileBase(BaseModel):
@@ -8,8 +9,7 @@ class UploadedFileBase(BaseModel):
     file_size: str
     mime_type: str
 
-
-# No create DTO since the upload will be handled from the UploadFile class from fastapi
+    model_config = ConfigDict(from_attributes=True, str_max_length=255)
 
 
 class UpdateUploadedFileDTO(BaseModel):
@@ -17,7 +17,7 @@ class UpdateUploadedFileDTO(BaseModel):
 
 
 class UploadedFileDTO(UploadedFileBase):
-    id: str
-    course_id: str
-    user_id: str
-    created_at: str
+    id: UUID4
+    course_id: UUID4
+    user_id: UUID4
+    created_at: datetime
