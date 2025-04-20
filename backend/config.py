@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str
     POSTGRES_PORT: int
 
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+    JWT_SECRET: str
+
 
 class LocalSettings(Settings):
     """
