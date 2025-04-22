@@ -25,18 +25,25 @@ class Token(BaseModel):
 async def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ) -> User:
-    user_id = decode_token(token)
+    user_id = decode_token(token, type=JWT_TYPE.ACCESS)
     if user_id is None:
-        raise Exception("")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Token"
+        )
 
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
-        raise Exception("")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User Not Found"
+        )
+        
     return user
 
 
 @router.post(
-    "/signup", status_code=status.HTTP_201_CREATED
+    "/signup", status_code=status.HTTP_201_CREATED, response_model=Token
 )
 async def signup(
     user_data: CreateUserDTO, response: Response, db: Session = Depends(get_db)
@@ -94,7 +101,7 @@ async def login(
     #FIXME: move to repository   
     user = db.query(User).filter(User.email == form_data.username).first()
     
-    if not user or not verify_password(form_data.password, user.password):
+    if not user or not verify_password(form_data.password, str(user.password)):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect password",
@@ -127,7 +134,7 @@ async def refresh_token(request: Request, response: Response, db: Session = Depe
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Refresh Token missing",
-            headers={"WWW-Authentication", "Bearer"}
+            headers={"WWW-Authentication", "Bearer"} # type: ignore
         )
     
     user_id = decode_token(refresh_token, type=JWT_TYPE.REFRESH)
@@ -136,7 +143,7 @@ async def refresh_token(request: Request, response: Response, db: Session = Depe
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Refresh Token missing",
-            headers={"WWW-Authentication", "Bearer"}
+            headers={"WWW-Authentication", "Bearer"} # type: ignore
         )
     
     user = db.query(User).filter(User.id == user_id).first()
@@ -145,7 +152,7 @@ async def refresh_token(request: Request, response: Response, db: Session = Depe
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Refresh Token missing",
-            headers={"WWW-Authentication", "Bearer"}
+            headers={"WWW-Authentication", "Bearer"} # type: ignore
         ) 
     new_access_token = create_jwt_token(
         subject=str(user.id),
