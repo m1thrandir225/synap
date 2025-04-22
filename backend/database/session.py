@@ -4,7 +4,6 @@ from sqlalchemy.orm import sessionmaker
 
 from backend.config import Settings, settings
 
-
 def build_db_url_from_settings(_settings: Settings) -> str:
     """
     Build a SQLAlchemy URL based on the provided settings.

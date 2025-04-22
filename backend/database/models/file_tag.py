@@ -1,6 +1,6 @@
 from sqlalchemy import UUID, Column, ForeignKey, PrimaryKeyConstraint, null
 from sqlalchemy.orm import relationship
-from database import Base
+from backend.database import Base
 
 
 class FileTag(Base):

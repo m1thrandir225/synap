@@ -5,7 +5,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 log = get_logger(__name__)
 
-
 class Settings(BaseSettings):
     """
     Settings for running the app in production mode
@@ -27,7 +26,10 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int
+    REFRESH_TOKEN_EXPIRE_MINUTES: int
+    
     JWT_SECRET: str
+    JWT_ALGORITHM: str
 
 
 class LocalSettings(Settings):

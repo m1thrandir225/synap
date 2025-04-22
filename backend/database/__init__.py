@@ -1,7 +1,7 @@
-from database.db import get_ctx_db, get_db
-from database.base import Base
+from .db import get_ctx_db, get_db
+from .base import Base
 
-from database.models import (
+from .models import (
     User,
     Course,
     Note,

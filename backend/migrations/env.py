@@ -1,4 +1,6 @@
 import os
+import sys
+from pathlib import Path
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -6,6 +8,15 @@ from sqlalchemy import pool
 
 from alembic import context
 
+# Get the directory containing your migrations folder
+migrations_dir = Path(__file__).parent
+
+# Get the project root directory (one level up from migrations)
+project_root = migrations_dir.parent
+
+# Add the project root to the Python path if it's not already there
+if str(project_root) not in sys.path:
+    sys.path.append(str(project_root))
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -20,7 +31,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from database import (
+from backend.database import (
     Base,
     User,
     Course,

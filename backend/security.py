@@ -2,37 +2,42 @@ from typing import Any, Optional, Union
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
-from .config import settings
-
+from backend.config import settings
+from enum import Enum
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+class JWT_TYPE(Enum):
+    ACCESS = 1
+    REFRESH = 2
 
-def create_access_token(
-    subject: Union[str, Any], expires_delta: Optional[timedelta] = None
+def create_jwt_token(
+    subject: Union[str, Any],
+    type: JWT_TYPE
 ) -> str:
     """
     Create a JWT access token
 
     Parameters:
         subject (Union[str, Any]): The subject for which the token is created
-        expires_delta (timedelta, optional): The expiration time for the access
-        token.
+        type (JWT_TYPE): The type of jwt token to be generated
     """
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
+    if type == JWT_TYPE.ACCESS:
         expire = datetime.now(timezone.utc) + timedelta(
             minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
         )
+    elif type == JWT_TYPE.REFRESH:
+        expire = datetime.now(timezone.utc) + timedelta(
+            minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES
+        )
     to_encode = {"exp": expire, "sub": str(subject)}
 
-    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm="HS256")
+    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
 
     return encoded_jwt
 
 
 def decode_token(
-    token: str, key: Optional[str] = None, type: str = "access"
+    token: str, key: Optional[str] = None, type: Optional[JWT_TYPE] = JWT_TYPE.ACCESS
 ) -> Optional[str]:
     """
     Decode a JWT Token
@@ -49,10 +54,10 @@ def decode_token(
         invalid
     """
     try:
-        if type == "refresh":
-            payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+        if type == JWT_TYPE.REFRESH:
+            payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
         else:
-            payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+            payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
         if key:
             return payload.get(key)
 

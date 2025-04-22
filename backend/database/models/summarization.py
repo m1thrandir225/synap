@@ -9,7 +9,7 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.orm import relationship
-from database import Base
+from backend.database import Base
 
 
 class Summarization(Base):
@@ -18,10 +18,12 @@ class Summarization(Base):
     id = Column(UUID, primary_key=True, index=True)
     file_id = Column(UUID, ForeignKey("uploaded_files.id"), nullable=False)
 
-    file = relationship("File", back_populates="summarization", single_parent=True)
+    file = relationship("UploadedFile", back_populates="summarization", single_parent=True)
 
     summary_text = Column(String, nullable=False)
     ai_model_used = Column(String)
+    
+    lecture = relationship("Lecture", back_populates="summarization")
 
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False

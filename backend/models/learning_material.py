@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 from pydantic import UUID4, BaseModel, ConfigDict
 
-from models.recommendation import RecommendationDTO
+from .recommendation import RecommendationDTO
 
 
 class LearningMaterialBase(BaseModel):

@@ -2,7 +2,7 @@ from pydantic import UUID4, BaseModel, ConfigDict, Field
 from typing import Optional
 from datetime import datetime
 
-from models.uploaded_file import UploadedFileDTO
+from .uploaded_file import UploadedFileDTO
 
 
 class SummarizationBase(BaseModel):

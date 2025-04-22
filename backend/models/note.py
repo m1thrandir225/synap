@@ -11,7 +11,6 @@ class NoteBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True, str_max_length=255)
 
-
 class CreateNoteDTO(NoteBase):
     user_id: UUID4
 

@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 from pydantic import UUID4, BaseModel, ConfigDict
 
-from models.uploaded_file import UploadedFileDTO
+from .uploaded_file import UploadedFileDTO
 from .note import NoteDTO
 from .course import CourseDTO
 
@@ -37,5 +37,5 @@ class UserDTO(UserBase):
     updated_at: datetime
 
     courses: List[CourseDTO]
-    notes = List[NoteDTO]
-    uploaded_files = List[UploadedFileDTO]
+    notes: List[NoteDTO]
+    uploaded_files: List[UploadedFileDTO]

@@ -1,13 +1,12 @@
 from contextlib import contextmanager
 from typing import Generator
 
-from database.session import DATABASE_URL, get_local_session
+from .session import DATABASE_URL, get_local_session
 
 from backend.exceptions import SQLAlchemyException
 from backend.log import get_logger
 
 log = get_logger(__name__)
-
 
 def get_db() -> Generator:
     """

@@ -1,5 +1,4 @@
 """Logging module"""
-
 import logging
 import sys
 from typing import Optional

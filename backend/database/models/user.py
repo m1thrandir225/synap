@@ -1,7 +1,7 @@
 from sqlalchemy import UUID, Column, DateTime, Integer, String, func
 
 from sqlalchemy.orm import relationship
-from database import Base
+from backend.database import Base
 
 
 class User(Base):
@@ -15,11 +15,13 @@ class User(Base):
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=False)
+    updated_at = Column(
+        DateTime(timezone=True),server_default=func.now(), onupdate=func.now(), nullable=False,
+    )
 
     courses = relationship("Course", back_populates="user")
     notes = relationship("Note", back_populates="user")
     uploaded_files = relationship("UploadedFile", back_populates="user")
     recommendation_interactions = relationship(
-        "RecommendationInteracton", back_populates="user"
+        "RecommendationInteraction", back_populates="user"
     )
