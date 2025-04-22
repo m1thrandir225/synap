@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.routers import example_router, authentication_router
+from app.routers import example_router, authentication_router
 app = FastAPI()
 
 # include external router

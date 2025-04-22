@@ -2,7 +2,7 @@ from typing import Any, Optional, Union
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
-from backend.config import settings
+from app.config import settings
 from enum import Enum
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

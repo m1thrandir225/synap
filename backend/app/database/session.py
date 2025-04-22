@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker
 
-from backend.config import Settings, settings
+from app.config import Settings, settings
 
 def build_db_url_from_settings(_settings: Settings) -> str:
     """

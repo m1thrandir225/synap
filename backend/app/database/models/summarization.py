@@ -9,7 +9,7 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.orm import relationship
-from backend.database import Base
+from app.database import Base
 
 
 class Summarization(Base):

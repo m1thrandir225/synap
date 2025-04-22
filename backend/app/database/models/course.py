@@ -1,6 +1,6 @@
 from sqlalchemy import UUID, Column, DateTime, ForeignKey, String, func, null
 from sqlalchemy.orm import relationship
-from backend.database import Base
+from app.database import Base
 
 
 class Course(Base):

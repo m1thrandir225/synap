@@ -1,6 +1,6 @@
 from sqlalchemy import UUID, BigInteger, Column, DateTime, ForeignKey, String, func
 from sqlalchemy.orm import relationship
-from backend.database import Base
+from app.database import Base
 
 
 class UploadedFile(Base):

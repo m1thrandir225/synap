@@ -1,6 +1,6 @@
 from sqlalchemy import UUID, Column, DateTime, Float, ForeignKey, func
 from sqlalchemy.orm import relationship
-from backend.database import Base
+from app.database import Base
 
 
 class Recommendation(Base):

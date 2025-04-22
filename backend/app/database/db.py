@@ -3,8 +3,8 @@ from typing import Generator
 
 from .session import DATABASE_URL, get_local_session
 
-from backend.exceptions import SQLAlchemyException
-from backend.log import get_logger
+from app.exceptions import SQLAlchemyException
+from app.log import get_logger
 
 log = get_logger(__name__)
 

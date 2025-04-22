@@ -1,6 +1,5 @@
 import os
-
-from backend.log import get_logger
+from app.log import get_logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 log = get_logger(__name__)

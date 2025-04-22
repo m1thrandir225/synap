@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY . /code/backend
 
-CMD ["python", "-m", "backend.server"]
+CMD ["python", "-m", "app.server"]
