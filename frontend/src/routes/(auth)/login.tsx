@@ -10,6 +10,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import authService from "@/services/auth.service";
+import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { GalleryVerticalEnd } from "lucide-react";
 
@@ -18,6 +20,12 @@ export const Route = createFileRoute("/(auth)/login")({
 });
 
 function RouteComponent() {
+  const { mutateAsync } = useMutation({
+    mutationKey: ["login"],
+    mutationFn: (input: { username: string; password: string }) =>
+      authService.login(input),
+    onSuccess: (response) => {},
+  });
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -30,7 +38,7 @@ function RouteComponent() {
           </div>
           Synap
         </Link>
-        <LoginForm />
+        <LoginForm submitValues={(input) => mutateAsync(input)} />
       </div>
     </div>
   );
