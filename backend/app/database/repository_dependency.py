@@ -1,6 +1,7 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from ..repositories import UserRepository, TagRepository
+from db import get_db 
+from ..repositories import UserRepository, TagRepository, FileTagRepository
 from ..repositories.UploadedFilesRepository import UploadedFileRepository
 from ..repositories.CourseRepository import CourseRepository
 
@@ -13,6 +14,10 @@ def get_uploaded_file_repository(db: Session = Depends(get_db)) -> UploadedFileR
   
 def get_course_repository(db: Session = Depends(get_db)) -> CourseRepository:
     return CourseRepository(db)
+  
 def get_tag_repository(db: Session = Depends(get_db)) -> TagRepository:
     return TagRepository(db)
+  
+def get_file_tag_repository(db: Session = Depends(get_db)) -> FileTagRepository:
+    return FileTagRepository(db)
 
