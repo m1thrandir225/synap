@@ -184,4 +184,3 @@ async def get_current_user_info(
     user_dto = UserDTO.model_validate(current_user)
 
     return user_dto
-

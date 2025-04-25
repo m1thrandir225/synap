@@ -14,20 +14,44 @@ import authService from "@/services/auth.service";
 import { useAuthStore } from "@/stores/auth.store";
 import type { LoginRequest } from "@/types/responses/auth";
 import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  useParams,
+  useRouter,
+  useSearch,
+} from "@tanstack/react-router";
 import { GalleryVerticalEnd } from "lucide-react";
+import * as z from "zod";
+
+const loginSearchSchema = z.object({
+  redirect: z.string().optional(),
+});
 
 export const Route = createFileRoute("/(auth)/login")({
   component: RouteComponent,
+  validateSearch: loginSearchSchema,
 });
 
 function RouteComponent() {
   const authStore = useAuthStore();
+  const { redirect } = useSearch({ strict: false });
+  const router = useRouter();
   const { mutateAsync } = useMutation({
     mutationKey: ["login"],
     mutationFn: (input: LoginRequest) => authService.login(input),
     onSuccess: (response) => {
       authStore.login(response);
+
+      //Redirect to redirectRoute or to dashboard
+      if (redirect && typeof redirect === "string") {
+        const decodedRedirect = decodeURIComponent(redirect);
+        router.navigate({ to: decodedRedirect });
+      } else {
+        router.navigate({
+          to: "/dashboard",
+        });
+      }
     },
   });
   return (

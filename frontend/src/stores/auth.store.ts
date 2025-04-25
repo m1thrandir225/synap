@@ -14,6 +14,7 @@ export const useAuthStore = create<AuthStore>()(
         set({
           accessToken: input.access_token,
           user: input.user,
+          isAuthenticated: true,
         });
       },
       setTokens: (accessToken, expiresIn) => {
