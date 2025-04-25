@@ -1,7 +1,8 @@
-from fastapi import Depends
+
 from sqlalchemy.orm import Session
-from ..database import get_db
-from ..repositories import UserRepository, TagRepository, FileTagRepository, SummarizationRepository, RecommendationRepository, LectureRepository
+from fastapi import Depends
+from ..database.db import get_db
+from ..repositories import (UserRepository, TagRepository, FileTagRepository, SummarizationRepository, RecommendationRepository, LectureRepository, NoteRepository)
 from ..repositories.UploadedFilesRepository import UploadedFileRepository
 from ..repositories.CourseRepository import CourseRepository
 from ..repositories.RecommendationInteractionRepository import RecommendationInteractionRepository
@@ -34,3 +35,6 @@ def get_recommendation_interaction_repository(db: Session = Depends(get_db)) -> 
   
 def get_lecture_repository(db: Session = Depends(get_db)) -> LectureRepository:
     return LectureRepository(db)
+  
+def get_note_repository(db: Session = Depends(get_db)) -> NoteRepository:
+    return NoteRepository(db)
