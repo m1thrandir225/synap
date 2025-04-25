@@ -1,7 +1,12 @@
 from sqlalchemy.orm import Session
-from database.models import Summarization, UploadedFile, Lecture  # Adjust based on your file structure
+from database import (
+    Summarization,
+    UploadedFile,
+    Lecture,
+)  # Adjust based on your file structure
 from typing import List, Optional
 from uuid import UUID
+
 
 class SummarizationRepository:
     def __init__(self, db: Session):
@@ -9,11 +14,19 @@ class SummarizationRepository:
 
     def get_by_id(self, summarization_id: UUID) -> Optional[Summarization]:
         """Get a summarization by its ID."""
-        return self.db.query(Summarization).filter(Summarization.id == summarization_id).first()
+        return (
+            self.db.query(Summarization)
+            .filter(Summarization.id == summarization_id)
+            .first()
+        )
 
     def get_by_file_id(self, file_id: UUID) -> Optional[Summarization]:
         """Get a summarization associated with a specific file."""
-        return self.db.query(Summarization).filter(Summarization.file_id == file_id).first()
+        return (
+            self.db.query(Summarization)
+            .filter(Summarization.file_id == file_id)
+            .first()
+        )
 
     def get_all(self) -> List[Summarization]:
         """Get all summarizations."""
@@ -27,7 +40,9 @@ class SummarizationRepository:
         self.db.refresh(db_summarization)
         return db_summarization
 
-    def update(self, summarization_id: UUID, summarization_data: dict) -> Optional[Summarization]:
+    def update(
+        self, summarization_id: UUID, summarization_data: dict
+    ) -> Optional[Summarization]:
         """Update an existing summarization."""
         summarization = self.get_by_id(summarization_id)
         if summarization:
@@ -47,7 +62,9 @@ class SummarizationRepository:
             return True
         return False
 
-    def get_file_by_summarization(self, summarization_id: UUID) -> Optional[UploadedFile]:
+    def get_file_by_summarization(
+        self, summarization_id: UUID
+    ) -> Optional[UploadedFile]:
         """Get the file associated with a specific summarization."""
         summarization = self.get_by_id(summarization_id)
         return summarization.file if summarization else None

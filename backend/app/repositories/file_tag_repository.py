@@ -1,7 +1,12 @@
 from sqlalchemy.orm import Session
-from database.models import FileTag, UploadedFile, Tag  # Adjust based on your file structure
+from database.models import (
+    FileTag,
+    UploadedFile,
+    Tag,
+)  # Adjust based on your file structure
 from typing import List, Optional
 from uuid import UUID
+
 
 class FileTagRepository:
     def __init__(self, db: Session):
@@ -9,7 +14,11 @@ class FileTagRepository:
 
     def get_by_ids(self, file_id: UUID, tag_id: UUID) -> Optional[FileTag]:
         """Get a file tag by the combination of file_id and tag_id."""
-        return self.db.query(FileTag).filter(FileTag.file_id == file_id, FileTag.tag_id == tag_id).first()
+        return (
+            self.db.query(FileTag)
+            .filter(FileTag.file_id == file_id, FileTag.tag_id == tag_id)
+            .first()
+        )
 
     def get_by_file_id(self, file_id: UUID) -> List[FileTag]:
         """Get all tags associated with a specific file."""
@@ -42,4 +51,9 @@ class FileTagRepository:
 
     def get_files_by_tag(self, tag_id: UUID) -> List[UploadedFile]:
         """Get all files associated with a specific tag."""
-        return self.db.query(UploadedFile).join(FileTag).filter(FileTag.tag_id == tag_id).all()
+        return (
+            self.db.query(UploadedFile)
+            .join(FileTag)
+            .filter(FileTag.tag_id == tag_id)
+            .all()
+        )

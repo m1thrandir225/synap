@@ -3,6 +3,7 @@ from sqlalchemy import func
 from uuid import UUID
 from database.models import Course  # Import the Course model
 
+
 class CourseRepository:
     def __init__(self, db: Session):
         self.db = db
@@ -29,7 +30,9 @@ class CourseRepository:
         """
         Create a new course with the provided data.
         """
-        db_course = Course(**course_data)  # Assumes course_data is a dict that matches Course fields
+        db_course = Course(
+            **course_data
+        )  # Assumes course_data is a dict that matches Course fields
         self.db.add(db_course)
         self.db.commit()
         self.db.refresh(db_course)
@@ -77,8 +80,14 @@ class CourseRepository:
         """
         return self.db.query(Course).filter(Course.name.ilike(f"%{name}%")).all()
 
-    def get_courses_by_created_at_range(self, start_date: str, end_date: str) -> list[Course]:
+    def get_courses_by_created_at_range(
+        self, start_date: str, end_date: str
+    ) -> list[Course]:
         """
         Get courses created within a specific date range.
         """
-        return self.db.query(Course).filter(Course.created_at.between(start_date, end_date)).all()
+        return (
+            self.db.query(Course)
+            .filter(Course.created_at.between(start_date, end_date))
+            .all()
+        )

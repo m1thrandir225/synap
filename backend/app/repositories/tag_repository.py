@@ -1,7 +1,12 @@
 from sqlalchemy.orm import Session
-from database.models import Tag, FileTag, LearningMaterialTag  # Adjust based on your file structure
+from database import (
+    Tag,
+    FileTag,
+    LearningMaterialTag,
+)  # Adjust based on your file structure
 from typing import List, Optional
 from uuid import UUID
+
 
 class TagRepository:
     def __init__(self, db: Session):
@@ -53,4 +58,8 @@ class TagRepository:
 
     def get_learning_materials_by_tag(self, tag_id: UUID) -> List[LearningMaterialTag]:
         """Get all learning materials associated with a specific tag."""
-        return self.db.query(LearningMaterialTag).filter(LearningMaterialTag.tag_id == tag_id).all()
+        return (
+            self.db.query(LearningMaterialTag)
+            .filter(LearningMaterialTag.tag_id == tag_id)
+            .all()
+        )

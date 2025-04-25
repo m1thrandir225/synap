@@ -1,21 +1,23 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import select, delete
-from ..database.models.learning_material_tag import LearningMaterialTag  # Adjust import as per your project structure
+from database import LearningMaterialTag
+
 from uuid import UUID
 
 
 class LearningMaterialTagRepository:
-
     def __init__(self, db: Session):
         self.db = db
 
     def get_by_learning_material_id(
-            self, learning_material_id: UUID
+        self, learning_material_id: UUID
     ) -> List[LearningMaterialTag]:
         return (
             self.db.execute(
-                select(LearningMaterialTag).filter(LearningMaterialTag.learning_material_id == learning_material_id)
+                select(LearningMaterialTag).filter(
+                    LearningMaterialTag.learning_material_id == learning_material_id
+                )
             )
             .scalars()
             .all()
@@ -30,9 +32,7 @@ class LearningMaterialTagRepository:
             .all()
         )
 
-    def create(
-            self, learning_material_id: UUID, tag_id: UUID
-    ) -> LearningMaterialTag:
+    def create(self, learning_material_id: UUID, tag_id: UUID) -> LearningMaterialTag:
         learning_material_tag = LearningMaterialTag(
             learning_material_id=learning_material_id, tag_id=tag_id
         )
@@ -43,7 +43,9 @@ class LearningMaterialTagRepository:
 
     def delete_by_learning_material_id(self, learning_material_id: UUID):
         self.db.execute(
-            delete(LearningMaterialTag).filter(LearningMaterialTag.learning_material_id == learning_material_id)
+            delete(LearningMaterialTag).filter(
+                LearningMaterialTag.learning_material_id == learning_material_id
+            )
         )
         self.db.commit()
 
@@ -55,8 +57,7 @@ class LearningMaterialTagRepository:
 
     def delete(self, learning_material_id: UUID, tag_id: UUID):
         self.db.execute(
-            delete(LearningMaterialTag)
-            .filter(
+            delete(LearningMaterialTag).filter(
                 LearningMaterialTag.learning_material_id == learning_material_id,
                 LearningMaterialTag.tag_id == tag_id,
             )
