@@ -1,6 +1,16 @@
 from fastapi import FastAPI
 from app.routers import example_router, authentication_router
-app = FastAPI()
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI(root_path="/api/v1")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # include external router
 app.include_router(example_router.router)

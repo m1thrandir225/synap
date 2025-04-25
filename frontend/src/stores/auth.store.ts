@@ -10,6 +10,12 @@ export const useAuthStore = create<AuthStore>()(
       accessTokenExpiresAt: null,
       isAuthenticated: null,
 
+      login: (input) => {
+        set({
+          accessToken: input.access_token,
+          user: input.user,
+        });
+      },
       setTokens: (accessToken, expiresIn) => {
         const expiresAt = Date.now() + expiresIn * 1000;
         set({
