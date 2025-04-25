@@ -4,6 +4,8 @@ from db import get_db
 from ..repositories import UserRepository, TagRepository, FileTagRepository, SummarizationRepository
 from ..repositories.UploadedFilesRepository import UploadedFileRepository
 from ..repositories.CourseRepository import CourseRepository
+from ..repositories.RecommendationInteractionRepository import RecommendationInteractionRepository
+
 
 # Dependency functions for repositories
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
@@ -23,3 +25,6 @@ def get_file_tag_repository(db: Session = Depends(get_db)) -> FileTagRepository:
   
 def get_summarization_repository(db: Session = Depends(get_db)) -> SummarizationRepository:
     return SummarizationRepository(db)
+  
+def get_recommendation_interaction_repository(db: Session = Depends(get_db)) -> RecommendationInteractionRepository:
+    return RecommendationInteractionRepository(db)
