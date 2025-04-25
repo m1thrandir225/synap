@@ -6,6 +6,7 @@ from ..repositories.UploadedFilesRepository import UploadedFileRepository
 from ..repositories.CourseRepository import CourseRepository
 from ..repositories.RecommendationInteractionRepository import RecommendationInteractionRepository
 from ..repositories.LearningMaterialTagRepository import LearningMaterialTagRepository
+from ..repositories.LearningMaterialRepository import LearningMaterialRepository
 
 # Dependency functions for repositories
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
@@ -40,3 +41,6 @@ def get_note_repository(db: Session = Depends(get_db)) -> NoteRepository:
   
 def get_learning_material_tag_repository(db: Session = Depends(get_db)) -> LearningMaterialTagRepository:
     return LearningMaterialTagRepository(db)
+  
+def get_learning_material_repository(db: Session = Depends(get_db)) -> LearningMaterialRepository:
+    return LearningMaterialRepository(db)
