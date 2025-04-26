@@ -46,10 +46,11 @@ function RouteComponent() {
       //Redirect to redirectRoute or to dashboard
       if (redirect && typeof redirect === "string") {
         const decodedRedirect = decodeURIComponent(redirect);
-        router.navigate({ to: decodedRedirect });
+        router.navigate({ to: decodedRedirect, replace: true });
       } else {
         router.navigate({
           to: "/dashboard",
+          replace: true,
         });
       }
     },

@@ -10,3 +10,12 @@ export type LoginResponse = {
   token_type: string;
   user: User;
 };
+
+export type RegisterRequest = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+};
+
+export type RegisterResponse = LoginResponse & {};

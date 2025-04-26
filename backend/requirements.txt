@@ -14,4 +14,4 @@ rsa==4.9.1
 six==1.17.0
 passlib==1.7.4
 bcrypt==4.3.0
-aiofiles=24.1.0
+aiofiles==24.1.0
