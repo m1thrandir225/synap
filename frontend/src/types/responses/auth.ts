@@ -19,3 +19,9 @@ export type RegisterRequest = {
 };
 
 export type RegisterResponse = LoginResponse & {};
+
+export type RefreshTokenResponse = LoginResponse & {};
+
+export type LogoutResponse = {
+  details: string;
+};

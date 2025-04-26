@@ -3,6 +3,8 @@ import {
   type LoginRequest,
   type LoginResponse,
   type RegisterRequest,
+  type RefreshTokenResponse,
+  type LogoutResponse,
 } from "@/types/responses/auth";
 import { apiRequest, multipartApiRequest } from "./api.service";
 import config from "@/lib/config";
@@ -28,6 +30,26 @@ const authService = {
       params: undefined,
       protected: false,
       data: input,
+    }),
+  refreshToken: () =>
+    apiRequest<RefreshTokenResponse>({
+      url: `${authURL}/refresh`,
+      method: "POST",
+      withCredentials: true,
+      data: undefined,
+      params: undefined,
+      protected: true,
+      headers: undefined,
+    }),
+  logout: () =>
+    apiRequest<LogoutResponse>({
+      url: `${authURL}/logout`,
+      method: "POST",
+      headers: undefined,
+      data: undefined,
+      protected: true,
+      params: undefined,
+      withCredentials: true,
     }),
 };
 
