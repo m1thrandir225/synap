@@ -1,4 +1,4 @@
-const baseUrl = import.meta.env.BACKEND_URL;
+const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
 //TODO: fix if base api url changed
 const apiUrl = `${baseUrl}/api/v1`;

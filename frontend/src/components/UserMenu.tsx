@@ -14,10 +14,24 @@ import {
 } from "./ui/sidebar";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { ChevronsUpDown, LogOut } from "lucide-react";
-
+import { useAuthStore } from "@/stores/auth.store";
+import { useCallback } from "react";
+import { redirect, useLocation, useRouter } from "@tanstack/react-router";
 const UserMenu: React.FC = () => {
   const { isMobile } = useSidebar();
-
+  const { logout } = useAuthStore();
+  const location = useLocation();
+  const router = useRouter();
+  const logoutWithRedirect = useCallback(() => {
+    logout();
+    router.navigate({
+      to: "/login",
+      search: {
+        redirect: location.href,
+      },
+      replace: true,
+    });
+  }, [logout]);
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -53,7 +67,7 @@ const UserMenu: React.FC = () => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={logoutWithRedirect}>
               <LogOut />
               Log out
             </DropdownMenuItem>
