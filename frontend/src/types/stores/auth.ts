@@ -14,6 +14,6 @@ export type AuthStore = {
   setTokens: (accessToken: string, expiresIn: number) => void;
   setUser: (user: User) => void;
   logout: () => void;
-  checkAuth: () => void;
+  checkAuth: () => Promise<void>;
   setHasHydrated: (state: boolean) => void;
 };

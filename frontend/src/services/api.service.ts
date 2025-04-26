@@ -5,6 +5,12 @@ import type { ApiRequestOptions, MultipartRequestOptions } from "@/types/api";
 
 import config from "@/lib/config";
 import { buildFormData } from "@/lib/form";
+import authService from "./auth.service";
+
+interface FailedQueuePromise {
+  resolve: (token: string | null) => void;
+  reject: (error: unknown) => void;
+}
 
 const createApiInstance = (): AxiosInstance => {
   const api = axios.create({
@@ -13,6 +19,24 @@ const createApiInstance = (): AxiosInstance => {
       "Content-Type": "application/json",
     },
   });
+
+  let isRefreshing = false;
+  let failedQueue: FailedQueuePromise[] = [];
+
+  const processQueue = (
+    error: unknown | null,
+    token: string | null = null,
+  ): void => {
+    failedQueue.forEach((prom) => {
+      if (error) {
+        prom.reject(error);
+      } else {
+        prom.resolve(token);
+      }
+    });
+
+    failedQueue = [];
+  };
 
   /**
    * Request Interceptor
@@ -34,6 +58,51 @@ const createApiInstance = (): AxiosInstance => {
     }
     return config;
   });
+
+  api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
+      const status = error.response?.status;
+
+      if (status === 401 && originalRequest.url !== "/auth/refresh") {
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+          })
+            .then((token) => {
+              originalRequest.headers["Authorization"] = `Bearer ${token}`;
+              return api(originalRequest);
+            })
+            .catch((err) => Promise.reject(err));
+        }
+
+        isRefreshing = true;
+
+        try {
+          const newToken = await authService.refreshToken();
+
+          originalRequest.headers["Authorization"] =
+            `Bearer ${newToken.access_token}`;
+
+          if (!newToken?.access_token) {
+            throw new Error("Refresh endpoint did not return an access token.");
+          }
+
+          processQueue(null, newToken.access_token);
+          return api(originalRequest);
+        } catch (refreshError) {
+          processQueue(refreshError, null);
+
+          return Promise.reject(refreshError);
+        } finally {
+          isRefreshing = false;
+        }
+      }
+
+      return Promise.reject(error);
+    },
+  );
 
   return api;
 };

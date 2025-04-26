@@ -79,7 +79,7 @@ async def signup(
         value=refresh_token,
         httponly=True,
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES + 15 * 60,
-        samesite="lax",
+        samesite="none",
         secure=False if settings.ENV in ["dev", "development"] else True,
     )
 
@@ -118,7 +118,7 @@ async def login(
         key="refresh_token",
         value=refresh_token,
         max_age=settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60,
-        samesite="lax",
+        samesite="none",
         secure=False if settings.ENV in ["dev", "development"] else True,
     )
 
@@ -165,7 +165,9 @@ async def refresh_token(
 
 
 @router.post("/logout")
-async def logout(response: Response) -> dict:
+async def logout(
+    response: Response, current_user: User = Depends(get_current_user)
+) -> dict:
     response.delete_cookie(
         key="refresh_token",
         httponly=True,
