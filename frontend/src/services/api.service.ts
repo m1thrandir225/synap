@@ -59,6 +59,9 @@ const createApiInstance = (): AxiosInstance => {
     return config;
   });
 
+  /**
+   * Used for refreshing authentication token via Cookie.
+   */
   api.interceptors.response.use(
     (response) => response,
     async (error) => {
