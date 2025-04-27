@@ -15,7 +15,7 @@ interface ComponentProps extends React.ComponentPropsWithoutRef<"div"> {
 
 const CourseNotes: React.FC<ComponentProps> = ({ items }) => {
   return (
-    <Card>
+    <Card className="w-full h-full">
       <CardHeader>
         <CardTitle> Notes </CardTitle>
         <CardDescription>Notes that are related to this course</CardDescription>
