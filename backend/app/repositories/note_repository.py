@@ -1,8 +1,8 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from uuid import UUID
-from .models import Note
 from datetime import datetime
+from database import Note
 
 
 class NoteRepository:
