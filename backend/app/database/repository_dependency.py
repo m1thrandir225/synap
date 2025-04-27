@@ -1,4 +1,5 @@
 from fastapi import Depends
+from backend.app.services import UserService
 from sqlalchemy.orm import Session
 from ..database.db import get_db
 from ..repositories import (UserRepository, TagRepository, FileTagRepository, SummarizationRepository, RecommendationRepository, LectureRepository, NoteRepository)
@@ -44,3 +45,9 @@ def get_learning_material_tag_repository(db: Session = Depends(get_db)) -> Learn
   
 def get_learning_material_repository(db: Session = Depends(get_db)) -> LearningMaterialRepository:
     return LearningMaterialRepository(db)
+
+
+# Dependency functions for the services
+
+def get_user_service(db: Session = Depends(get_db)) -> UserService:
+    return UserService(UserRepository)
