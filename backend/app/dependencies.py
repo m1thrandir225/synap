@@ -1,7 +1,7 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from database import get_db
-
+from services import NoteService
 from repositories import (
     UserRepository,
     TagRepository,
@@ -72,6 +72,8 @@ def get_learning_material_tag_repository(
 ) -> LearningMaterialTagRepository:
     return LearningMaterialTagRepository(db)
 
+def get_note_service(db: Session = Depends(get_db)) -> NoteService:
+    return NoteService(db)
 
 def get_learning_material_repository(
     db: Session = Depends(get_db),
