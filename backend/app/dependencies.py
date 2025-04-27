@@ -82,7 +82,5 @@ def get_learning_material_repository(
 ) -> LearningMaterialRepository:
     return LearningMaterialRepository(db)
 
-def get_uploaded_files_service(
-    db: Session = Depends(get_db),
-) -> uploaded_files_service:
-    return uploaded_files_service(UploadedFileRepository)
+def get_uploaded_files_service(uploaded_file_repo: UploadedFileRepository = Depends(get_uploaded_file_repository)) -> uploaded_files_service:
+    return uploaded_files_service(uploaded_file_repo)
