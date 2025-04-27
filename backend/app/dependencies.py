@@ -1,6 +1,7 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from database import get_db
+from services.RecommendationInteractionService import RecommendationInteractionService
 
 from repositories import (
     UserRepository,
@@ -77,3 +78,8 @@ def get_learning_material_repository(
     db: Session = Depends(get_db),
 ) -> LearningMaterialRepository:
     return LearningMaterialRepository(db)
+
+def get_recommendation_interaction_service(
+    db: Session = Depends(get_db),
+) -> RecommendationInteractionService:
+    return RecommendationInteractionService(db)
