@@ -2,6 +2,10 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from database import get_db
 
+from services import (
+    summarization_service
+)
+
 from repositories import (
     UserRepository,
     TagRepository,
@@ -77,3 +81,9 @@ def get_learning_material_repository(
     db: Session = Depends(get_db),
 ) -> LearningMaterialRepository:
     return LearningMaterialRepository(db)
+
+
+def get_summarization_service(
+    summarization_repo: SummarizationRepository = Depends(get_summarization_repository)
+) -> summarization_service:
+    return summarization_service(summarization_repo)
