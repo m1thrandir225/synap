@@ -11,13 +11,24 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as DashboardImport } from './routes/dashboard'
 import { Route as IndexImport } from './routes/index'
-import { Route as dashboardDashboardImport } from './routes/(dashboard)/dashboard'
+import { Route as DashboardIndexImport } from './routes/dashboard/index'
+import { Route as DashboardNotesImport } from './routes/dashboard/notes'
+import { Route as DashboardLecturesImport } from './routes/dashboard/lectures'
+import { Route as DashboardFilesImport } from './routes/dashboard/files'
 import { Route as authRegisterImport } from './routes/(auth)/register'
 import { Route as authLoginImport } from './routes/(auth)/login'
-import { Route as dashboardDashboardIndexImport } from './routes/(dashboard)/dashboard.index'
+import { Route as DashboardCoursesIndexImport } from './routes/dashboard/courses/index'
+import { Route as DashboardCoursesCourseIdImport } from './routes/dashboard/courses/$courseId'
 
 // Create/Update Routes
+
+const DashboardRoute = DashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -25,10 +36,28 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const dashboardDashboardRoute = dashboardDashboardImport.update({
-  id: '/(dashboard)/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRoute,
+const DashboardIndexRoute = DashboardIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardNotesRoute = DashboardNotesImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardLecturesRoute = DashboardLecturesImport.update({
+  id: '/lectures',
+  path: '/lectures',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardFilesRoute = DashboardFilesImport.update({
+  id: '/files',
+  path: '/files',
+  getParentRoute: () => DashboardRoute,
 } as any)
 
 const authRegisterRoute = authRegisterImport.update({
@@ -43,10 +72,16 @@ const authLoginRoute = authLoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const dashboardDashboardIndexRoute = dashboardDashboardIndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => dashboardDashboardRoute,
+const DashboardCoursesIndexRoute = DashboardCoursesIndexImport.update({
+  id: '/courses/',
+  path: '/courses/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardCoursesCourseIdRoute = DashboardCoursesCourseIdImport.update({
+  id: '/courses/$courseId',
+  path: '/courses/$courseId',
+  getParentRoute: () => DashboardRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -58,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardImport
       parentRoute: typeof rootRoute
     }
     '/(auth)/login': {
@@ -74,87 +116,165 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authRegisterImport
       parentRoute: typeof rootRoute
     }
-    '/(dashboard)/dashboard': {
-      id: '/(dashboard)/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof dashboardDashboardImport
-      parentRoute: typeof rootRoute
+    '/dashboard/files': {
+      id: '/dashboard/files'
+      path: '/files'
+      fullPath: '/dashboard/files'
+      preLoaderRoute: typeof DashboardFilesImport
+      parentRoute: typeof DashboardImport
     }
-    '/(dashboard)/dashboard/': {
-      id: '/(dashboard)/dashboard/'
+    '/dashboard/lectures': {
+      id: '/dashboard/lectures'
+      path: '/lectures'
+      fullPath: '/dashboard/lectures'
+      preLoaderRoute: typeof DashboardLecturesImport
+      parentRoute: typeof DashboardImport
+    }
+    '/dashboard/notes': {
+      id: '/dashboard/notes'
+      path: '/notes'
+      fullPath: '/dashboard/notes'
+      preLoaderRoute: typeof DashboardNotesImport
+      parentRoute: typeof DashboardImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
       path: '/'
       fullPath: '/dashboard/'
-      preLoaderRoute: typeof dashboardDashboardIndexImport
-      parentRoute: typeof dashboardDashboardImport
+      preLoaderRoute: typeof DashboardIndexImport
+      parentRoute: typeof DashboardImport
+    }
+    '/dashboard/courses/$courseId': {
+      id: '/dashboard/courses/$courseId'
+      path: '/courses/$courseId'
+      fullPath: '/dashboard/courses/$courseId'
+      preLoaderRoute: typeof DashboardCoursesCourseIdImport
+      parentRoute: typeof DashboardImport
+    }
+    '/dashboard/courses/': {
+      id: '/dashboard/courses/'
+      path: '/courses'
+      fullPath: '/dashboard/courses'
+      preLoaderRoute: typeof DashboardCoursesIndexImport
+      parentRoute: typeof DashboardImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface dashboardDashboardRouteChildren {
-  dashboardDashboardIndexRoute: typeof dashboardDashboardIndexRoute
+interface DashboardRouteChildren {
+  DashboardFilesRoute: typeof DashboardFilesRoute
+  DashboardLecturesRoute: typeof DashboardLecturesRoute
+  DashboardNotesRoute: typeof DashboardNotesRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardCoursesCourseIdRoute: typeof DashboardCoursesCourseIdRoute
+  DashboardCoursesIndexRoute: typeof DashboardCoursesIndexRoute
 }
 
-const dashboardDashboardRouteChildren: dashboardDashboardRouteChildren = {
-  dashboardDashboardIndexRoute: dashboardDashboardIndexRoute,
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardFilesRoute: DashboardFilesRoute,
+  DashboardLecturesRoute: DashboardLecturesRoute,
+  DashboardNotesRoute: DashboardNotesRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardCoursesCourseIdRoute: DashboardCoursesCourseIdRoute,
+  DashboardCoursesIndexRoute: DashboardCoursesIndexRoute,
 }
 
-const dashboardDashboardRouteWithChildren =
-  dashboardDashboardRoute._addFileChildren(dashboardDashboardRouteChildren)
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
-  '/dashboard': typeof dashboardDashboardRouteWithChildren
-  '/dashboard/': typeof dashboardDashboardIndexRoute
+  '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/lectures': typeof DashboardLecturesRoute
+  '/dashboard/notes': typeof DashboardNotesRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/courses/$courseId': typeof DashboardCoursesCourseIdRoute
+  '/dashboard/courses': typeof DashboardCoursesIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
-  '/dashboard': typeof dashboardDashboardIndexRoute
+  '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/lectures': typeof DashboardLecturesRoute
+  '/dashboard/notes': typeof DashboardNotesRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/courses/$courseId': typeof DashboardCoursesCourseIdRoute
+  '/dashboard/courses': typeof DashboardCoursesIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
-  '/(dashboard)/dashboard': typeof dashboardDashboardRouteWithChildren
-  '/(dashboard)/dashboard/': typeof dashboardDashboardIndexRoute
+  '/dashboard/files': typeof DashboardFilesRoute
+  '/dashboard/lectures': typeof DashboardLecturesRoute
+  '/dashboard/notes': typeof DashboardNotesRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/courses/$courseId': typeof DashboardCoursesCourseIdRoute
+  '/dashboard/courses/': typeof DashboardCoursesIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register' | '/dashboard' | '/dashboard/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/register'
+    | '/dashboard/files'
+    | '/dashboard/lectures'
+    | '/dashboard/notes'
+    | '/dashboard/'
+    | '/dashboard/courses/$courseId'
+    | '/dashboard/courses'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/dashboard'
+  to:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/dashboard/files'
+    | '/dashboard/lectures'
+    | '/dashboard/notes'
+    | '/dashboard'
+    | '/dashboard/courses/$courseId'
+    | '/dashboard/courses'
   id:
     | '__root__'
     | '/'
+    | '/dashboard'
     | '/(auth)/login'
     | '/(auth)/register'
-    | '/(dashboard)/dashboard'
-    | '/(dashboard)/dashboard/'
+    | '/dashboard/files'
+    | '/dashboard/lectures'
+    | '/dashboard/notes'
+    | '/dashboard/'
+    | '/dashboard/courses/$courseId'
+    | '/dashboard/courses/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
   authLoginRoute: typeof authLoginRoute
   authRegisterRoute: typeof authRegisterRoute
-  dashboardDashboardRoute: typeof dashboardDashboardRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRouteWithChildren,
   authLoginRoute: authLoginRoute,
   authRegisterRoute: authRegisterRoute,
-  dashboardDashboardRoute: dashboardDashboardRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -168,13 +288,24 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/dashboard",
         "/(auth)/login",
-        "/(auth)/register",
-        "/(dashboard)/dashboard"
+        "/(auth)/register"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/dashboard": {
+      "filePath": "dashboard.tsx",
+      "children": [
+        "/dashboard/files",
+        "/dashboard/lectures",
+        "/dashboard/notes",
+        "/dashboard/",
+        "/dashboard/courses/$courseId",
+        "/dashboard/courses/"
+      ]
     },
     "/(auth)/login": {
       "filePath": "(auth)/login.tsx"
@@ -182,15 +313,29 @@ export const routeTree = rootRoute
     "/(auth)/register": {
       "filePath": "(auth)/register.tsx"
     },
-    "/(dashboard)/dashboard": {
-      "filePath": "(dashboard)/dashboard.tsx",
-      "children": [
-        "/(dashboard)/dashboard/"
-      ]
+    "/dashboard/files": {
+      "filePath": "dashboard/files.tsx",
+      "parent": "/dashboard"
     },
-    "/(dashboard)/dashboard/": {
-      "filePath": "(dashboard)/dashboard.index.tsx",
-      "parent": "/(dashboard)/dashboard"
+    "/dashboard/lectures": {
+      "filePath": "dashboard/lectures.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/notes": {
+      "filePath": "dashboard/notes.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/": {
+      "filePath": "dashboard/index.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/courses/$courseId": {
+      "filePath": "dashboard/courses/$courseId.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/courses/": {
+      "filePath": "dashboard/courses/index.tsx",
+      "parent": "/dashboard"
     }
   }
 }
