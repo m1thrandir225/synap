@@ -2,6 +2,10 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from database import get_db
 
+from services import (
+    uploaded_files_service
+)
+
 from repositories import (
     UserRepository,
     TagRepository,
@@ -77,3 +81,8 @@ def get_learning_material_repository(
     db: Session = Depends(get_db),
 ) -> LearningMaterialRepository:
     return LearningMaterialRepository(db)
+
+def get_uploaded_files_service(
+    db: Session = Depends(get_db),
+) -> uploaded_files_service:
+    return uploaded_files_service(UploadedFileRepository)
