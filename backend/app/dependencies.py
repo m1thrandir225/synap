@@ -82,7 +82,5 @@ def get_learning_material_repository(
 ) -> LearningMaterialRepository:
     return LearningMaterialRepository(db)
 
-def get_file_tag_service(
-    db: Session = Depends(get_db),
-) -> file_tag_service:
-    return file_tag_service(FileTagRepository)
+def get_file_tag_service(file_tag_repo: FileTagRepository = Depends(get_file_tag_repository)) -> file_tag_service:
+    return file_tag_service(file_tag_repo)
