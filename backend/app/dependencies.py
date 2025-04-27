@@ -83,7 +83,5 @@ def get_learning_material_repository(
     return LearningMaterialRepository(db)
 
 
-def get_user_service(
-    db: Session = Depends(get_db),
-) -> user_service:
-    return user_service(UserRepository)
+def get_user_service(user_repo: UserRepository = Depends(get_user_repository)) -> user_service:
+    return user_service(user_repo)
