@@ -2,11 +2,11 @@ import DashboardLayout from "@/layouts/dashboard";
 import { useAuthStore } from "@/stores/auth.store";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/(dashboard)/dashboard")({
-  beforeLoad: ({ context, location }) => {
-    const authStore = useAuthStore.getState();
+export const Route = createFileRoute("/dashboard")({
+  beforeLoad: ({ location }) => {
+    const isAuthenticated = useAuthStore.getState().isAuthenticated;
 
-    if (!authStore.isAuthenticated) {
+    if (!isAuthenticated) {
       throw redirect({
         to: "/login",
         search: {
