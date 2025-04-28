@@ -5,9 +5,10 @@ from sqlalchemy.orm import Session
 from models.tag import TagDTO, CreateTagDTO, UpdateTagDTO
 from repositories import TagRepository
 
+
 class TagService:
-    def __init__(self, db: Session):
-        self.tag_repo = TagRepository(db)
+    def __init__(self, tag_repo: TagRepository):
+        self.tag_repo = tag_repo
 
     def get_tag(self, tag_id: UUID) -> TagDTO:
         tag = self.tag_repo.get_by_id(tag_id)
@@ -47,4 +48,6 @@ class TagService:
 
     def get_learning_materials_by_tag(self, tag_id: UUID) -> List[TagDTO]:
         learning_materials = self.tag_repo.get_learning_materials_by_tag(tag_id)
-        return [TagDTO.model_validate(material) for material in learning_materials]  # Convert ORM to DTO
+        return [
+            TagDTO.model_validate(material) for material in learning_materials
+        ]  # Convert ORM to DTO
