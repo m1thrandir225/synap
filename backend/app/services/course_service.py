@@ -5,12 +5,13 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 
 from repositories import CourseRepository
-from models.course import Course  # Import your Course model (or DTOs if you have any)
-from models import CourseCreateDTO, CourseUpdateDTO  # Assuming DTOs exist
+from database import Course
+from models import CreateCourseDTO, UpdateCourseDTO  # Assuming DTOs exist
+
 
 class CourseService:
-    def __init__(self, db: Session):
-        self.course_repo = CourseRepository(db)
+    def __init__(self, course_repo: CourseRepository):
+        self.course_repo = course_repo
 
     def get_course(self, course_id: UUID) -> Course:
         course = self.course_repo.get_by_id(course_id)
@@ -24,17 +25,23 @@ class CourseService:
     def get_courses_by_user(self, user_id: UUID) -> List[Course]:
         return self.course_repo.get_by_user_id(user_id)
 
-    def create_course(self, course_data: CourseCreateDTO) -> Course:
+    def create_course(self, course_data: CreateCourseDTO) -> Course:
         # Ensure the course name doesn't already exist or any other business logic
         existing_course = self.course_repo.get_courses_by_name(course_data.name)
         if existing_course:
-            raise HTTPException(status_code=400, detail="Course with this name already exists.")
+            raise HTTPException(
+                status_code=400, detail="Course with this name already exists."
+            )
 
-        course = self.course_repo.create(course_data.dict())  # Assuming course_data is a DTO
+        course = self.course_repo.create(
+            course_data.dict()
+        )  # Assuming course_data is a DTO
         return course
 
-    def update_course(self, course_id: UUID, course_data: CourseUpdateDTO) -> Course:
-        course = self.course_repo.update(course_id, course_data.dict(exclude_unset=True))
+    def update_course(self, course_id: UUID, course_data: UpdateCourseDTO) -> Course:
+        course = self.course_repo.update(
+            course_id, course_data.dict(exclude_unset=True)
+        )
         if not course:
             raise HTTPException(status_code=404, detail="Course not found")
         return course
@@ -53,5 +60,7 @@ class CourseService:
     def get_courses_by_name(self, name: str) -> List[Course]:
         return self.course_repo.get_courses_by_name(name)
 
-    def get_courses_by_created_at_range(self, start_date: str, end_date: str) -> List[Course]:
+    def get_courses_by_created_at_range(
+        self, start_date: str, end_date: str
+    ) -> List[Course]:
         return self.course_repo.get_courses_by_created_at_range(start_date, end_date)
