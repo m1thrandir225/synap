@@ -36,7 +36,10 @@ const CourseCard: React.FC<ComponentProps> = ({ course, inGrid, ...props }) => {
           </div>
           <div className="flex flex-row items-center gap-2">
             <Button asChild size={"icon"} variant={"secondary"}>
-              <Link to="/dashboard/courses">
+              <Link
+                to="/dashboard/courses/$courseId/edit"
+                params={{ courseId: course.id }}
+              >
                 <Pen />
               </Link>
             </Button>
