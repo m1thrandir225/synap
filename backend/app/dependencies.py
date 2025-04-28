@@ -1,4 +1,5 @@
 from fastapi import Depends
+from services import CourseService
 from sqlalchemy.orm import Session
 from database import get_db
 
@@ -82,6 +83,9 @@ def get_learning_material_repository(
 ) -> LearningMaterialRepository:
     return LearningMaterialRepository(db)
 
+# Dependency functions for services 
+def get_course_service(course_repo: CourseRepository = Depends(get_course_repository)) -> CourseService:
+    return CourseService(course_repo)
 
 def get_user_service(user_repo: UserRepository = Depends(get_user_repository)) -> user_service:
     return user_service(user_repo)
