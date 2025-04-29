@@ -6,17 +6,23 @@ import rehypeSanitize from "rehype-sanitize";
 
 interface ComponentProps extends React.ComponentPropsWithoutRef<"div"> {
   onlyPreview?: boolean;
+  contentValue: string | undefined;
+  setContentValue: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-const NoteEditor: React.FC<ComponentProps> = ({ className, ...props }) => {
+const NoteEditor: React.FC<ComponentProps> = ({
+  contentValue,
+  setContentValue,
+  className,
+  ...props
+}) => {
   const { theme } = useTheme();
-  const [value, setValue] = useState<string | undefined>(undefined);
   return (
     <div data-color-mode={theme} className={cn(className)} {...props}>
       <MDEditor
         className="w-full !h-full"
-        value={value}
-        onChange={setValue}
+        value={contentValue}
+        onChange={setContentValue}
         previewOptions={{
           rehypePlugins: [[rehypeSanitize]],
         }}

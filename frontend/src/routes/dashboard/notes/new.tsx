@@ -2,6 +2,7 @@ import NoteEditor from "@/components/notes/NoteEditor";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/dashboard/notes/new")({
 
 function RouteComponent() {
   const [name, setName] = useState("");
-
+  const [content, setContent] = useState<string | undefined>("");
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async () => "",
     onSuccess: (response) => {
@@ -45,18 +46,26 @@ function RouteComponent() {
           </CardDescription>
         </CardHeader>
       </Card>
-      <div className="grid gap-2 w-full">
-        <Label htmlFor="name"> Name </Label>
-        <Input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="The name of the note"
-        />
-      </div>
-      <NoteEditor className="w-full min-h-[450px] " />
-      <Button className="self-end" disabled={isPending} onClick={saveNote}>
-        {isPending ? <Loader2 className="animate-spin" /> : <p> Save </p>}
-      </Button>
+      <Card className="w-full ">
+        <CardContent className="flex flex-col gap-4">
+          <div className="grid gap-2 w-full">
+            <Label htmlFor="name"> Name </Label>
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="The name of the note"
+            />
+          </div>
+          <NoteEditor
+            className="w-full min-h-[450px]"
+            contentValue={content}
+            setContentValue={setContent}
+          />
+          <Button className="self-end" disabled={isPending} onClick={saveNote}>
+            {isPending ? <Loader2 className="animate-spin" /> : <p> Save </p>}
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }

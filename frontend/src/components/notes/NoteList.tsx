@@ -22,11 +22,11 @@ const NoteList: React.FC<ComponentProps> = (props) => {
     return <ListEmpty />;
   }
   return (
-    <ScrollArea className="w-full h-[400px]">
+    <div className="w-full min-h-[400px]">
       {items.map((note) => (
         <NoteCard item={note} />
       ))}
-    </ScrollArea>
+    </div>
   );
 };
 
