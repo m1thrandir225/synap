@@ -8,3 +8,14 @@ export function cn(...inputs: ClassValue[]) {
 export function extractInitials(firstName: string, lastName: string): string {
   return `${firstName.charAt(0)} ${lastName.charAt(0)}`.toUpperCase();
 }
+
+export function formatDate(input: string): string {
+  const date = new Date(input);
+
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}

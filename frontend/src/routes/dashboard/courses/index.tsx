@@ -1,14 +1,13 @@
-import CourseCard from "@/components/courses/CourseCard";
-import CourseGrid from "@/components/courses/CourseGrid";
 import { Button } from "@/components/ui/button";
 import { dummyCourses } from "@/types/models/course";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
-
-//TODO: implement queryClient and fetcher when backend routes are ready
+import CourseGrid from "@/components/courses/CourseGrid";
 export const Route = createFileRoute("/dashboard/courses/")({
   loader: () => {
-    return dummyCourses;
+    return {
+      dummyCourses,
+    };
   },
   component: RouteComponent,
 });
