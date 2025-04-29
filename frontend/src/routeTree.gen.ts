@@ -20,7 +20,9 @@ import { Route as DashboardFilesImport } from './routes/dashboard/files'
 import { Route as authRegisterImport } from './routes/(auth)/register'
 import { Route as authLoginImport } from './routes/(auth)/login'
 import { Route as DashboardCoursesIndexImport } from './routes/dashboard/courses/index'
+import { Route as DashboardCoursesNewImport } from './routes/dashboard/courses/new'
 import { Route as DashboardCoursesCourseIdImport } from './routes/dashboard/courses/$courseId'
+import { Route as DashboardCoursesCourseIdEditImport } from './routes/dashboard/courses/$courseId_.edit'
 
 // Create/Update Routes
 
@@ -78,11 +80,24 @@ const DashboardCoursesIndexRoute = DashboardCoursesIndexImport.update({
   getParentRoute: () => DashboardRoute,
 } as any)
 
+const DashboardCoursesNewRoute = DashboardCoursesNewImport.update({
+  id: '/courses/new',
+  path: '/courses/new',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
 const DashboardCoursesCourseIdRoute = DashboardCoursesCourseIdImport.update({
   id: '/courses/$courseId',
   path: '/courses/$courseId',
   getParentRoute: () => DashboardRoute,
 } as any)
+
+const DashboardCoursesCourseIdEditRoute =
+  DashboardCoursesCourseIdEditImport.update({
+    id: '/courses/$courseId_/edit',
+    path: '/courses/$courseId/edit',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -151,11 +166,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCoursesCourseIdImport
       parentRoute: typeof DashboardImport
     }
+    '/dashboard/courses/new': {
+      id: '/dashboard/courses/new'
+      path: '/courses/new'
+      fullPath: '/dashboard/courses/new'
+      preLoaderRoute: typeof DashboardCoursesNewImport
+      parentRoute: typeof DashboardImport
+    }
     '/dashboard/courses/': {
       id: '/dashboard/courses/'
       path: '/courses'
       fullPath: '/dashboard/courses'
       preLoaderRoute: typeof DashboardCoursesIndexImport
+      parentRoute: typeof DashboardImport
+    }
+    '/dashboard/courses/$courseId_/edit': {
+      id: '/dashboard/courses/$courseId_/edit'
+      path: '/courses/$courseId/edit'
+      fullPath: '/dashboard/courses/$courseId/edit'
+      preLoaderRoute: typeof DashboardCoursesCourseIdEditImport
       parentRoute: typeof DashboardImport
     }
   }
@@ -169,7 +198,9 @@ interface DashboardRouteChildren {
   DashboardNotesRoute: typeof DashboardNotesRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardCoursesCourseIdRoute: typeof DashboardCoursesCourseIdRoute
+  DashboardCoursesNewRoute: typeof DashboardCoursesNewRoute
   DashboardCoursesIndexRoute: typeof DashboardCoursesIndexRoute
+  DashboardCoursesCourseIdEditRoute: typeof DashboardCoursesCourseIdEditRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
@@ -178,7 +209,9 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardNotesRoute: DashboardNotesRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardCoursesCourseIdRoute: DashboardCoursesCourseIdRoute,
+  DashboardCoursesNewRoute: DashboardCoursesNewRoute,
   DashboardCoursesIndexRoute: DashboardCoursesIndexRoute,
+  DashboardCoursesCourseIdEditRoute: DashboardCoursesCourseIdEditRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
@@ -195,7 +228,9 @@ export interface FileRoutesByFullPath {
   '/dashboard/notes': typeof DashboardNotesRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/courses/$courseId': typeof DashboardCoursesCourseIdRoute
+  '/dashboard/courses/new': typeof DashboardCoursesNewRoute
   '/dashboard/courses': typeof DashboardCoursesIndexRoute
+  '/dashboard/courses/$courseId/edit': typeof DashboardCoursesCourseIdEditRoute
 }
 
 export interface FileRoutesByTo {
@@ -207,7 +242,9 @@ export interface FileRoutesByTo {
   '/dashboard/notes': typeof DashboardNotesRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/courses/$courseId': typeof DashboardCoursesCourseIdRoute
+  '/dashboard/courses/new': typeof DashboardCoursesNewRoute
   '/dashboard/courses': typeof DashboardCoursesIndexRoute
+  '/dashboard/courses/$courseId/edit': typeof DashboardCoursesCourseIdEditRoute
 }
 
 export interface FileRoutesById {
@@ -221,7 +258,9 @@ export interface FileRoutesById {
   '/dashboard/notes': typeof DashboardNotesRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/courses/$courseId': typeof DashboardCoursesCourseIdRoute
+  '/dashboard/courses/new': typeof DashboardCoursesNewRoute
   '/dashboard/courses/': typeof DashboardCoursesIndexRoute
+  '/dashboard/courses/$courseId_/edit': typeof DashboardCoursesCourseIdEditRoute
 }
 
 export interface FileRouteTypes {
@@ -236,7 +275,9 @@ export interface FileRouteTypes {
     | '/dashboard/notes'
     | '/dashboard/'
     | '/dashboard/courses/$courseId'
+    | '/dashboard/courses/new'
     | '/dashboard/courses'
+    | '/dashboard/courses/$courseId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -247,7 +288,9 @@ export interface FileRouteTypes {
     | '/dashboard/notes'
     | '/dashboard'
     | '/dashboard/courses/$courseId'
+    | '/dashboard/courses/new'
     | '/dashboard/courses'
+    | '/dashboard/courses/$courseId/edit'
   id:
     | '__root__'
     | '/'
@@ -259,7 +302,9 @@ export interface FileRouteTypes {
     | '/dashboard/notes'
     | '/dashboard/'
     | '/dashboard/courses/$courseId'
+    | '/dashboard/courses/new'
     | '/dashboard/courses/'
+    | '/dashboard/courses/$courseId_/edit'
   fileRoutesById: FileRoutesById
 }
 
@@ -304,7 +349,9 @@ export const routeTree = rootRoute
         "/dashboard/notes",
         "/dashboard/",
         "/dashboard/courses/$courseId",
-        "/dashboard/courses/"
+        "/dashboard/courses/new",
+        "/dashboard/courses/",
+        "/dashboard/courses/$courseId_/edit"
       ]
     },
     "/(auth)/login": {
@@ -333,8 +380,16 @@ export const routeTree = rootRoute
       "filePath": "dashboard/courses/$courseId.tsx",
       "parent": "/dashboard"
     },
+    "/dashboard/courses/new": {
+      "filePath": "dashboard/courses/new.tsx",
+      "parent": "/dashboard"
+    },
     "/dashboard/courses/": {
       "filePath": "dashboard/courses/index.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/courses/$courseId_/edit": {
+      "filePath": "dashboard/courses/$courseId_.edit.tsx",
       "parent": "/dashboard"
     }
   }
