@@ -11,6 +11,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import queryClient from "./lib/queryClient.ts";
 import { useAuthStore } from "./stores/auth.store.ts";
 import Loader from "./components/Loader.tsx";
+import { ThemeProvider } from "./stores/theme.store";
 
 // Create a new router instance
 const router = createRouter({
@@ -38,7 +39,13 @@ const AppRoot: React.FC = () => {
     return <Loader />;
   }
 
-  return <RouterProvider router={router} />;
+  return (
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />;
+      </QueryClientProvider>
+    </ThemeProvider>
+  );
 };
 
 // Render the app
@@ -47,9 +54,7 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <AppRoot />
-      </QueryClientProvider>
+      <AppRoot />
     </StrictMode>,
   );
 }
