@@ -1,4 +1,5 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { ModeToggle } from "@/components/DarkToggle";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -110,8 +111,9 @@ const DashboardLayout: React.FC = () => {
   return (
     <SidebarProvider>
       <Sidebar variant="inset">
-        <SidebarHeader>
+        <SidebarHeader className="flex flex-row items-center justify-between">
           <h1 className="text-xl font-bold font-sans"> Synap </h1>
+          <ModeToggle />
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
