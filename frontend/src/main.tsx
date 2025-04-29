@@ -9,6 +9,8 @@ import "./styles.css";
 import reportWebVitals from "./reportWebVitals.ts";
 import { QueryClientProvider } from "@tanstack/react-query";
 import queryClient from "./lib/queryClient.ts";
+import { useAuthStore } from "./stores/auth.store.ts";
+import Loader from "./components/Loader.tsx";
 
 // Create a new router instance
 const router = createRouter({
@@ -29,6 +31,16 @@ declare module "@tanstack/react-router" {
   }
 }
 
+const AppRoot: React.FC = () => {
+  const hasHydrated = useAuthStore()._hasHydrated;
+
+  if (!hasHydrated) {
+    return <Loader />;
+  }
+
+  return <RouterProvider router={router} />;
+};
+
 // Render the app
 const rootElement = document.getElementById("app");
 if (rootElement && !rootElement.innerHTML) {
@@ -36,7 +48,7 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <AppRoot />
       </QueryClientProvider>
     </StrictMode>,
   );

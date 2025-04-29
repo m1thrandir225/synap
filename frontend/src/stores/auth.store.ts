@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { AuthStore } from "@/types/stores/auth";
+import authService from "@/services/auth.service";
 
 export const useAuthStore = create<AuthStore>()(
   persist(
@@ -10,6 +11,13 @@ export const useAuthStore = create<AuthStore>()(
       accessTokenExpiresAt: null,
       isAuthenticated: null,
 
+      login: (input) => {
+        set({
+          accessToken: input.access_token,
+          user: input.user,
+          isAuthenticated: true,
+        });
+      },
       setTokens: (accessToken, expiresIn) => {
         const expiresAt = Date.now() + expiresIn * 1000;
         set({
@@ -31,7 +39,16 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       //TODO: implement checking of refresh token logic
-      checkAuth: () => {},
+      checkAuth: async () => {
+        try {
+          const result = await authService.refreshToken();
+
+          get().login(result);
+        } catch (e: any) {
+          //call unsucessfull
+          get().logout();
+        }
+      },
 
       //Store hydration from storage
       _hasHydrated: false,

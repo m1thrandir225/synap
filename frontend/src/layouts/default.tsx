@@ -1,5 +1,7 @@
 import { Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"; /*
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+
+/*
  * Default Layout for all pages
  */
 const DefaultLayout: React.FC<React.PropsWithChildren> = (props) => {
@@ -8,7 +10,7 @@ const DefaultLayout: React.FC<React.PropsWithChildren> = (props) => {
       <main className="h-full w-full">
         <Outlet />
       </main>
-      <TanStackRouterDevtools />
+      <TanStackRouterDevtools position="top-right" />
     </div>
   );
 };

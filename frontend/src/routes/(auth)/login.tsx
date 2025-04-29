@@ -10,14 +10,51 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import authService from "@/services/auth.service";
+import { useAuthStore } from "@/stores/auth.store";
+import type { LoginRequest } from "@/types/responses/auth";
+import { useMutation } from "@tanstack/react-query";
+import {
+  createFileRoute,
+  Link,
+  useParams,
+  useRouter,
+  useSearch,
+} from "@tanstack/react-router";
 import { GalleryVerticalEnd } from "lucide-react";
+import * as z from "zod";
+
+const loginSearchSchema = z.object({
+  redirect: z.string().optional(),
+});
 
 export const Route = createFileRoute("/(auth)/login")({
   component: RouteComponent,
+  validateSearch: loginSearchSchema,
 });
 
 function RouteComponent() {
+  const authStore = useAuthStore();
+  const { redirect } = useSearch({ strict: false });
+  const router = useRouter();
+  const { mutateAsync } = useMutation({
+    mutationKey: ["login"],
+    mutationFn: (input: LoginRequest) => authService.login(input),
+    onSuccess: (response) => {
+      authStore.login(response);
+
+      //Redirect to redirectRoute or to dashboard
+      if (redirect && typeof redirect === "string") {
+        const decodedRedirect = decodeURIComponent(redirect);
+        router.navigate({ to: decodedRedirect, replace: true });
+      } else {
+        router.navigate({
+          to: "/dashboard",
+          replace: true,
+        });
+      }
+    },
+  });
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -30,7 +67,11 @@ function RouteComponent() {
           </div>
           Synap
         </Link>
-        <LoginForm />
+        <LoginForm
+          submitValues={async (values) => {
+            await mutateAsync(values);
+          }}
+        />
       </div>
     </div>
   );
