@@ -1,9 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
+import MDEditor from "@uiw/react-md-editor";
 
-export const Route = createFileRoute('/dashboard/notes/$noteId/')({
+export const Route = createFileRoute("/dashboard/notes/$noteId/")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  return <div>Hello "/dashboard/notes/$noteId/"!</div>
+  const source = "# Markdown syntax guide\n## Headers";
+  return <MDEditor.Markdown source={source} />;
 }
