@@ -6,8 +6,8 @@ from ..repositories.LearningMaterialTagRepository import LearningMaterialTagRepo
 
 
 class LearningMaterialTagService:
-    def __init__(self, db: Session):
-        self.repository = LearningMaterialTagRepository(db)
+    def __init__(self, lmt: LearningMaterialTagRepository):
+        self.repository = lmt
 
     def get_tags_by_learning_material(self, learning_material_id: UUID) -> List[LearningMaterialTag]:
         return self.repository.get_by_learning_material_id(learning_material_id)
