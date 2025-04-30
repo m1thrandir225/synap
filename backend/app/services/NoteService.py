@@ -6,8 +6,8 @@ from ..repositories import NoteRepository
 
 
 class NoteService:
-    def __init__(self, db: Session):
-        self.repository = NoteRepository(db)
+    def __init__(self, note_repo: NoteRepository):
+        self.repository = note_repo
 
     def create_note(
         self, title: str, content: str, user_id: UUID, course_id: UUID
