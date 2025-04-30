@@ -6,8 +6,8 @@ from models import FileTag
 from repositories import FileTagRepository
 
 class FileTagService:
-    def __init__(self, db: Session):
-        self.file_tag_repo = FileTagRepository(db)
+    def __init__(self, file_tag: FileTagRepository):
+        self.file_tag_repo = file_tag
 
     def get_file_tag(self, file_id: UUID, tag_id: UUID) -> FileTag:
         file_tag = self.file_tag_repo.get_by_ids(file_id, tag_id)
