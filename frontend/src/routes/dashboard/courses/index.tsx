@@ -19,8 +19,8 @@ function RouteComponent() {
     <div className="w-full h-full flex flex-col items-start gap-8">
       <div className="flex flex-row items-center justify-between w-full">
         <h1 className="font-bold text-2xl">Courses</h1>
-        <Button asChild size={"icon"} variant={"secondary"}>
-          <Link to="/dashboard/courses">
+        <Button asChild size={"icon"} variant={"default"}>
+          <Link to="/dashboard/courses/new">
             <Plus />
           </Link>
         </Button>
