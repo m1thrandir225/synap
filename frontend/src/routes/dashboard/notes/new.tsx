@@ -9,6 +9,16 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { dummyCourses } from "@/types/models/course";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
@@ -16,9 +26,18 @@ import { useState } from "react";
 
 export const Route = createFileRoute("/dashboard/notes/new")({
   component: RouteComponent,
+  loader: async () => {
+    const courses = dummyCourses;
+
+    return {
+      courses,
+      crumb: "New",
+    };
+  },
 });
 
 function RouteComponent() {
+  const { courses } = Route.useLoaderData();
   const [name, setName] = useState("");
   const [content, setContent] = useState<string | undefined>("");
   const { mutateAsync, isPending } = useMutation({
@@ -55,6 +74,22 @@ function RouteComponent() {
               onChange={(e) => setName(e.target.value)}
               placeholder="The name of the note"
             />
+          </div>
+          <div className="grid gap-2 w-full">
+            <Label htmlFor="courseId">Course</Label>
+            <Select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a course" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Courses</SelectLabel>
+                  {courses.map((item) => (
+                    <SelectItem value={item.id}>{item.name}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
           <NoteEditor
             className="w-full min-h-[450px]"
