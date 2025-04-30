@@ -6,8 +6,8 @@ from ..schemas import LearningMaterialCreate, LearningMaterialUpdate
 from ..database.models.learning_material import LearningMaterial
 
 class LearningMaterialService:
-    def __init__(self, db: Session):
-        self.repository = LearningMaterialRepository(db)
+    def __init__(self, lm: LearningMaterialRepository):
+        self.repository = lm
 
     def create_learning_material(self, learning_material_data: LearningMaterialCreate) -> LearningMaterial:
         return self.repository.create_learning_material(learning_material_data)
