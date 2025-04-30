@@ -4,8 +4,8 @@ from ..models.lecture import Lecture
 from ..repositories.LectureRepository import LectureRepository
 
 class LectureService:
-    def __init__(self, db: Session):
-        self.repository = LectureRepository(db)
+    def __init__(self, lec_repo: LectureRepository):
+        self.repository = lec_repo
 
     def create_lecture(self, summarization_id: UUID, name: str) -> Lecture:
         """Service method to create a new lecture."""
