@@ -5,8 +5,8 @@ from ..database.models.recommendation_interaction import RecommendationInteracti
 from ..repositories.recommendation_interaction_repository import RecommendationInteractionRepository
 
 class RecommendationInteractionService:
-    def __init__(self, db: Session):
-        self.repository = RecommendationInteractionRepository(db)
+    def __init__(self, inte_repo: RecommendationInteractionRepository):
+        self.repository = inte_repo
 
     def create_interaction(self, user_id: UUID, recommendation_id: UUID, interaction_type: str) -> RecommendationInteraction:
         return self.repository.create(user_id, recommendation_id, interaction_type)
