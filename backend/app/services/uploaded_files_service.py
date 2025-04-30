@@ -7,8 +7,8 @@ from repositories import UploadedFileRepository
 
 
 class UploadedFileService:
-    def __init__(self, db: Session):
-        self.file_repo = UploadedFileRepository(db)
+    def __init__(self, file_repo: UploadedFileRepository):
+        self.file_repo = file_repo
 
     def get_uploaded_file(self, file_id: UUID) -> UploadedFileDTO:
         uploaded_file = self.file_repo.get_by_id(file_id)
