@@ -4,8 +4,8 @@ from ..repositories.recommendation_repository import RecommendationRepository
 from ..database.models.recommendation import Recommendation
 
 class RecommendationService:
-    def __init__(self, db: Session):
-        self.recommendation_repository = RecommendationRepository(db)
+    def __init__(self, recom_repo: RecommendationRepository):
+        self.recommendation_repository = recom_repo
 
     def create_recommendation(self, file_id: UUID, learning_material_id: UUID, relevance_score: float) -> Recommendation:
         return self.recommendation_repository.create_recommendation(file_id, learning_material_id, relevance_score)
