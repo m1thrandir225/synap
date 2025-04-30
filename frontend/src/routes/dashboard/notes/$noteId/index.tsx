@@ -1,3 +1,4 @@
+import NoteDeleteDialog from "@/components/notes/NoteDeleteDialog";
 import NotePreview from "@/components/notes/NotePreview";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,6 +37,7 @@ function RouteComponent() {
                 <Pen />
               </Link>
             </Button>
+            <NoteDeleteDialog noteId={note.id} />
           </div>
         </CardHeader>
       </Card>
