@@ -19,3 +19,15 @@ export function formatDate(input: string): string {
     day: "numeric",
   });
 }
+
+export function formatBytesToMb(bytes: number): string {
+  if (typeof bytes !== "number" || bytes < 0 || isNaN(bytes) || bytes === 0) {
+    return "0.00 MB";
+  }
+
+  const bytesPerMB = 1024 * 1024;
+
+  const megabytes = bytes / bytesPerMB;
+
+  return `${megabytes.toFixed(2)} MB`;
+}
