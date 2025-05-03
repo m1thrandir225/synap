@@ -2,12 +2,11 @@ from fastapi import Depends
 from services import CourseService
 from sqlalchemy.orm import Session
 from database import get_db
-
+from services import RecommendationService
 from services import (
     user_service,
     tag_service,
 )
-
 from repositories import (
     UserRepository,
     TagRepository,
@@ -83,6 +82,8 @@ def get_learning_material_repository(
     db: Session = Depends(get_db),
 ) -> LearningMaterialRepository:
     return LearningMaterialRepository(db)
+
+
   
 # Dependency functions for services 
 def get_course_service(course_repo: CourseRepository = Depends(get_course_repository)) -> CourseService:
@@ -93,3 +94,6 @@ def get_user_service(user_repo: UserRepository = Depends(get_user_repository)) -
 
 def get_tag_service(tag_repo: TagRepository = Depends(get_tag_repository)) -> tag_service:
     return tag_service(tag_repo)
+
+def get_recommendation_service(db: Session = Depends(get_db)) -> RecommendationService:
+    return RecommendationService(db)
