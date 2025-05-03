@@ -45,7 +45,7 @@ class RecommendationRepository:
     def update_recommendation_relevance(
         self, recommendation_id: UUID, recom_data: dict
     ) -> Recommendation:
-        recommendation = self.db.get_recommendation_by_id(recommendation_id)
+        recommendation = self.get_recommendation_by_id(recommendation_id)
         for key, value in recom_data.items():
             setattr(recommendation, key, value)
         self.db.commit()
