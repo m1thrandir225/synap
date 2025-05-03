@@ -26,7 +26,7 @@ class RecommendationService:
     def delete_recommendation(self, recommendation_id: UUID) -> bool:
         return self.recommendation_repository.delete_recommendation(recommendation_id)
 
-    def rank_recommendations(self, recommendations: list[Recommendation]) -> list[Recommendation]:
+    def __rank_recommendations(self, recommendations: list[Recommendation]) -> list[Recommendation]:
         return sorted(recommendations, key=lambda rec: rec.relevance_score, reverse=True)
 
     def get_top_recommendations(self, file_id: UUID, top_n: int = 5) -> list[Recommendation]:
