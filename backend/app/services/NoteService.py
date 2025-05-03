@@ -3,16 +3,16 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 from ..models import Note
 from ..repositories import NoteRepository
-
+from models import CreateNoteDTO, UpdateNoteDTO
 
 class NoteService:
     def __init__(self, note_repo: NoteRepository):
         self.repository = note_repo
 
     def create_note(
-        self, title: str, content: str, user_id: UUID, course_id: UUID
+        self, note_data: CreateNoteDTO
     ) -> Note:
-        return self.repository.create_note(title, content, user_id, course_id)
+        return self.repository.create_note(note_data.dict())
 
     def get_note_by_id(self, note_id: UUID) -> Optional[Note]:
         return self.repository.get_note_by_id(note_id)
@@ -24,9 +24,9 @@ class NoteService:
         return self.repository.get_notes_by_course_id(course_id)
 
     def update_note(
-        self, note_id: UUID, title: Optional[str] = None, content: Optional[str] = None
+        self, note_id: UUID, note_data: UpdateNoteDTO
     ) -> Optional[Note]:
-        return self.repository.update_note(note_id, title, content)
+        return self.repository.update_note(note_id, note_data.dict(exclude_unset=True))
 
     def delete_note(self, note_id: UUID) -> bool:
         return self.repository.delete_note(note_id)
