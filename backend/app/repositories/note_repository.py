@@ -1,5 +1,6 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from uuid import UUID
 from datetime import datetime
 from database import Note
@@ -10,13 +11,10 @@ class NoteRepository:
         self.db = db
 
     def create_note(
-        self, title: str, content: str, user_id: UUID, course_id: UUID
+        self, note_data: dict
     ) -> Note:
         note = Note(
-            title=title,
-            content=content,
-            user_id=user_id,
-            course_id=course_id,
+            **note_data
         )
         self.db.add(note)
         self.db.commit()
@@ -33,19 +31,14 @@ class NoteRepository:
         return self.db.query(Note).filter(Note.course_id == course_id).all()
 
     def update_note(
-        self, note_id: UUID, title: Optional[str] = None, content: Optional[str] = None
+        self, note_id: UUID, note_data: dict
     ) -> Optional[Note]:
-        note = self.db.query(Note).filter(Note.id == note_id).first()
-        if note:
-            if title:
-                note.title = title
-            if content:
-                note.content = content
-            note.updated_at = datetime.utcnow()
-            self.db.commit()
-            self.db.refresh(note)
-            return note
-        return None
+        note = self.get_note_by_id(note_id)
+        for key, value in note_data.items():
+            setattr(note, key, value)
+        self.db.commit()
+        self.db.refresh(note)
+        return note
 
     def delete_note(self, note_id: UUID) -> bool:
         note = self.db.query(Note).filter(Note.id == note_id).first()

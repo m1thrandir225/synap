@@ -4,16 +4,19 @@ import type { EditCourseRequest } from "@/types/responses/courses";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 
-//TODO: get the course from backend when router is done
-export const Route = createFileRoute("/dashboard/courses/$courseId_/edit")({
+export const Route = createFileRoute("/dashboard/courses/$courseId/edit")({
   loader: ({ params }) => {
-    return dummyCourses.find((el) => el.id === params.courseId);
+    const course = dummyCourses.find((el) => el.id === params.courseId);
+    return {
+      course,
+      crumb: "Edit",
+    };
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const course = Route.useLoaderData();
+  const { course } = Route.useLoaderData();
   const { mutateAsync } = useMutation({
     mutationKey: ["edit-course", course?.id],
     mutationFn: async (input: EditCourseRequest) => "edited data",
