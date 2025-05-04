@@ -5,10 +5,11 @@ from database import get_db
 from services import (
     user_service,
     tag_service,
+    file_tag_service
     NoteService
     RecommendationService,
     RecommendationInteractionService,
-    LearningMaterialService
+    LearningMaterialService,
 )
 from repositories import (
     UserRepository,
@@ -110,3 +111,6 @@ def get_recommendation_service(db: Session = Depends(get_db)) -> RecommendationS
   
 def get_learning_material_service(lm_repo: LearningMaterialRepository = Depends(get_learning_material_repository)) -> LearningMaterialService:
     return LearningMaterialService(lm_repo)
+
+def get_file_tag_service(file_tag_repo: FileTagRepository = Depends(get_file_tag_repository)) -> file_tag_service:
+    return file_tag_service(file_tag_repo)
