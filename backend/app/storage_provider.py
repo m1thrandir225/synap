@@ -2,6 +2,7 @@ import os
 import uuid
 from pathlib import Path
 import aiofiles
+import base64
 
 from fastapi import UploadFile
 from fastapi.params import Depends
@@ -22,6 +23,7 @@ class LocalStorageProvider:
 
         self.user_upload_dir = self.upload_dir / str(self.user.id)
         self.user_upload_dir.mkdir(parents=True, exist_ok=True)
+
 
 
     def list_files(self) -> list[str]:
@@ -63,12 +65,33 @@ class LocalStorageProvider:
             content = await file.read()
             await buffer.write(content)
 
-        return file_path
+        return final_filename  
 
     def get_file(self, filename: str) -> bytes:
         file_path = self.user_upload_dir / filename
         with open(file_path, "rb") as f:
             return f.read()
+        
+    def get_file_base64(self, filename: str) -> str:
+        """
+        Reads the file and returns its content encoded in base64.
+
+        Args:
+            filename: Name of the file stored under the user's upload directory.
+
+        Returns:
+            Base64-encoded string of the file content.
+        """
+        file_path = self.user_upload_dir / filename
+
+        if not file_path.exists():
+            raise FileNotFoundError(f"File '{filename}' not found for user {self.user.id}.")
+
+        with open(file_path, "rb") as f:
+            file_bytes = f.read()
+            encoded = base64.b64encode(file_bytes).decode("utf-8")
+            return encoded
+
 
     def delete_file(self, filename: str) -> None:
         file_path = self.user_upload_dir / filename

@@ -3,7 +3,7 @@ from app.database import (
     Summarization,
     UploadedFile,
     Lecture,
-)  # Adjust based on your file structure
+)  
 from typing import List, Optional
 from uuid import UUID
 
