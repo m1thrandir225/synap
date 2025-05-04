@@ -2,14 +2,15 @@ import type { Course } from "@/types/models/course";
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Link } from "@tanstack/react-router";
 import { Button } from "../ui/button";
-import { Pen, Trash } from "lucide-react";
+import { Pen } from "lucide-react";
+import CourseDeleteDialog from "./CourseDeleteDialog";
 
-interface ComponentProps extends React.ComponentPropsWithoutRef<"div"> {
+interface ComponentProps {
   course: Omit<Course, "user_id" | "created_at" | "updated_at" | "notes">;
   inGrid?: boolean;
 }
 
-const CourseCard: React.FC<ComponentProps> = ({ course, inGrid, ...props }) => {
+const CourseCard: React.FC<ComponentProps> = ({ course, inGrid }) => {
   if (inGrid) {
     return (
       <Link
@@ -27,7 +28,7 @@ const CourseCard: React.FC<ComponentProps> = ({ course, inGrid, ...props }) => {
     );
   }
   return (
-    <Card className="h-full w-full">
+    <Card className="h-auto w-full">
       <CardHeader>
         <div className="flex flex-row items-center justify-between">
           <div className="flex flex-col items-start gap-2">
@@ -36,15 +37,14 @@ const CourseCard: React.FC<ComponentProps> = ({ course, inGrid, ...props }) => {
           </div>
           <div className="flex flex-row items-center gap-2">
             <Button asChild size={"icon"} variant={"secondary"}>
-              <Link to="/dashboard/courses">
+              <Link
+                to="/dashboard/courses/$courseId/edit"
+                params={{ courseId: course.id }}
+              >
                 <Pen />
               </Link>
             </Button>
-            <Button asChild size={"icon"} variant={"destructive"}>
-              <Link to="/dashboard/courses">
-                <Trash />
-              </Link>
-            </Button>
+            <CourseDeleteDialog courseId={course.id} />
           </div>
         </div>
       </CardHeader>

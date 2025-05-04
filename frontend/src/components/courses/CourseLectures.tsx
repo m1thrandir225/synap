@@ -6,26 +6,22 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import LectureCard from "../lectures/LectureCard";
+import LectureList from "../lectures/LectureList";
 
 interface ComponentProps extends React.ComponentPropsWithoutRef<"div"> {
   items: Lecture[];
 }
 
-const CourseLectures: React.FC<ComponentProps> = ({ items }) => {
+const CourseLectures: React.FC<ComponentProps> = (props) => {
+  const { items } = props;
   return (
-    <Card className="w-full h-full">
+    <Card className="w-full h-auto">
       <CardHeader>
         <CardTitle> Lectures </CardTitle>
         <CardDescription> Lectures asociated with this course </CardDescription>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="w-full h-[400px]">
-          {items.map((lecture) => (
-            <LectureCard item={lecture} key={lecture.id} />
-          ))}
-        </ScrollArea>
+        <LectureList items={items} />
       </CardContent>
     </Card>
   );
