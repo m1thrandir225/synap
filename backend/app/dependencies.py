@@ -97,8 +97,8 @@ def get_tag_service(tag_repo: TagRepository = Depends(get_tag_repository)) -> ta
 
 
 def get_note_service(note_repo: NoteRepository = Depends(get_note_repository)) -> NoteService:
-    return NoteService(db)
+    return NoteService(note_repo)
 
 def get_recommendation_service(recom_repo: RecommendationRepository = Depends(get_recommendation_repository)) -> RecommendationService:
-    return RecommendationService(db)
+    return RecommendationService(recom_repo)
 
