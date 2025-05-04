@@ -22,7 +22,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 class Token(BaseModel):
     access_token: str
-    token_type: str
+    access_token_expire_time: datetime
+    refresh_token: str
+    refresh_token_expire_time: datetime
     user: UserDTO
 
 
@@ -71,23 +73,24 @@ async def signup(
     db.commit()
     db.refresh(new_user)
 
-    access_token = create_jwt_token(subject=str(new_user.id), type=JWT_TYPE.ACCESS)
-    refresh_token = create_jwt_token(subject=str(new_user.id), type=JWT_TYPE.REFRESH)
-
-    response.set_cookie(
-        key="refresh_token",
-        value=refresh_token,
-        httponly=True,
-        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES + 15 * 60,
-        samesite="none",
-        secure=False if settings.ENV in ["dev", "development"] else True,
+    access_token, access_token_expire_time = create_jwt_token(
+        subject=str(new_user.id), type=JWT_TYPE.ACCESS
+    )
+    refresh_token, refresh_token_expire_time = create_jwt_token(
+        subject=str(new_user.id), type=JWT_TYPE.REFRESH
     )
 
     db.refresh(new_user)
 
     user_dto = UserDTO.model_validate(new_user)
 
-    return {"access_token": access_token, "token_type": "bearer", "user": user_dto}
+    return {
+        "access_token": access_token,
+        "access_token_expire_time": access_token_expire_time,
+        "refresh_token": refresh_token,
+        "refresh_token_expire_time": refresh_token_expire_time,
+        "user": user_dto,
+    }
 
 
 @router.post("/login", response_model=Token)
@@ -111,18 +114,20 @@ async def login(
 
     user_dto = UserDTO.model_validate(user)
 
-    access_token = create_jwt_token(subject=str(user.id), type=JWT_TYPE.ACCESS)
-    refresh_token = create_jwt_token(subject=str(user.id), type=JWT_TYPE.REFRESH)
-
-    response.set_cookie(
-        key="refresh_token",
-        value=refresh_token,
-        max_age=settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60,
-        samesite="none",
-        secure=False if settings.ENV in ["dev", "development"] else True,
+    access_token, access_token_expire_time = create_jwt_token(
+        subject=str(user.id), type=JWT_TYPE.ACCESS
+    )
+    refresh_token, refresh_token_expire_time = create_jwt_token(
+        subject=str(user.id), type=JWT_TYPE.REFRESH
     )
 
-    return {"access_token": access_token, "token_type": "bearer", "user": user_dto}
+    return {
+        "access_token": access_token,
+        "access_token_expire_time": access_token_expire_time,
+        "refresh_token": refresh_token,
+        "refresh_token_expire_time": refresh_token_expire_time,
+        "user": user_dto,
+    }
 
 
 @router.post("/refresh", response_model=Token)
@@ -135,7 +140,6 @@ async def refresh_token(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Refresh Token missing",
-            headers={"WWW-Authentication", "Bearer"},  # type: ignore
         )
 
     user_id = decode_token(refresh_token, type=JWT_TYPE.REFRESH)
@@ -144,7 +148,6 @@ async def refresh_token(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Refresh Token missing",
-            headers={"WWW-Authentication", "Bearer"},  # type: ignore
         )
 
     user = db.query(User).filter(User.id == user_id).first()
@@ -153,15 +156,21 @@ async def refresh_token(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Refresh Token missing",
-            headers={"WWW-Authentication", "Bearer"},  # type: ignore
         )
-    new_access_token = create_jwt_token(subject=str(user.id), type=JWT_TYPE.ACCESS)
+    new_access_token, access_token_expire_time = create_jwt_token(
+        subject=str(user.id), type=JWT_TYPE.ACCESS
+    )
 
     db.refresh(user)
 
     user_dto = UserDTO.model_validate(user)
 
-    return {"access_token": new_access_token, "token_type": "bearer", "user": user_dto}
+    return {
+        "access_token": new_access_token,
+        "access_token_expire_time": access_token_expire_time,
+        "token_type": "bearer",
+        "user": user_dto,
+    }
 
 
 @router.post("/logout")

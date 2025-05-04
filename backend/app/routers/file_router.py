@@ -3,16 +3,22 @@ from fastapi.responses import FileResponse
 from typing import List
 from pydantic import BaseModel
 
+from app.log import get_logger
 from app.storage_provider import LocalStorageProvider
+
+log = get_logger(__name__)
+
 
 class FileInfo(BaseModel):
     filename: str
 
+
 router = APIRouter(prefix="/files", tags=["Files"])
+
 
 @router.get("/", response_model=List[FileInfo])
 async def list_user_files(
-    storage_provider: LocalStorageProvider = Depends(LocalStorageProvider)
+    storage_provider: LocalStorageProvider = Depends(LocalStorageProvider),
 ):
     """
     Lists all files stored for the current authenticated user.
@@ -22,33 +28,39 @@ async def list_user_files(
     return [{"filename": name} for name in filenames]
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED) 
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def upload_file(
     file: UploadFile,
-    storage_provider: LocalStorageProvider = Depends(LocalStorageProvider)
+    storage_provider: LocalStorageProvider = Depends(LocalStorageProvider),
 ):
     """
     Uploads a new file for the current authenticated user.
     Requires authentication.
     """
     if not file.filename:
-         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No filename provided")
-    
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="No filename provided"
+        )
+
     try:
         saved_filename = await storage_provider.store_file(file, filename=file.filename)
         return {
             "message": "File uploaded successfully",
-            "filename": saved_filename,
-            "location": router.prefix + "/" + saved_filename
-            }
+            "filename": str(saved_filename),
+            "location": router.prefix + "/" + str(saved_filename),
+        }
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to upload file")
+        log.error("Failed to do something", e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to upload file",
+        )
 
 
 @router.get("/{filename}")
 async def get_file(
     filename: str,
-    storage_provider: LocalStorageProvider = Depends(LocalStorageProvider)
+    storage_provider: LocalStorageProvider = Depends(LocalStorageProvider),
 ):
     """
     Retrieves a specific file for the current authenticated user.
@@ -57,14 +69,17 @@ async def get_file(
     file_path = storage_provider.get_file_path(filename)
 
     if not file_path.is_file():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
 
     return FileResponse(file_path)
+
 
 @router.delete("/{filename}")
 async def delete_file(
     filename: str,
-    storage_provider: LocalStorageProvider = Depends(LocalStorageProvider)
+    storage_provider: LocalStorageProvider = Depends(LocalStorageProvider),
 ):
     """
     Deletes a specific file for the current authenticated user.
@@ -73,10 +88,15 @@ async def delete_file(
     file_path = storage_provider.get_file_path(filename)
 
     if not file_path.is_file():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
 
     try:
         storage_provider.delete_file(filename)
         return {"message": f"File '{filename}' deleted successfully"}
     except Exception as e:
-         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete file")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to delete file",
+        )
