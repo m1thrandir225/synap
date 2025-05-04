@@ -2,8 +2,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from uuid import UUID
 from database import LearningMaterial
-
-from models import CreateLearningMaterialDTO, UpdateLearningMaterialDTO
+from sqlalchemy import func
 
 
 class LearningMaterialRepository:
@@ -11,13 +10,10 @@ class LearningMaterialRepository:
         self.db = db
 
     def create_learning_material(
-        self, learning_material: LearningMaterialCreate
+        self, lm_data: dict
     ) -> LearningMaterial:
         db_learning_material = LearningMaterial(
-            title=learning_material.title,
-            description=learning_material.description,
-            url=learning_material.url,
-            material_type=learning_material.material_type,
+           **lm_data
         )
         self.db.add(db_learning_material)
         self.db.commit()
@@ -41,15 +37,13 @@ class LearningMaterialRepository:
     def update_learning_material(
         self,
         learning_material_id: UUID,
-        learning_material_update: LearningMaterialUpdate,
+        lm_data: dict,
     ) -> Optional[LearningMaterial]:
         db_learning_material = (
-            self.db.query(LearningMaterial)
-            .filter(LearningMaterial.id == learning_material_id)
-            .first()
+            self.get_learning_material(learning_material_id)
         )
         if db_learning_material:
-            for key, value in learning_material_update.dict(exclude_unset=True).items():
+            for key, value in lm_data.items():
                 setattr(db_learning_material, key, value)
             self.db.commit()
             self.db.refresh(db_learning_material)
