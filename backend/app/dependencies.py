@@ -11,7 +11,8 @@ from services import (
     RecommendationService,
     RecommendationInteractionService,
     LearningMaterialService,
-    LearningMaterialTagService
+    LearningMaterialTagService,
+    LectureService
 )
 from repositories import (
     UserRepository,
@@ -124,3 +125,6 @@ def get_learning_material_tag_service(
     db: Session = Depends(get_db),
 ) -> LearningMaterialTagService:
     return LearningMaterialTagService(db)
+  
+def get_lecture_service(lec_repo: LectureRepository = Depends(get_lecture_repository)) -> LectureService:
+    return LectureService(lec_repo)
