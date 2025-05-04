@@ -97,6 +97,6 @@ def get_tag_service(tag_repo: TagRepository = Depends(get_tag_repository)) -> ta
     return tag_service(tag_repo)
 
 def get_recommendation_interaction_service(
-    db: Session = Depends(get_db),
+    ri_repo: RecommendationInteractionRepository = Depends(get_recommendation_interaction_repository)
 ) -> RecommendationInteractionService:
-    return RecommendationInteractionService(db)
+    return RecommendationInteractionService(ri_repo)
