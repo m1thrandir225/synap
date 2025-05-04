@@ -5,6 +5,7 @@ from database import get_db
 from services import (
     user_service,
     tag_service,
+    NoteService
     RecommendationService,
     RecommendationInteractionService,
 )
@@ -72,12 +73,11 @@ def get_lecture_repository(db: Session = Depends(get_db)) -> LectureRepository:
 def get_note_repository(db: Session = Depends(get_db)) -> NoteRepository:
     return NoteRepository(db)
 
-
+  
 def get_learning_material_tag_repository(
     db: Session = Depends(get_db),
 ) -> LearningMaterialTagRepository:
     return LearningMaterialTagRepository(db)
-
 
 def get_learning_material_repository(
     db: Session = Depends(get_db),
@@ -94,6 +94,12 @@ def get_user_service(user_repo: UserRepository = Depends(get_user_repository)) -
 def get_tag_service(tag_repo: TagRepository = Depends(get_tag_repository)) -> tag_service:
     return tag_service(tag_repo)
 
+def get_note_service(note_repo: NoteRepository = Depends(get_note_repository)) -> NoteService:
+    return NoteService(note_repo)
+
+def get_recommendation_service(recom_repo: RecommendationRepository = Depends(get_recommendation_repository)) -> RecommendationService:
+    return RecommendationService(recom_repo)
+  
 def get_recommendation_interaction_service(
     ri_repo: RecommendationInteractionRepository = Depends(get_recommendation_interaction_repository)
 ) -> RecommendationInteractionService:
