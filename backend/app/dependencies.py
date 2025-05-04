@@ -93,5 +93,5 @@ def get_user_service(user_repo: UserRepository = Depends(get_user_repository)) -
 def get_tag_service(tag_repo: TagRepository = Depends(get_tag_repository)) -> tag_service:
     return tag_service(tag_repo)
 
-def get_learning_material_service(db: Session = Depends(get_db)) -> LearningMaterialService:
-    return LearningMaterialService(db)
+def get_learning_material_service(lm_repo: LearningMaterialRepository = Depends(get_learning_material_repository)) -> LearningMaterialService:
+    return LearningMaterialService(lm_repo)
