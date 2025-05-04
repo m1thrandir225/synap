@@ -2,15 +2,15 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 from database import Lecture, Summarization
 from sqlalchemy.exc import IntegrityError
-
+from sqlalchemy import func
 
 class LectureRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_lecture(self, summarization_id: UUID, name: str) -> Lecture:
+    def create_lecture(self, lec_data: dict) -> Lecture:
         """Create a new lecture"""
-        lecture = Lecture(summarization_id=summarization_id, name=name)
+        lecture = Lecture(**lec_data)
         try:
             self.db.add(lecture)
             self.db.commit()
@@ -32,16 +32,15 @@ class LectureRepository:
             .first()
         )
 
-    def update_lecture(self, lecture_id: UUID, name: str) -> Lecture:
+    def update_lecture(self, lecture_id: UUID, lec_data: dict) -> Lecture:
         """Update a lecture's name"""
-        lecture = self.db.query(Lecture).filter(Lecture.id == lecture_id).first()
-        if lecture:
-            lecture.name = name
-            self.db.commit()
-            self.db.refresh(lecture)
-            return lecture
-        return None
-
+        lecture = self.get_lecture_by_id(lecture_id)
+        for key, value in lec_data.items():
+            setattr(lecture, key, value)
+        self.db.commit()
+        self.db.refresh(lecture)
+        return lecture
+            
     def delete_lecture(self, lecture_id: UUID) -> bool:
         """Delete a lecture by its ID"""
         lecture = self.db.query(Lecture).filter(Lecture.id == lecture_id).first()

@@ -2,12 +2,18 @@ from fastapi import Depends
 from services import CourseService
 from sqlalchemy.orm import Session
 from database import get_db
-
 from services import (
-    user_service,
-    tag_service,
+    UserService,
+    TagService,
+    FileTagService,
+    UploadedFileService,
+    NoteService,
+    RecommendationService,
+    RecommendationInteractionService,
+    LearningMaterialService,
+    LearningMaterialTagService,
+    LectureService,
 )
-
 from repositories import (
     UserRepository,
     TagRepository,
@@ -83,13 +89,72 @@ def get_learning_material_repository(
     db: Session = Depends(get_db),
 ) -> LearningMaterialRepository:
     return LearningMaterialRepository(db)
-  
-# Dependency functions for services 
-def get_course_service(course_repo: CourseRepository = Depends(get_course_repository)) -> CourseService:
+
+
+# Dependency functions for services
+def get_course_service(
+    course_repo: CourseRepository = Depends(get_course_repository),
+) -> CourseService:
     return CourseService(course_repo)
 
-def get_user_service(user_repo: UserRepository = Depends(get_user_repository)) -> user_service:
-    return user_service(user_repo)
 
-def get_tag_service(tag_repo: TagRepository = Depends(get_tag_repository)) -> tag_service:
-    return tag_service(tag_repo)
+def get_user_service(
+    user_repo: UserRepository = Depends(get_user_repository),
+) -> UserService:
+    return UserService(user_repo)
+
+
+def get_tag_service(
+    tag_repo: TagRepository = Depends(get_tag_repository),
+) -> TagService:
+    return TagService(tag_repo)
+
+
+def get_note_service(
+    note_repo: NoteRepository = Depends(get_note_repository),
+) -> NoteService:
+    return NoteService(note_repo)
+
+
+def get_recommendation_service(
+    recom_repo: RecommendationRepository = Depends(get_recommendation_repository),
+) -> RecommendationService:
+    return RecommendationService(recom_repo)
+
+
+def get_recommendation_interaction_service(
+    ri_repo: RecommendationInteractionRepository = Depends(
+        get_recommendation_interaction_repository
+    ),
+) -> RecommendationInteractionService:
+    return RecommendationInteractionService(ri_repo)
+
+
+def get_learning_material_service(
+    lm_repo: LearningMaterialRepository = Depends(get_learning_material_repository),
+) -> LearningMaterialService:
+    return LearningMaterialService(lm_repo)
+
+
+def get_file_tag_service(
+    file_tag_repo: FileTagRepository = Depends(get_file_tag_repository),
+) -> FileTagService:
+    return FileTagService(file_tag_repo)
+
+
+def get_uploaded_files_service(
+    uploaded_file_repo: UploadedFileRepository = Depends(get_uploaded_file_repository),
+) -> UploadedFileService:
+    return UploadedFileService(uploaded_file_repo)
+
+
+def get_learning_material_tag_service(
+    repo: LearningMaterialTagRepository = Depends(get_learning_material_tag_repository),
+) -> LearningMaterialTagService:
+    return LearningMaterialTagService(repo)
+
+
+def get_lecture_service(
+    lec_repo: LectureRepository = Depends(get_lecture_repository),
+) -> LectureService:
+    return LectureService(lec_repo)

@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from uuid import UUID
 from database import Recommendation
 
@@ -8,12 +9,10 @@ class RecommendationRepository:
         self.db = db
 
     def create_recommendation(
-        self, file_id: UUID, learning_material_id: UUID, relevance_score: float
+        self, recom_data: dict
     ) -> Recommendation:
         recommendation = Recommendation(
-            file_id=file_id,
-            learning_material_id=learning_material_id,
-            relevance_score=relevance_score,
+            **recom_data
         )
         self.db.add(recommendation)
         self.db.commit()
@@ -44,17 +43,13 @@ class RecommendationRepository:
         )
 
     def update_recommendation_relevance(
-        self, recommendation_id: UUID, relevance_score: float
+        self, recommendation_id: UUID, recom_data: dict
     ) -> Recommendation:
-        recommendation = (
-            self.db.query(Recommendation)
-            .filter(Recommendation.id == recommendation_id)
-            .first()
-        )
-        if recommendation:
-            recommendation.relevance_score = relevance_score
-            self.db.commit()
-            self.db.refresh(recommendation)
+        recommendation = self.get_recommendation_by_id(recommendation_id)
+        for key, value in recom_data.items():
+            setattr(recommendation, key, value)
+        self.db.commit()
+        self.db.refresh(recommendation)
         return recommendation
 
     def delete_recommendation(self, recommendation_id: UUID) -> bool:
