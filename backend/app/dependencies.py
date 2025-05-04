@@ -5,8 +5,9 @@ from database import get_db
 from services import (
     user_service,
     tag_service,
-    file_tag_service
-    NoteService
+    file_tag_service,
+    uploaded_files_service,
+    NoteService,
     RecommendationService,
     RecommendationInteractionService,
     LearningMaterialService,
@@ -114,3 +115,6 @@ def get_learning_material_service(lm_repo: LearningMaterialRepository = Depends(
 
 def get_file_tag_service(file_tag_repo: FileTagRepository = Depends(get_file_tag_repository)) -> file_tag_service:
     return file_tag_service(file_tag_repo)
+
+def get_uploaded_files_service(uploaded_file_repo: UploadedFileRepository = Depends(get_uploaded_file_repository)) -> uploaded_files_service:
+    return uploaded_files_service(uploaded_file_repo)
