@@ -11,6 +11,7 @@ from services import (
     RecommendationService,
     RecommendationInteractionService,
     LearningMaterialService,
+    LearningMaterialTagService
 )
 from repositories import (
     UserRepository,
@@ -118,3 +119,8 @@ def get_file_tag_service(file_tag_repo: FileTagRepository = Depends(get_file_tag
 
 def get_uploaded_files_service(uploaded_file_repo: UploadedFileRepository = Depends(get_uploaded_file_repository)) -> uploaded_files_service:
     return uploaded_files_service(uploaded_file_repo)
+ 
+def get_learning_material_tag_service(
+    db: Session = Depends(get_db),
+) -> LearningMaterialTagService:
+    return LearningMaterialTagService(db)
