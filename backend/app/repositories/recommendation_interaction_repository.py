@@ -3,20 +3,18 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from database import RecommendationInteraction
-
+from sqlalchemy import func
 
 class RecommendationInteractionRepository:
     def __init__(self, db: Session):
         self.db = db
 
     def create(
-        self, user_id: UUID, recommendation_id: UUID, interaction_type: str
+        self, ri_data: dict
     ) -> RecommendationInteraction:
         try:
             new_interaction = RecommendationInteraction(
-                user_id=user_id,
-                recommendation_id=recommendation_id,
-                interaction_type=interaction_type,
+               **ri_data
             )
             self.db.add(new_interaction)
             self.db.commit()
@@ -50,15 +48,14 @@ class RecommendationInteractionRepository:
         )
 
     def update_interaction_type(
-        self, interaction_id: UUID, new_interaction_type: str
+        self, interaction_id: UUID, ri_data: dict
     ) -> Optional[RecommendationInteraction]:
         interaction = self.get_by_id(interaction_id)
-        if interaction:
-            interaction.interaction_type = new_interaction_type
-            self.db.commit()
-            self.db.refresh(interaction)
-            return interaction
-        return None
+        for key, value in ri_data.items():
+            setattr(interaction, key, value)
+        self.db.commit()
+        self.db.refresh(interaction)
+        return interaction
 
     def delete(self, interaction_id: UUID) -> bool:
         interaction = self.get_by_id(interaction_id)

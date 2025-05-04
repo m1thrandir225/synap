@@ -6,26 +6,22 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { ScrollArea } from "../ui/scroll-area";
-import NoteCard from "../notes/NoteCard";
+import NoteList from "../notes/NoteList";
 
-interface ComponentProps extends React.ComponentPropsWithoutRef<"div"> {
-  items: Note[];
+interface ComponentProps {
+  notes: Note[];
 }
 
-const CourseNotes: React.FC<ComponentProps> = ({ items }) => {
+const CourseNotes: React.FC<ComponentProps> = (props) => {
+  const { notes } = props;
   return (
-    <Card className="w-full h-full">
+    <Card className="w-full h-auto">
       <CardHeader>
         <CardTitle> Notes </CardTitle>
-        <CardDescription>Notes that are related to this course</CardDescription>
+        <CardDescription>Your notes on the course:</CardDescription>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="w-full h-[400px]">
-          {items.map((note) => (
-            <NoteCard item={note} />
-          ))}
-        </ScrollArea>
+        <NoteList items={notes} />
       </CardContent>
     </Card>
   );
