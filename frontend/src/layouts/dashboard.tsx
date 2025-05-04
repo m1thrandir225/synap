@@ -1,3 +1,5 @@
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { ModeToggle } from "@/components/DarkToggle";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -109,8 +111,9 @@ const DashboardLayout: React.FC = () => {
   return (
     <SidebarProvider>
       <Sidebar variant="inset">
-        <SidebarHeader>
+        <SidebarHeader className="flex flex-row items-center justify-between">
           <h1 className="text-xl font-bold font-sans"> Synap </h1>
+          <ModeToggle />
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
@@ -124,7 +127,13 @@ const DashboardLayout: React.FC = () => {
                 >
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild tooltip={item.title}>
-                      <Link to={item.url}>
+                      <Link
+                        to={item.url}
+                        className="group"
+                        activeProps={{
+                          className: "font-bold",
+                        }}
+                      >
                         <item.icon />
                         <span>{item.title}</span>
                       </Link>
@@ -212,19 +221,7 @@ const DashboardLayout: React.FC = () => {
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <Breadcrumbs />
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
