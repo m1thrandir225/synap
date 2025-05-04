@@ -2,12 +2,14 @@ from fastapi import Depends
 from services import CourseService
 from sqlalchemy.orm import Session
 from database import get_db
-from services import LearningMaterialService
 from services import (
     user_service,
     tag_service,
+    NoteService
+    RecommendationService,
+    RecommendationInteractionService,
+    LearningMaterialService
 )
-
 from repositories import (
     UserRepository,
     TagRepository,
@@ -71,18 +73,17 @@ def get_lecture_repository(db: Session = Depends(get_db)) -> LectureRepository:
 def get_note_repository(db: Session = Depends(get_db)) -> NoteRepository:
     return NoteRepository(db)
 
-
+  
 def get_learning_material_tag_repository(
     db: Session = Depends(get_db),
 ) -> LearningMaterialTagRepository:
     return LearningMaterialTagRepository(db)
 
-
 def get_learning_material_repository(
     db: Session = Depends(get_db),
 ) -> LearningMaterialRepository:
     return LearningMaterialRepository(db)
-  
+ 
 # Dependency functions for services 
 def get_course_service(course_repo: CourseRepository = Depends(get_course_repository)) -> CourseService:
     return CourseService(course_repo)
@@ -92,6 +93,20 @@ def get_user_service(user_repo: UserRepository = Depends(get_user_repository)) -
 
 def get_tag_service(tag_repo: TagRepository = Depends(get_tag_repository)) -> tag_service:
     return tag_service(tag_repo)
+  
+def get_note_service(note_repo: NoteRepository = Depends(get_note_repository)) -> NoteService:
+    return NoteService(note_repo)
 
+def get_recommendation_service(recom_repo: RecommendationRepository = Depends(get_recommendation_repository)) -> RecommendationService:
+    return RecommendationService(recom_repo)
+  
+def get_recommendation_interaction_service(
+    ri_repo: RecommendationInteractionRepository = Depends(get_recommendation_interaction_repository)
+) -> RecommendationInteractionService:
+    return RecommendationInteractionService(ri_repo)
+  
+def get_recommendation_service(db: Session = Depends(get_db)) -> RecommendationService:
+    return RecommendationService(db)
+  
 def get_learning_material_service(lm_repo: LearningMaterialRepository = Depends(get_learning_material_repository)) -> LearningMaterialService:
     return LearningMaterialService(lm_repo)

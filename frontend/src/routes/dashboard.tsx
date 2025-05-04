@@ -16,6 +16,11 @@ export const Route = createFileRoute("/dashboard")({
     }
   },
   component: RouteComponent,
+  loader: () => {
+    return {
+      crumb: "Dashboard",
+    };
+  },
 });
 
 function RouteComponent() {
