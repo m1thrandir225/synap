@@ -7,9 +7,10 @@ from app.models import (
     UserDTO,
     LoginRegisterResponse,
     RefreshTokenResponse,
+    RefreshTokenRequest,
 )
 from app.services import UserService
-from app.dependencies import get_current_user, get_user_service
+from app.dependencies import get_current_token, get_current_user, get_user_service
 from app.security import (
     JWT_TYPE,
     create_jwt_token,
@@ -83,8 +84,10 @@ async def login(
 
 @router.post("/refresh", response_model=RefreshTokenResponse)
 async def refresh_token(
-    refresh_token: str, userService: UserService = Depends(get_user_service)
+    request_data: RefreshTokenRequest,
+    userService: UserService = Depends(get_user_service),
 ):
+    refresh_token = request_data.refresh_token
     if not refresh_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -116,9 +119,7 @@ async def refresh_token(
 
 
 @router.post("/logout")
-async def logout(
-    response: Response, current_user: User = Depends(get_current_user)
-) -> dict:
+async def logout(response: Response, token: str = Depends(get_current_token)) -> dict:
     return {"detail": "Sucessfully logged out"}
 
 

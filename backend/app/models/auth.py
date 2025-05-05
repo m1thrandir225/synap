@@ -11,6 +11,10 @@ class LoginRegisterResponse(BaseModel):
     user: UserDTO
 
 
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
+
+
 class RefreshTokenResponse(BaseModel):
     access_token: str
     access_token_expire_time: datetime
