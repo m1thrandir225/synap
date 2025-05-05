@@ -14,6 +14,9 @@ class NoteService:
     ) -> Note:
         return self.repository.create_note(note_data.dict())
 
+    def get_all_notes(self) -> List[Note]:
+        return self.repository.get_all_notes()
+    
     def get_note_by_id(self, note_id: UUID) -> Optional[Note]:
         return self.repository.get_note_by_id(note_id)
 
