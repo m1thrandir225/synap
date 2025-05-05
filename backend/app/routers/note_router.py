@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from uuid import UUID
 from typing import List
-from dependencies import get_current_token, get_note_service
-from database import Note
-from models import CreateNoteDTO, UpdateNoteDTO
-from services.note_service import NoteService
+from app.dependencies import get_current_token, get_note_service
+from app.database import Note
+from app.models import CreateNoteDTO, UpdateNoteDTO
+from app.services import NoteService
 
 router = APIRouter(
     prefix="/notes", tags=["notes"], dependencies=[Depends(get_current_token)]

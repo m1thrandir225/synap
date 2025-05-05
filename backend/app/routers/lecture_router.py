@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from uuid import UUID
 from typing import List
-from dependencies import get_current_token, get_lecture_service
-from database import Lecture
-from models import CreateLectureDTO, UpdateLectureDTO
-from services.lecture_service import LectureService
+from app.dependencies import get_current_token, get_lecture_service
+from app.database import Lecture
+from app.models import CreateLectureDTO, UpdateLectureDTO
+from app.services import LectureService
 
 router = APIRouter(
     prefix="/lectures", tags=["lectures"], dependencies=[Depends(get_current_token)]

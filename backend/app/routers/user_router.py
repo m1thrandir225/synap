@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-from app.database.models.user import User
+from app.database import User
 from app.dependencies import get_current_token, get_current_user, get_user_service
-from models import UpdateUserDTO
+from app.models import UpdateUserDTO
 from app.services import UserService
 
 router = APIRouter(
