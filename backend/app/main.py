@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import example_router, authentication_router, file_router
+from app.routers import authentication_router, file_router, note_router, lecture_router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(root_path="/api/v1")
@@ -15,14 +15,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 # Include external routers
-app.include_router(example_router.router)
 app.include_router(authentication_router.router)
 app.include_router(file_router.router)
-
-
-@app.get("/")
-def home():
-    return {"Hello": "World"}
+app.include_router(note_router.router)
+app.include_router(lecture_router.router)
 
 
 @app.get("/status")
