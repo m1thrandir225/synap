@@ -17,7 +17,7 @@ def get_note(note_id: UUID, service: NoteService = Depends(get_note_service)):
 
 @router.get("/notes", response_model=List[Note])
 def get_all_notes(service: NoteService = Depends(get_note_service)):
-    return service.repository.get_all_notes()
+    return service.get_all_notes()
 
 @router.get("/notes/user/{user_id}", response_model=List[Note])
 def get_notes_by_user(user_id: UUID, service: NoteService = Depends(get_note_service)):
