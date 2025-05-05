@@ -16,7 +16,10 @@ class NoteRepository:
         self.db.commit()
         self.db.refresh(note)
         return note
-
+    
+    def get_all_notes(self) -> List[Note]:
+        return self.db.query(Note).all()
+    
     def get_note_by_id(self, note_id: UUID) -> Optional[Note]:
         return self.db.query(Note).filter(Note.id == note_id).first()
 

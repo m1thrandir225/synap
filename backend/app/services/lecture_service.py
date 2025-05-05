@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import Lecture
 from app.repositories import LectureRepository
 from app.models import CreateLectureDTO, UpdateLectureDTO
+from typing import List
 
 
 class LectureService:
@@ -12,6 +13,9 @@ class LectureService:
     def create_lecture(self, lec_data: CreateLectureDTO) -> Lecture:
         """Service method to create a new lecture."""
         return self.repository.create_lecture(lec_data.dict())
+
+    def get_all_lectures(self) -> List[Lecture]:
+        return self.repository.get_all_lectures()
 
     def get_lecture_by_id(self, lecture_id: UUID) -> Lecture:
         """Service method to get a lecture by ID."""

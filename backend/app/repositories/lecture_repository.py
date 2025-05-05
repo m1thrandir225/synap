@@ -3,6 +3,7 @@ from uuid import UUID
 from app.database import Lecture, Summarization
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
+from typing import List
 
 
 class LectureRepository:
@@ -21,6 +22,9 @@ class LectureRepository:
             self.db.rollback()
             raise ValueError("Lecture already exists for the given summarization_id")
 
+    def get_all_lectures(self) -> List[Lecture]:
+        return self.db.query(Lecture).all()
+    
     def get_lecture_by_id(self, lecture_id: UUID) -> Lecture:
         """Get a lecture by its ID"""
         return self.db.query(Lecture).filter(Lecture.id == lecture_id).first()
