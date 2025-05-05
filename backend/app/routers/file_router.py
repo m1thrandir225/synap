@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, Depends, HTTPException, status
 from fastapi.responses import FileResponse
 from typing import List
 from pydantic import BaseModel
-
+from app.dependencies import get_current_token
 from app.log import get_logger
 from app.storage_provider import LocalStorageProvider
 
@@ -13,7 +13,9 @@ class FileInfo(BaseModel):
     filename: str
 
 
-router = APIRouter(prefix="/files", tags=["Files"])
+router = APIRouter(
+    prefix="/files", tags=["Files"], dependencies=[Depends(get_current_token)]
+)
 
 
 @router.get("/", response_model=List[FileInfo])
@@ -95,6 +97,7 @@ async def delete_file(
     try:
         storage_provider.delete_file(filename)
         return {"message": f"File '{filename}' deleted successfully"}
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

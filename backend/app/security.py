@@ -50,7 +50,6 @@ def decode_token(
         None.
         type (str, optional): The type of the token [access or refresh].
         Defaults to access
-
     Return:
         str | None: The extracted data from the token or None if the token is
         invalid

@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from uuid import UUID
-from database.models import Course  # Import the Course model
+from app.database import Course  # Import the Course model
 
 
 class CourseRepository:

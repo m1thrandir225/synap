@@ -1,4 +1,4 @@
-from database import FileTag, Recommendation, UploadedFile
+from app.database import FileTag, Recommendation, UploadedFile
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from uuid import UUID

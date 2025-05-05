@@ -1,77 +1,33 @@
-from datetime import datetime, timezone
 from typing import Any
-from uuid import uuid4
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel
-from sqlalchemy.orm import Session
-from app.config import settings
-from app.database import User, get_db
-from app.models import CreateUserDTO, UserDTO
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi.security import OAuth2PasswordRequestForm
+from app.database import User
+from app.models import (
+    CreateUserDTO,
+    UserDTO,
+    LoginRegisterResponse,
+    RefreshTokenResponse,
+)
+from app.services import UserService
+from app.dependencies import get_current_user, get_user_service
 from app.security import (
     JWT_TYPE,
     create_jwt_token,
     decode_token,
-    generate_password_hash,
     verify_password,
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
-class Token(BaseModel):
-    access_token: str
-    access_token_expire_time: datetime
-    refresh_token: str
-    refresh_token_expire_time: datetime
-    user: UserDTO
-
-
-async def get_current_user(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-) -> User:
-    user_id = decode_token(token, type=JWT_TYPE.ACCESS)
-    if user_id is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token"
-        )
-
-    user = db.query(User).filter(User.id == user_id).first()
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found"
-        )
-
-    return user
-
-
-@router.post("/signup", status_code=status.HTTP_201_CREATED, response_model=Token)
+@router.post(
+    "/signup", status_code=status.HTTP_201_CREATED, response_model=LoginRegisterResponse
+)
 async def signup(
-    user_data: CreateUserDTO, response: Response, db: Session = Depends(get_db)
-) -> Any:
-    # FIXME: move to repository
-    existing_user = db.query(User).filter(User.email == user_data.email).first()
-
-    if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User with that email already exists",
-        )
-    user_dict = {
-        "id": uuid4(),
-        "first_name": user_data.first_name,
-        "last_name": user_data.last_name,
-        "email": user_data.email,
-        "password": generate_password_hash(user_data.password),
-        "updated_at": datetime.now(timezone.utc),
-    }
-
-    new_user = User(**user_dict)
-
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    user_data: CreateUserDTO,
+    userService: UserService = Depends(get_user_service),
+):
+    new_user = userService.create_user(user_data)
 
     access_token, access_token_expire_time = create_jwt_token(
         subject=str(new_user.id), type=JWT_TYPE.ACCESS
@@ -79,8 +35,6 @@ async def signup(
     refresh_token, refresh_token_expire_time = create_jwt_token(
         subject=str(new_user.id), type=JWT_TYPE.REFRESH
     )
-
-    db.refresh(new_user)
 
     user_dto = UserDTO.model_validate(new_user)
 
@@ -93,17 +47,15 @@ async def signup(
     }
 
 
-@router.post("/login", response_model=Token)
+@router.post("/login", response_model=LoginRegisterResponse)
 async def login(
-    response: Response,
     form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db),
-) -> Any:
+    userService: UserService = Depends(get_user_service),
+):
     """
     Authenticate a user and return a new access and refresh token
     """
-    # FIXME: move to repository
-    user = db.query(User).filter(User.email == form_data.username).first()
+    user = userService.get_user_email(form_data.username)
 
     if not user or not verify_password(form_data.password, str(user.password)):
         raise HTTPException(
@@ -120,7 +72,6 @@ async def login(
     refresh_token, refresh_token_expire_time = create_jwt_token(
         subject=str(user.id), type=JWT_TYPE.REFRESH
     )
-
     return {
         "access_token": access_token,
         "access_token_expire_time": access_token_expire_time,
@@ -130,12 +81,10 @@ async def login(
     }
 
 
-@router.post("/refresh", response_model=Token)
+@router.post("/refresh", response_model=RefreshTokenResponse)
 async def refresh_token(
-    request: Request, response: Response, db: Session = Depends(get_db)
+    refresh_token: str, userService: UserService = Depends(get_user_service)
 ):
-    refresh_token = request.cookies.get("refresh_token")
-
     if not refresh_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -150,7 +99,7 @@ async def refresh_token(
             detail="Refresh Token missing",
         )
 
-    user = db.query(User).filter(User.id == user_id).first()
+    user = userService.get_user_id(user_id)
 
     if user is None:
         raise HTTPException(
@@ -160,16 +109,9 @@ async def refresh_token(
     new_access_token, access_token_expire_time = create_jwt_token(
         subject=str(user.id), type=JWT_TYPE.ACCESS
     )
-
-    db.refresh(user)
-
-    user_dto = UserDTO.model_validate(user)
-
     return {
         "access_token": new_access_token,
         "access_token_expire_time": access_token_expire_time,
-        "token_type": "bearer",
-        "user": user_dto,
     }
 
 
@@ -177,21 +119,16 @@ async def refresh_token(
 async def logout(
     response: Response, current_user: User = Depends(get_current_user)
 ) -> dict:
-    response.delete_cookie(
-        key="refresh_token",
-        httponly=True,
-        samesite="lax",
-        secure=False if settings.ENV in ["dev", "development"] else True,
-    )
     return {"detail": "Sucessfully logged out"}
 
 
 @router.get("/me", response_model=UserDTO)
 async def get_current_user_info(
-    current_user: User = Depends(get_current_user), db: Session = Depends(get_db)
+    current_user: User = Depends(get_current_user),
+    userService: UserService = Depends(get_user_service),
 ) -> Any:
-    db.refresh(current_user)
+    user = userService.get_user_id(current_user.id)
 
-    user_dto = UserDTO.model_validate(current_user)
+    user_dto = UserDTO.model_validate(user)
 
     return user_dto

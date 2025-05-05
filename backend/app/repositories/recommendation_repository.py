@@ -1,19 +1,15 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from uuid import UUID
-from database import Recommendation
+from app.database import Recommendation
 
 
 class RecommendationRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_recommendation(
-        self, recom_data: dict
-    ) -> Recommendation:
-        recommendation = Recommendation(
-            **recom_data
-        )
+    def create_recommendation(self, recom_data: dict) -> Recommendation:
+        recommendation = Recommendation(**recom_data)
         self.db.add(recommendation)
         self.db.commit()
         self.db.refresh(recommendation)

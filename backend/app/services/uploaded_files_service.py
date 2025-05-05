@@ -1,13 +1,12 @@
 from typing import List
 from uuid import UUID
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
-from models.uploaded_file import (
+from app.models.uploaded_file import (
     UploadedFileDTO,
     UploadedFileBase,
     UpdateUploadedFileDTO,
 )
-from repositories import UploadedFileRepository
+from app.repositories import UploadedFileRepository
 
 
 class UploadedFileService:
