@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from database import (
+from app.database import (
     Tag,
     FileTag,
     LearningMaterialTag,

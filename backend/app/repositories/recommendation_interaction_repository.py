@@ -2,20 +2,17 @@ from typing import List, Optional
 from uuid import UUID
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from database import RecommendationInteraction
+from app.database import RecommendationInteraction
 from sqlalchemy import func
+
 
 class RecommendationInteractionRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create(
-        self, ri_data: dict
-    ) -> RecommendationInteraction:
+    def create(self, ri_data: dict) -> RecommendationInteraction:
         try:
-            new_interaction = RecommendationInteraction(
-               **ri_data
-            )
+            new_interaction = RecommendationInteraction(**ri_data)
             self.db.add(new_interaction)
             self.db.commit()
             self.db.refresh(new_interaction)

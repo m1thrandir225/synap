@@ -1,8 +1,8 @@
-from fastapi import Depends
-from services import CourseService
+from fastapi import Depends, HTTPException, status
+from starlette.status import HTTP_401_UNAUTHORIZED
+from app.database import User, get_db
 from sqlalchemy.orm import Session
-from database import get_db
-from services import (
+from app.services import (
     UserService,
     TagService,
     FileTagService,
@@ -13,8 +13,9 @@ from services import (
     LearningMaterialService,
     LearningMaterialTagService,
     LectureService,
+    CourseService,
 )
-from repositories import (
+from app.repositories import (
     UserRepository,
     TagRepository,
     FileTagRepository,
@@ -28,6 +29,11 @@ from repositories import (
     LearningMaterialTagRepository,
     LearningMaterialRepository,
 )
+from fastapi.security import OAuth2PasswordBearer
+from app.security import JWT_TYPE, decode_token
+# Security
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 # Dependency functions for repositories
@@ -158,3 +164,29 @@ def get_lecture_service(
     lec_repo: LectureRepository = Depends(get_lecture_repository),
 ) -> LectureService:
     return LectureService(lec_repo)
+
+
+def get_current_token(token: str = Depends(oauth2_scheme)):
+    if not decode_token(token):
+        raise HTTPException(
+            status_code=HTTP_401_UNAUTHORIZED, detail="Access token is invalid"
+        )
+    return token
+
+
+async def get_current_user(
+    token: str = Depends(get_current_token),
+    userService: UserService = Depends(get_user_service),
+) -> User:
+    user_id = decode_token(token, type=JWT_TYPE.ACCESS)
+    if user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token"
+        )
+
+    user = userService.get_user_id(user_id)
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found"
+        )
+    return user

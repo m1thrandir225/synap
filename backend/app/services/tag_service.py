@@ -1,9 +1,8 @@
 from typing import List
 from uuid import UUID
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
-from models.tag import TagDTO, CreateTagDTO, UpdateTagDTO
-from repositories import TagRepository
+from app.models import TagDTO, CreateTagDTO, UpdateTagDTO
+from app.repositories import TagRepository
 
 
 class TagService:

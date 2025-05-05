@@ -1,42 +1,59 @@
 from fastapi import APIRouter, Depends, HTTPException
 from uuid import UUID
 from typing import List
-from dependencies import get_note_service
-from database import Note
-from models import CreateNoteDTO, UpdateNoteDTO
-from services.note_service import NoteService
+from app.dependencies import get_current_token, get_note_service
+from app.database import Note
+from app.models import CreateNoteDTO, UpdateNoteDTO
+from app.services import NoteService
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/notes", tags=["notes"], dependencies=[Depends(get_current_token)]
+)
 
-@router.get("/notes/{note_id}", response_model=Note)
+
+@router.get("/{note_id}", response_model=Note)
 def get_note(note_id: UUID, service: NoteService = Depends(get_note_service)):
     note = service.get_note_by_id(note_id)
     if not note:
         raise HTTPException(status_code=404, detail="Note not found")
     return note
 
-@router.get("/notes", response_model=List[Note])
+
+@router.get("/", response_model=List[Note])
 def get_all_notes(service: NoteService = Depends(get_note_service)):
     return service.get_all_notes()
 
-@router.get("/notes/user/{user_id}", response_model=List[Note])
+
+@router.get("/user/{user_id}", response_model=List[Note])
 def get_notes_by_user(user_id: UUID, service: NoteService = Depends(get_note_service)):
     return service.get_notes_by_user_id(user_id)
 
-@router.get("/notes/course/{course_id}", response_model=List[Note])
-def get_notes_by_course(course_id: UUID, service: NoteService = Depends(get_note_service)):
+
+@router.get("/course/{course_id}", response_model=List[Note])
+def get_notes_by_course(
+    course_id: UUID, service: NoteService = Depends(get_note_service)
+):
     return service.get_notes_by_course_id(course_id)
 
-@router.post("/notes", response_model=Note)
-def create_note(note_data: CreateNoteDTO, service: NoteService = Depends(get_note_service)):
+
+@router.post("/", response_model=Note)
+def create_note(
+    note_data: CreateNoteDTO, service: NoteService = Depends(get_note_service)
+):
     return service.create_note(note_data)
 
+
 @router.put("/notes/{note_id}", response_model=Note)
-def update_note(note_id: UUID, note_data: UpdateNoteDTO, service: NoteService = Depends(get_note_service)):
+def update_note(
+    note_id: UUID,
+    note_data: UpdateNoteDTO,
+    service: NoteService = Depends(get_note_service),
+):
     updated_note = service.update_note(note_id, note_data)
     if not updated_note:
         raise HTTPException(status_code=404, detail="Note not found")
     return updated_note
+
 
 @router.delete("/notes/{note_id}", response_model=dict)
 def delete_note(note_id: UUID, service: NoteService = Depends(get_note_service)):

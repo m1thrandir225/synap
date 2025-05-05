@@ -3,10 +3,9 @@ from typing import List, Optional
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime
-
-from repositories import CourseRepository
-from database import Course
-from models import CreateCourseDTO, UpdateCourseDTO  # Assuming DTOs exist
+from app.repositories import CourseRepository
+from app.database import Course
+from app.models import CreateCourseDTO, UpdateCourseDTO  # Assuming DTOs exist
 
 
 class CourseService:

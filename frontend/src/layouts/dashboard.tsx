@@ -41,6 +41,7 @@ import {
   ChevronRight,
   Computer,
   Files,
+  LayoutPanelTop,
   Library,
   Pen,
   type LucideIcon,
@@ -65,16 +66,6 @@ const DashboardLayout: React.FC = () => {
         title: "Courses",
         url: "/dashboard/courses",
         icon: Library,
-        items: [
-          {
-            title: "View All",
-            url: "/dashboard/courses",
-          },
-          {
-            title: "Manage",
-            url: "/dashboard/courses/manage",
-          },
-        ],
       },
       {
         title: "Lectures",
@@ -117,7 +108,25 @@ const DashboardLayout: React.FC = () => {
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel> Actions </SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip={"Dashboard"}>
+                  <Link
+                    to="/dashboard"
+                    className="group"
+                    activeProps={{
+                      className: "font-bold",
+                    }}
+                    activeOptions={{
+                      exact: true,
+                    }}
+                  >
+                    <LayoutPanelTop />
+                    <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
             {items.map((item) => (
               <SidebarMenu key={item.title}>
                 <Collapsible

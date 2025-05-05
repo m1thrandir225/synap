@@ -23,6 +23,8 @@ const createApiInstance = (): AxiosInstance => {
   let isRefreshing = false;
   let failedQueue: FailedQueuePromise[] = [];
 
+  const authStore = useAuthStore.getState();
+
   const processQueue = (
     error: unknown | null,
     token: string | null = null,
@@ -43,15 +45,15 @@ const createApiInstance = (): AxiosInstance => {
    * Used for adding JWT token if the request is protected
    */
   api.interceptors.request.use((config) => {
-    const authStore = useAuthStore.getState();
-
     const accessToken = authStore.accessToken;
 
     const isProtected = config.headers?.protected !== false;
 
-    if (!isProtected && accessToken) {
+    if (isProtected && accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+
+    console.log(config.headers);
 
     if (config.headers?.protected !== undefined) {
       delete config.headers.protected;
@@ -83,7 +85,18 @@ const createApiInstance = (): AxiosInstance => {
         isRefreshing = true;
 
         try {
-          const newToken = await authService.refreshToken();
+          const canRefresh = authStore.checkAuth();
+          if (!canRefresh) {
+            throw new Error("logged out.");
+          }
+
+          const refreshToken = authStore.refreshToken;
+
+          if (!refreshToken) throw new Error("missing refresh token");
+
+          const newToken = await authService.refreshToken(refreshToken);
+
+          authStore.login(newToken); //set the new stuff
 
           originalRequest.headers["Authorization"] =
             `Bearer ${newToken.access_token}`;
@@ -126,7 +139,9 @@ export const apiRequest = async <T>(config: ApiRequestOptions) => {
       },
       params: config.params,
       data: config.data,
+      withCredentials: config.withCredentials,
     });
+    console.log(config.headers);
 
     return response.data;
   } catch (e: unknown) {
@@ -162,8 +177,11 @@ export const multipartApiRequest = async <
         "Content-Type": "multipart/form-data",
         protected: config.protected,
       },
+      withCredentials: config.withCredentials,
       params: config.params,
     });
+    console.log(config.headers);
+
     return response.data;
   } catch (e: unknown) {
     if (e instanceof AxiosError) {

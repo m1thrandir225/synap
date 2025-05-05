@@ -1,19 +1,19 @@
-from typing import Any, Optional, Union
+from typing import Any, Optional, Tuple, Union
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
 from app.config import settings
 from enum import Enum
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 class JWT_TYPE(Enum):
     ACCESS = 1
     REFRESH = 2
 
-def create_jwt_token(
-    subject: Union[str, Any],
-    type: JWT_TYPE
-) -> str:
+
+def create_jwt_token(subject: Union[str, Any], type: JWT_TYPE) -> tuple[str, datetime]:
     """
     Create a JWT access token
 
@@ -31,9 +31,11 @@ def create_jwt_token(
         )
     to_encode = {"exp": expire, "sub": str(subject)}
 
-    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM
+    )
 
-    return encoded_jwt
+    return encoded_jwt, expire
 
 
 def decode_token(
@@ -48,16 +50,19 @@ def decode_token(
         None.
         type (str, optional): The type of the token [access or refresh].
         Defaults to access
-
     Return:
         str | None: The extracted data from the token or None if the token is
         invalid
     """
     try:
         if type == JWT_TYPE.REFRESH:
-            payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+            payload = jwt.decode(
+                token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM]
+            )
         else:
-            payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+            payload = jwt.decode(
+                token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM]
+            )
         if key:
             return payload.get(key)
 

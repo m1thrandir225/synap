@@ -1,9 +1,10 @@
 from uuid import UUID
 from sqlalchemy.orm import Session
-from ..models.lecture import Lecture
-from ..repositories.LectureRepository import LectureRepository
-from models import CreateLectureDTO, UpdateLectureDTO
+from app.database import Lecture
+from app.repositories import LectureRepository
+from app.models import CreateLectureDTO, UpdateLectureDTO
 from typing import List
+
 
 class LectureService:
     def __init__(self, lec_repo: LectureRepository):
@@ -15,7 +16,7 @@ class LectureService:
 
     def get_all_lectures(self) -> List[Lecture]:
         return self.repository.get_all_lectures()
-    
+
     def get_lecture_by_id(self, lecture_id: UUID) -> Lecture:
         """Service method to get a lecture by ID."""
         lecture = self.repository.get_lecture_by_id(lecture_id)
@@ -27,12 +28,16 @@ class LectureService:
         """Service method to get a lecture by summarization ID."""
         lecture = self.repository.get_lecture_by_summarization_id(summarization_id)
         if not lecture:
-            raise ValueError(f"Lecture with summarization ID {summarization_id} not found")
+            raise ValueError(
+                f"Lecture with summarization ID {summarization_id} not found"
+            )
         return lecture
 
     def update_lecture(self, lecture_id: UUID, lec_data: UpdateLectureDTO) -> Lecture:
         """Service method to update a lecture."""
-        updated_lecture = self.repository.update_lecture(lecture_id, lec_data.dict(exclude_unset=True))
+        updated_lecture = self.repository.update_lecture(
+            lecture_id, lec_data.dict(exclude_unset=True)
+        )
         if not updated_lecture:
             raise ValueError(f"Lecture with ID {lecture_id} not found for update")
         return updated_lecture

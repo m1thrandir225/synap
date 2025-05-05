@@ -7,6 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "./ui/breadcrumb";
+import { Fragment } from "react";
 
 const Breadcrumbs: React.FC = () => {
   const matches = useMatches();
@@ -24,25 +25,27 @@ const Breadcrumbs: React.FC = () => {
       <BreadcrumbList>
         {matchesWithCrumbs.map((item, i) => {
           const isLast = i === matchesWithCrumbs.length - 1;
-          const crumbText = item.loaderData?.crumb as string; // We already filtered for string type
+          const crumbText = item.loaderData?.crumb as string;
 
           return (
-            <BreadcrumbItem key={item.id}>
-              {isLast ? (
-                <BreadcrumbPage>{crumbText}</BreadcrumbPage>
-              ) : (
-                <BreadcrumbLink asChild>
-                  <Link
-                    to={item.pathname} // Use pathname for cleaner links (adjust if fullPath is needed)
-                    params={item.params} // Pass params for dynamic routes
-                    search={item.search} // Pass search params if relevant
-                  >
-                    {crumbText}
-                  </Link>
-                </BreadcrumbLink>
-              )}
+            <Fragment key={item.id}>
+              <BreadcrumbItem key={item.id}>
+                {isLast ? (
+                  <BreadcrumbPage>{crumbText}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink asChild>
+                    <Link
+                      to={item.pathname}
+                      params={item.params}
+                      search={item.search}
+                    >
+                      {crumbText}
+                    </Link>
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
               {!isLast && <BreadcrumbSeparator />}
-            </BreadcrumbItem>
+            </Fragment>
           );
         })}
       </BreadcrumbList>

@@ -1,7 +1,7 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import select, delete
-from database import LearningMaterialTag
+from app.database import LearningMaterialTag
 
 from uuid import UUID
 
