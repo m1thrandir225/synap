@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from uuid import UUID
@@ -74,11 +75,15 @@ class CourseRepository:
         """
         return self.db.query(Course).filter(Course.uploaded_files.any()).all()
 
-    def get_courses_by_name(self, name: str) -> list[Course]:
+    def get_courses_by_name(self, name: str, user_id: UUID) -> List[Course]:
         """
-        Get courses by their name (partial match).
+        Get courses by their name for a specific user
         """
-        return self.db.query(Course).filter(Course.name.ilike(f"%{name}%")).all()
+        return self.db.query(Course).filter(
+            Course.name.ilike(f"%{name}%"),
+            Course.user_id == user_id  # Ensure the logged-in user only sees their courses
+        ).all()
+
 
     def get_courses_by_created_at_range(
         self, start_date: str, end_date: str

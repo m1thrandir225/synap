@@ -33,7 +33,7 @@ class CourseService:
             )
 
         course = self.course_repo.create(
-            course_data.dict()
+            course_data.model_dump()
         )  # Assuming course_data is a DTO
         return course
 
@@ -56,8 +56,8 @@ class CourseService:
     def get_courses_with_uploaded_files(self) -> List[Course]:
         return self.course_repo.get_courses_with_uploaded_files()
 
-    def get_courses_by_name(self, name: str) -> List[Course]:
-        return self.course_repo.get_courses_by_name(name)
+    def get_courses_by_name(self, name: str, user_id: UUID) -> List[Course]:
+        return self.course_repo.get_courses_by_name(name, user_id)
 
     def get_courses_by_created_at_range(
         self, start_date: str, end_date: str
