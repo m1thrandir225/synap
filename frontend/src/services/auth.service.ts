@@ -31,14 +31,15 @@ const authService = {
       protected: false,
       data: input,
     }),
-  refreshToken: () =>
+  refreshToken: (token: string) =>
     apiRequest<RefreshTokenResponse>({
       url: `${authURL}/refresh`,
       method: "POST",
-      withCredentials: true,
-      data: undefined,
+      data: {
+        refresh_token: token,
+      },
       params: undefined,
-      protected: true,
+      protected: false,
       headers: undefined,
     }),
   logout: () =>

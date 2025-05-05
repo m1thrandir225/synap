@@ -1,4 +1,4 @@
-from database import User
+from app.database import User
 from sqlalchemy.orm import Session
 
 
@@ -36,4 +36,3 @@ class UserRepository:
             self.db.commit()
             return True
         return False
-

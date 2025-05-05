@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from uuid import UUID
-from database import LearningMaterial
+from app.database import LearningMaterial
 from sqlalchemy import func
 
 
@@ -9,12 +9,8 @@ class LearningMaterialRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_learning_material(
-        self, lm_data: dict
-    ) -> LearningMaterial:
-        db_learning_material = LearningMaterial(
-           **lm_data
-        )
+    def create_learning_material(self, lm_data: dict) -> LearningMaterial:
+        db_learning_material = LearningMaterial(**lm_data)
         self.db.add(db_learning_material)
         self.db.commit()
         self.db.refresh(db_learning_material)
@@ -39,9 +35,7 @@ class LearningMaterialRepository:
         learning_material_id: UUID,
         lm_data: dict,
     ) -> Optional[LearningMaterial]:
-        db_learning_material = (
-            self.get_learning_material(learning_material_id)
-        )
+        db_learning_material = self.get_learning_material(learning_material_id)
         if db_learning_material:
             for key, value in lm_data.items():
                 setattr(db_learning_material, key, value)

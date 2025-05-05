@@ -23,3 +23,4 @@ from .summarization import SummarizationDTO, SummarizationBase
 from .tag import TagDTO, CreateTagDTO, UpdateTagDTO
 from .uploaded_file import UploadedFileDTO, UpdateUploadedFileDTO
 from .user import UserDTO, CreateUserDTO, UpdateUserDTO, UpdateUserPasswordDTO
+from .auth import LoginRegisterResponse, RefreshTokenResponse, RefreshTokenRequest

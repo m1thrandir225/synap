@@ -1,8 +1,8 @@
 from typing import List
 from uuid import UUID
 from sqlalchemy.orm import Session
-from database import LearningMaterialTag
-from repositories import LearningMaterialTagRepository
+from app.database import LearningMaterialTag
+from app.repositories import LearningMaterialTagRepository
 
 
 class LearningMaterialTagService:

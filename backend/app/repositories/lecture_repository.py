@@ -1,8 +1,10 @@
 from sqlalchemy.orm import Session
 from uuid import UUID
-from database import Lecture, Summarization
+from app.database import Lecture, Summarization
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
+from typing import List
+
 
 class LectureRepository:
     def __init__(self, db: Session):
@@ -20,6 +22,9 @@ class LectureRepository:
             self.db.rollback()
             raise ValueError("Lecture already exists for the given summarization_id")
 
+    def get_all_lectures(self) -> List[Lecture]:
+        return self.db.query(Lecture).all()
+    
     def get_lecture_by_id(self, lecture_id: UUID) -> Lecture:
         """Get a lecture by its ID"""
         return self.db.query(Lecture).filter(Lecture.id == lecture_id).first()
@@ -40,7 +45,7 @@ class LectureRepository:
         self.db.commit()
         self.db.refresh(lecture)
         return lecture
-            
+
     def delete_lecture(self, lecture_id: UUID) -> bool:
         """Delete a lecture by its ID"""
         lecture = self.db.query(Lecture).filter(Lecture.id == lecture_id).first()

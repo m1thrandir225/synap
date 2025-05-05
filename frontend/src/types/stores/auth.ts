@@ -5,15 +5,16 @@ export type AuthStore = {
   //State
   user: User | null;
   accessToken: string | null;
-  accessTokenExpiresAt: number | null;
+  accessTokenExpireTime: Date | null;
+  refreshToken: string | null;
+  refreshTokenExpireTime: Date | null;
   isAuthenticated: boolean | null;
   _hasHydrated: boolean;
 
   //State Actions
   login: (input: LoginResponse) => void;
-  setTokens: (accessToken: string, expiresIn: number) => void;
   setUser: (user: User) => void;
   logout: () => void;
-  checkAuth: () => Promise<void>;
+  checkAuth: () => boolean;
   setHasHydrated: (state: boolean) => void;
 };
