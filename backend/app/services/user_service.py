@@ -1,7 +1,7 @@
 from typing import Dict
 from datetime import datetime, timezone
 from app.database import User
-from app.models import CreateUserDTO, UpdateUserDTO, UpdateUserPasswordDTO, UserDTO
+from app.models import CreateUserDTO, UpdateUserDTO, UpdateUserPasswordDTO, User
 from app.repositories import UserRepository
 from fastapi import HTTPException
 from app.security import generate_password_hash, verify_password
@@ -11,7 +11,7 @@ class UserService:
     def __init__(self, user_repo: UserRepository):
         self.user_repo = user_repo
 
-    def get_user_email(self, email: str) -> UserDTO | None:
+    def get_user_email(self, email: str) -> User | None:
         return self.user_repo.get_by_email(email)
 
     def get_user_id(self, id: str) -> User | None:
