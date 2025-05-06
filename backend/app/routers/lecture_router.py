@@ -2,8 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from uuid import UUID
 from typing import List
 from app.dependencies import get_current_token, get_lecture_service
-from app.database import Lecture
-from app.models import CreateLectureDTO, UpdateLectureDTO
+from app.models import CreateLectureDTO, UpdateLectureDTO, LectureDTO
 from app.services import LectureService
 
 router = APIRouter(
@@ -11,7 +10,7 @@ router = APIRouter(
 )
 
 
-@router.get("/{lecture_id}", response_model=Lecture)
+@router.get("/{lecture_id}", response_model=LectureDTO)
 def get_lecture(
     lecture_id: UUID, service: LectureService = Depends(get_lecture_service)
 ):
@@ -21,12 +20,12 @@ def get_lecture(
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.get("/lectures", response_model=List[Lecture])
+@router.get("/lectures", response_model=List[LectureDTO])
 def get_lectures(service: LectureService = Depends(get_lecture_service)):
     return service.get_all_lectures()
 
 
-@router.get("/by_summarization/{summarization_id}", response_model=Lecture)
+@router.get("/by_summarization/{summarization_id}", response_model=LectureDTO)
 def get_lecture_by_summarization_id(
     summarization_id: UUID, service: LectureService = Depends(get_lecture_service)
 ):
@@ -36,7 +35,7 @@ def get_lecture_by_summarization_id(
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.post("/", response_model=Lecture)
+@router.post("/", response_model=LectureDTO)
 def create_lecture(
     lecture_data: CreateLectureDTO,
     service: LectureService = Depends(get_lecture_service),
@@ -44,7 +43,7 @@ def create_lecture(
     return service.create_lecture(lecture_data)
 
 
-@router.put("/{lecture_id}", response_model=Lecture)
+@router.put("/{lecture_id}", response_model=LectureDTO)
 def update_lecture(
     lecture_id: UUID,
     lecture_data: UpdateLectureDTO,

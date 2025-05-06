@@ -32,7 +32,7 @@ class CourseRepository:
         """
         db_course = Course(
             **course_data
-        )  # Assumes course_data is a dict that matches Course fields
+        )
         self.db.add(db_course)
         self.db.commit()
         self.db.refresh(db_course)
@@ -45,7 +45,7 @@ class CourseRepository:
         course = self.get_by_id(course_id)
         if course:
             for key, value in course_data.items():
-                setattr(course, key, value)  # Update fields dynamically
+                setattr(course, key, value)
             self.db.commit()
             self.db.refresh(course)
             return course
