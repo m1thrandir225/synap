@@ -38,4 +38,4 @@ class UserDTO(UserBase):
 
     courses: List[CourseDTO]
     notes: List[NoteDTO]
-    uploaded_files: List[UploadedFileDTO]
+    uploaded_files: Optional[List[UploadedFileDTO]]

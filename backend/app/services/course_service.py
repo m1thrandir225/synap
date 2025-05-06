@@ -2,10 +2,9 @@ from uuid import UUID
 from typing import List, Optional
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from datetime import datetime
 from app.repositories import CourseRepository
 from app.database import Course
-from app.models import CreateCourseDTO, UpdateCourseDTO  # Assuming DTOs exist
+from app.models import CreateCourseDTO, UpdateCourseDTO 
 
 
 class CourseService:
@@ -33,8 +32,8 @@ class CourseService:
             )
 
         course = self.course_repo.create(
-            course_data.dict()
-        )  # Assuming course_data is a DTO
+            course_data.model_dump(),
+        ) 
         return course
 
     def update_course(self, course_id: UUID, course_data: UpdateCourseDTO) -> Course:
