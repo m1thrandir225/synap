@@ -1,4 +1,5 @@
 from operator import index
+import uuid
 from sqlalchemy import (
     UUID,
     Column,
@@ -15,7 +16,7 @@ from app.database import Base
 class Summarization(Base):
     __tablename__ = "summarizations"
 
-    id = Column(UUID, primary_key=True, index=True)
+    id = Column(UUID, primary_key=True, index=True, default=uuid.uuid4())
     file_id = Column(UUID, ForeignKey("uploaded_files.id"), nullable=False)
 
     file = relationship("UploadedFile", back_populates="summarization", single_parent=True)

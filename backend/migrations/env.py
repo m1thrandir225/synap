@@ -53,11 +53,11 @@ config.set_section_option(
     section, "POSTGRES_DB", os.environ.get("POSTGRES_DB", "synap")
 )
 config.set_section_option(
-    section, "POSTGRES_HOST", os.environ.get("POSTGRES_HOSt", "localhost")
+    section, "POSTGRES_HOST", os.environ.get("POSTGRES_HOST", "db")
 )
 
 config.set_section_option(
-    section, "POSTGRES_PORT", os.environ.get("POSTGRES_PORt", "5432")
+    section, "POSTGRES_PORT", os.environ.get("POSTGRES_PORT", "5432")
 )
 
 

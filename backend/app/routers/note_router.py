@@ -15,6 +15,7 @@ router = APIRouter(
 def get_notes_by_user(service: NoteService = Depends(get_note_service), current_user: User = Depends(get_current_user)):
     return service.get_notes_by_user_id(current_user.id)
 
+
 #FIXME: this might return notes that were created by different users, we need to return the notes for the current user only!.
 @router.get("/search", response_model=List[NoteDTO])
 def get_notes_by_name(title: str, service: NoteService = Depends(get_note_service), current_user: User = Depends(get_current_user)):
@@ -26,6 +27,7 @@ def get_note(note_id: UUID, service: NoteService = Depends(get_note_service), cu
     if not note:
         raise HTTPException(status_code=404, detail="Note not found")
     return note
+
 
 
 #REDUNDANT ROUTE, the get_notes_by_user already returns all notes created by the specific user

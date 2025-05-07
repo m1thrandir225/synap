@@ -30,9 +30,11 @@ def get_courses_by_created_at_range(start_date: str, end_date: str, service: Cou
 def get_courses_by_name(name: str, service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
     return service.get_courses_by_name(name)
 
+
 @router.get("/user", response_model=List[CourseDTO])
 def get_courses_by_user(service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
     return service.get_courses_by_user(current_user.id)
+
 
 @router.get("/{course_id}", response_model=CourseDTO)
 def get_course(course_id: UUID, service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
@@ -61,3 +63,4 @@ def update_course(course_id: UUID, course_data: UpdateCourseDTO, service: Course
 @router.delete("/{course_id}", response_model=dict)
 def delete_course(course_id: UUID, service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
     return service.delete_course(course_id)
+

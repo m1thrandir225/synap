@@ -3,7 +3,6 @@ from typing import List, Optional
 import uuid
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from datetime import datetime
 from app.repositories import CourseRepository
 from app.database import Course
 from app.models import CreateCourseDTO, UpdateCourseDTO, CourseDTO, CourseNoteDTO
@@ -56,6 +55,7 @@ class CourseService:
             raise HTTPException(
                 status_code=400, detail="Course with this name already exists."
             )
+
         course_data_dump = course_data.model_dump()
         course_data_dump["id"] = uuid.uuid4()
         course_data_dump["created_at"] = datetime.now()

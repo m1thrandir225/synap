@@ -23,6 +23,7 @@ def get_lecture(
         raise HTTPException(status_code=404, detail=str(e))
 
 
+
 @router.get("/", response_model=List[LectureDTO])
 def get_lectures(service: LectureService = Depends(get_lecture_service), current_user: User = Depends(get_current_user)):
     return service.get_all_lectures()

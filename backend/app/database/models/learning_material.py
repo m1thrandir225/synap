@@ -1,3 +1,4 @@
+import uuid
 from sqlalchemy import UUID, Column, DateTime, String, func
 from sqlalchemy.orm import relationship
 from app.database import Base
@@ -6,7 +7,7 @@ from app.database import Base
 class LearningMaterial(Base):
     __tablename__ = "learning_materials"
 
-    id = Column(UUID, primary_key=True, index=True)
+    id = Column(UUID, primary_key=True, index=True, default=uuid.uuid4())
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
     url = Column(String, nullable=False)

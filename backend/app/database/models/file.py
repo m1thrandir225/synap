@@ -1,3 +1,4 @@
+import uuid
 from sqlalchemy import UUID, BigInteger, Column, DateTime, ForeignKey, String, func
 from sqlalchemy.orm import relationship
 from app.database import Base
@@ -6,7 +7,7 @@ from app.database import Base
 class UploadedFile(Base):
     __tablename__ = "uploaded_files"
 
-    id = Column(UUID, primary_key=True, index=True)
+    id = Column(UUID, primary_key=True, index=True, default=uuid.uuid4())
     file_name = Column(String, nullable=False)
     file_path = Column(String, nullable=False)
     file_type = Column(String, nullable=False)

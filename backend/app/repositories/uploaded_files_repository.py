@@ -1,14 +1,16 @@
 from app.database import FileTag, Recommendation, UploadedFile
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List
 from uuid import UUID
+
+from app.models import UploadedFileDTO
 
 
 class UploadedFileRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def get_by_id(self, file_id: UUID) -> Optional[UploadedFile]:
+    def get_by_id(self, file_id: UUID) -> UploadedFile:
         """Get an uploaded file by its ID."""
         return self.db.query(UploadedFile).filter(UploadedFile.id == file_id).first()
 
@@ -24,7 +26,7 @@ class UploadedFileRepository:
             .all()
         )
 
-    def create(self, file_data: dict) -> UploadedFile:
+    def create(self, file_data: dict) -> UploadedFileDTO:
         """Create a new uploaded file."""
         db_file = UploadedFile(**file_data)
         self.db.add(db_file)
@@ -32,7 +34,7 @@ class UploadedFileRepository:
         self.db.refresh(db_file)
         return db_file
 
-    def update(self, file_id: UUID, file_data: dict) -> Optional[UploadedFile]:
+    def update(self, file_id: UUID, file_data: dict):
         """Update an existing uploaded file."""
         file = self.get_by_id(file_id)
         if file:
