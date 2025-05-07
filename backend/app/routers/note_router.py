@@ -52,7 +52,7 @@ def create_note(
     return service.create_note(note_data)
 
 
-@router.put("/notes/{note_id}", response_model=NoteDTO)
+@router.put("/{note_id}", response_model=NoteDTO)
 def update_note(
     note_id: UUID,
     note_data: UpdateNoteDTO,
@@ -65,7 +65,7 @@ def update_note(
     return updated_note
 
 
-@router.delete("/notes/{note_id}", response_model=dict)
+@router.delete("/{note_id}", response_model=dict)
 def delete_note(note_id: UUID, service: NoteService = Depends(get_note_service), current_user: User = Depends(get_current_user)):
     success = service.delete_note(note_id)
     if not success:
