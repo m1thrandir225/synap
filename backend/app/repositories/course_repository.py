@@ -14,11 +14,11 @@ class CourseRepository:
         """
         return self.db.query(Course).filter(Course.id == course_id).first()
 
-    def get_all(self) -> list[Course]:
-        """
-        Get all courses in the database.
-        """
-        return self.db.query(Course).all()
+    # def get_all(self) -> list[Course]:
+    #     """
+    #     Get all courses in the database.
+    #     """
+    #     return self.db.query(Course).all()
 
     def get_by_user_id(self, user_id: UUID) -> list[Course]:
         """
@@ -57,16 +57,19 @@ class CourseRepository:
         """
         course = self.get_by_id(course_id)
         if course:
+            for note in course.notes:
+                self.db.delete(note)
+            
             self.db.delete(course)
             self.db.commit()
             return True
         return False
 
-    def get_courses_with_notes(self) -> list[Course]:
-        """
-        Get all courses that have associated notes.
-        """
-        return self.db.query(Course).filter(Course.notes.any()).all()
+    # def get_courses_with_notes(self) -> list[Course]:
+    #     """
+    #     Get all courses that have associated notes.
+    #     """
+    #     return self.db.query(Course).filter(Course.notes.any()).all()
 
     def get_courses_with_uploaded_files(self) -> list[Course]:
         """

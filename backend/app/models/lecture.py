@@ -12,7 +12,7 @@ class LectureBase(BaseModel):
 
 
 class CreateLectureDTO(LectureBase):
-    pass
+    id: Optional[UUID4] = None
 
 
 class UpdateLectureDTO(BaseModel):

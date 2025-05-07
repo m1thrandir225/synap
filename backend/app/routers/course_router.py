@@ -1,53 +1,63 @@
 from fastapi import APIRouter, Depends, HTTPException
 from uuid import UUID
 from typing import List
-from dependencies import get_course_service
-from database import Course
-from models import CreateCourseDTO, UpdateCourseDTO  # Adjust imports as necessary
-from services.course_service import CourseService  
+from app.database import User
+from app.dependencies import get_course_service, get_current_token, get_current_user
+from app.models import CreateCourseDTO, UpdateCourseDTO, CourseDTO
+from app.services import CourseService
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/courses", tags=["courses"], dependencies=[Depends(get_current_token)]
+)
 
-# Get a single course by ID
-@router.get("/courses/{course_id}", response_model=Course)
-def get_course(course_id: UUID, service: CourseService = Depends(get_course_service)):
+#FIXME: this may also be redundant because get_by_user will return the courses by the specific authenticated user.
+#FIXME: if this is needed it can be uncommented.
+# @router.get("/with_notes", response_model=List[CourseDTO])
+# def get_courses_with_notes(service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
+#     return service.get_courses_with_notes()
+
+#idk if this works, untested.
+@router.get("/with_files", response_model=List[CourseDTO])
+def get_courses_with_uploaded_files(service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
+    return service.get_courses_with_uploaded_files()
+
+@router.get("/range", response_model=List[CourseDTO])
+def get_courses_by_created_at_range(start_date: str, end_date: str, service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
+    return service.get_courses_by_created_at_range(start_date, end_date)
+
+#FIXME: same reason as note_router.py's /search route
+@router.get("/search", response_model=List[CourseDTO])
+def get_courses_by_name(name: str, service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
+    return service.get_courses_by_name(name)
+
+@router.get("/user", response_model=List[CourseDTO])
+def get_courses_by_user(service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
+    return service.get_courses_by_user(current_user.id)
+
+@router.get("/{course_id}", response_model=CourseDTO)
+def get_course(course_id: UUID, service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
     try:
         return service.get_course(course_id)
     except HTTPException as e:
         raise e
 
-@router.get("/courses", response_model=List[Course])
-def get_all_courses(service: CourseService = Depends(get_course_service)):
-    return service.get_all_courses()
+#REDUNDANT, same reason as the note_router's get_all()  
+# @router.get("/", response_model=List[CourseDTO])
+# def get_all_courses(service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
+#     return service.get_all_courses()
 
-@router.get("/courses/user/{user_id}", response_model=List[Course])
-def get_courses_by_user(user_id: UUID, service: CourseService = Depends(get_course_service)):
-    return service.get_courses_by_user(user_id)
-
-@router.post("/courses", response_model=Course)
-def create_course(course_data: CreateCourseDTO, service: CourseService = Depends(get_course_service)):
+@router.post("/", response_model=CourseDTO)
+def create_course(course_data: CreateCourseDTO, service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
+    # course_data_dump = course_data.model_dump()
+    # if course_data_dump.get("user_id") is None:
+    #    course_data_dump["user_id"] = current_user.id
+    course_data.user_id = current_user.id
     return service.create_course(course_data)
 
-@router.put("/courses/{course_id}", response_model=Course)
-def update_course(course_id: UUID, course_data: UpdateCourseDTO, service: CourseService = Depends(get_course_service)):
+@router.put("/{course_id}", response_model=CourseDTO)
+def update_course(course_id: UUID, course_data: UpdateCourseDTO, service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
     return service.update_course(course_id, course_data)
 
-@router.delete("/courses/{course_id}", response_model=dict)
-def delete_course(course_id: UUID, service: CourseService = Depends(get_course_service)):
+@router.delete("/{course_id}", response_model=dict)
+def delete_course(course_id: UUID, service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
     return service.delete_course(course_id)
-
-@router.get("/courses/with_notes", response_model=List[Course])
-def get_courses_with_notes(service: CourseService = Depends(get_course_service)):
-    return service.get_courses_with_notes()
-
-@router.get("/courses/with_files", response_model=List[Course])
-def get_courses_with_uploaded_files(service: CourseService = Depends(get_course_service)):
-    return service.get_courses_with_uploaded_files()
-
-@router.get("/courses/search", response_model=List[Course])
-def get_courses_by_name(name: str, service: CourseService = Depends(get_course_service)):
-    return service.get_courses_by_name(name)
-
-@router.get("/courses/range", response_model=List[Course])
-def get_courses_by_created_at_range(start_date: str, end_date: str, service: CourseService = Depends(get_course_service)):
-    return service.get_courses_by_created_at_range(start_date, end_date)

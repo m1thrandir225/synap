@@ -179,12 +179,14 @@ async def get_current_user(
     userService: UserService = Depends(get_user_service),
 ) -> User:
     user_id = decode_token(token, type=JWT_TYPE.ACCESS)
+    print(f"Decoded user_id: {user_id}")
     if user_id is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token"
         )
 
     user = userService.get_user_id(user_id)
+    print(f"user: {user.id}")
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found"

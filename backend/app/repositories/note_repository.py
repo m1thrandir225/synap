@@ -17,8 +17,9 @@ class NoteRepository:
         self.db.refresh(note)
         return note
     
-    def get_all_notes(self) -> List[Note]:
-        return self.db.query(Note).all()
+    #REDUNDANT, the get_notes_by_user_id already returns all notes created by the current authenticated user.
+    # def get_all_notes(self) -> List[Note]:
+    #     return self.db.query(Note).all()
     
     def get_note_by_id(self, note_id: UUID) -> Optional[Note]:
         return self.db.query(Note).filter(Note.id == note_id).first()
@@ -29,6 +30,9 @@ class NoteRepository:
     def get_notes_by_course_id(self, course_id: UUID) -> List[Note]:
         return self.db.query(Note).filter(Note.course_id == course_id).all()
 
+    def get_notes_by_name(self, title: str) -> list[Note]:
+        return self.db.query(Note).filter(Note.title.ilike(f"%{title}%")).all()
+    
     def update_note(self, note_id: UUID, note_data: dict) -> Optional[Note]:
         note = self.get_note_by_id(note_id)
         for key, value in note_data.items():
