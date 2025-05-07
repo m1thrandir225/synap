@@ -1,7 +1,7 @@
 from typing import Dict
 from datetime import datetime, timezone
 from app.database import User
-from app.models import CreateUserDTO, UpdateUserDTO, UpdateUserPasswordDTO, User
+from app.models import CreateUserDTO, UpdateUserDTO, UpdateUserPasswordDTO
 from app.repositories import UserRepository
 from fastapi import HTTPException
 from app.security import generate_password_hash, verify_password
