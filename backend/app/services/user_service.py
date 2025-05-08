@@ -5,7 +5,7 @@ from app.models import CreateUserDTO, UpdateUserDTO, UpdateUserPasswordDTO
 from app.repositories import UserRepository
 from fastapi import HTTPException
 from app.security import generate_password_hash, verify_password
-
+import uuid
 
 class UserService:
     def __init__(self, user_repo: UserRepository):
@@ -27,6 +27,8 @@ class UserService:
         user_data_dict = user_data.model_dump()
         user_data_dict["password"] = hashed_password
         user_data_dict["updated_at"] = datetime.now(timezone.utc)
+        if not user_data_dict.get("id"):
+            user_data_dict["id"] = uuid.uuid4()
 
         new_user = self.user_repo.create(user_data_dict)
 

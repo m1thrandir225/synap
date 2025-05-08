@@ -16,6 +16,7 @@ class UserBase(BaseModel):
 
 
 class CreateUserDTO(UserBase):
+    id: Optional[UUID4] = None
     password: str
 
 

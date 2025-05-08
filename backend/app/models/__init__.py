@@ -7,7 +7,7 @@ from .learning_material import (
 )
 from .learning_material_tag import LearningMaterialTag
 from .lecture import CreateLectureDTO, UpdateLectureDTO, LectureDTO
-from .note import CreateNoteDTO, UpdateNoteDTO, NoteDTO
+from .note import CreateNoteDTO, UpdateNoteDTO, NoteDTO, CourseNoteDTO
 from .recommendation import (
     RecommendationDTO,
     CreateRecommendationDTO,
