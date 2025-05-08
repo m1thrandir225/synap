@@ -31,7 +31,7 @@ class NoteService:
             updated_at=note.updated_at
         )
     
-    def create_note(self, note_data: CreateNoteDTO) -> NoteDTO:
+    def create_note(self, note_data: CreateNoteDTO, user_id: UUID) -> NoteDTO:
 
         existing_note: List[Note] = self.repository.get_notes_by_name(note_data.title)
         if existing_note:
@@ -39,6 +39,7 @@ class NoteService:
         
         note_data_dump = note_data.model_dump()
         note_data_dump["id"] = uuid.uuid4()
+        note_data_dump["user_id"] = user_id
         note_data_dump["created_at"] = datetime.now()
         note_data_dump["updated_at"] = datetime.now()
         created_note: Note = self.repository.create_note(note_data_dump)

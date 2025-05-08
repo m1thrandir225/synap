@@ -14,7 +14,6 @@ class NoteBase(BaseModel):
 
 class CreateNoteDTO(NoteBase):
     id: Optional[UUID4] = None
-    user_id: Optional[UUID4] = None
 
 
 class UpdateNoteDTO(BaseModel):

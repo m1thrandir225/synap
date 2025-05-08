@@ -47,9 +47,7 @@ def get_notes_by_course(
 def create_note(
     note_data: CreateNoteDTO, service: NoteService = Depends(get_note_service), current_user: User = Depends(get_current_user)
 ):
-    
-    note_data.user_id = current_user.id
-    return service.create_note(note_data)
+    return service.create_note(note_data, current_user.id)
 
 
 @router.put("/{note_id}", response_model=NoteDTO)
