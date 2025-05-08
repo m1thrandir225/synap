@@ -12,7 +12,6 @@ class CourseBase(BaseModel):
 
 class CreateCourseDTO(CourseBase):
     id: Optional[UUID4] = None
-    user_id: Optional[UUID4] = None
 
 
 class UpdateCourseDTO(BaseModel):

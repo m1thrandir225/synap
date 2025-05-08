@@ -53,8 +53,8 @@ def create_course(course_data: CreateCourseDTO, service: CourseService = Depends
     # course_data_dump = course_data.model_dump()
     # if course_data_dump.get("user_id") is None:
     #    course_data_dump["user_id"] = current_user.id
-    course_data.user_id = current_user.id
-    return service.create_course(course_data)
+    # course_data.user_id = current_user.id
+    return service.create_course(course_data, current_user.id)
 
 @router.put("/{course_id}", response_model=CourseDTO)
 def update_course(course_id: UUID, course_data: UpdateCourseDTO, service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):

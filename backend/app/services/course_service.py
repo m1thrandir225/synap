@@ -6,6 +6,8 @@ from sqlalchemy.orm import Session
 from app.repositories import CourseRepository
 from app.database import Course
 from app.models import CreateCourseDTO, UpdateCourseDTO, CourseDTO, CourseNoteDTO
+from datetime import datetime
+
 
 
 class CourseService:
@@ -49,15 +51,16 @@ class CourseService:
             course_dto.append(self._to_dto(course=c))
         return course_dto
 
-    def create_course(self, course_data: CreateCourseDTO) -> CourseDTO:
+    def create_course(self, course_data: CreateCourseDTO, user_id: UUID) -> CourseDTO:
         existing_course: List[Course] = self.course_repo.get_courses_by_name(course_data.name)
         if existing_course:
             raise HTTPException(
                 status_code=400, detail="Course with this name already exists."
             )
-
+        
         course_data_dump = course_data.model_dump()
         course_data_dump["id"] = uuid.uuid4()
+        course_data_dump["user_id"] = user_id
         course_data_dump["created_at"] = datetime.now()
         course_data_dump["updated_at"] = datetime.now()
         course: Course = self.course_repo.create(
