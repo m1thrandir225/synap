@@ -86,18 +86,7 @@ const DashboardLayout: React.FC = () => {
   }, []);
 
   const userShortcutItems = useMemo<SidebarItem[]>(() => {
-    return [
-      {
-        title: "Operating System 1",
-        url: "/dashboard/courses/operating-systems/1",
-        icon: BookA,
-      },
-      {
-        title: "Structural Programming",
-        url: "/dashboard/courses/structural-programming",
-        icon: Computer,
-      },
-    ];
+    return [];
   }, []);
   return (
     <SidebarProvider>

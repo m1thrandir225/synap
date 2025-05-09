@@ -14,6 +14,8 @@ import { Button } from "../ui/button";
 import { useMutation } from "@tanstack/react-query";
 import coursesServices from "@/services/courses.service";
 import { useState } from "react";
+import queryClient from "@/lib/queryClient";
+import { useRouter } from "@tanstack/react-router";
 
 interface ComponentProps {
   courseId: string;
@@ -22,13 +24,26 @@ interface ComponentProps {
 const CourseDeleteDialog: React.FC<ComponentProps> = (props) => {
   const [dialogActive, setDialogActive] = useState(false);
   const { courseId } = props;
-
+  const router = useRouter();
   const { mutateAsync, status } = useMutation({
     mutationFn: async () => coursesServices.deleteCourse(courseId),
-    onSuccess: (response) => {
+    onSuccess: () => {
       setDialogActive(false);
+
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
+      router.navigate({
+        to: "/dashboard/courses",
+      });
     },
   });
+
+  const handleDelete = async () => {
+    try {
+      await mutateAsync();
+    } catch (e) {
+      throw e;
+    }
+  };
   return (
     <AlertDialog open={dialogActive} onOpenChange={setDialogActive}>
       <AlertDialogTrigger>
@@ -47,12 +62,14 @@ const CourseDeleteDialog: React.FC<ComponentProps> = (props) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction disabled={status === "pending"}>
-            {status === "pending" ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              <p>Continue</p>
-            )}
+          <AlertDialogAction asChild>
+            <Button disabled={status === "pending"} onClick={handleDelete}>
+              {status === "pending" ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <p>Continue</p>
+              )}
+            </Button>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

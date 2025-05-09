@@ -16,6 +16,7 @@ class UserBase(BaseModel):
 
 
 class CreateUserDTO(UserBase):
+    id: Optional[UUID4] = None
     password: str
 
 
@@ -38,4 +39,4 @@ class UserDTO(UserBase):
 
     courses: List[CourseDTO]
     notes: List[NoteDTO]
-    uploaded_files: List[UploadedFileDTO]
+    uploaded_files: Optional[List[UploadedFileDTO]]

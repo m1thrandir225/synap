@@ -1,3 +1,4 @@
+import uuid
 from sqlalchemy import UUID, Column, DateTime, ForeignKey, String, func, null
 from sqlalchemy.orm import relationship
 from app.database import Base
@@ -6,7 +7,7 @@ from app.database import Base
 class Course(Base):
     __tablename__ = "courses"
 
-    id = Column(UUID, primary_key=True, index=True)
+    id = Column(UUID, primary_key=True, index=True, default=uuid.uuid4())
     name = Column(String, nullable=False)
     description = Column(String)
 

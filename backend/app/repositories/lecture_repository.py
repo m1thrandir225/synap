@@ -5,7 +5,6 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 from typing import List
 
-
 class LectureRepository:
     def __init__(self, db: Session):
         self.db = db

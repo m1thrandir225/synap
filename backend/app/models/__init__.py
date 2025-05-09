@@ -1,4 +1,4 @@
-from .course import CourseDTO, CreateCourseDTO, UpdateCourseDTO
+from .course import CourseDTO, CreateCourseDTO, UpdateCourseDTO, CourseBase
 from .file_tag import FileTag
 from .learning_material import (
     LearningMaterialDTO,
@@ -7,7 +7,7 @@ from .learning_material import (
 )
 from .learning_material_tag import LearningMaterialTag
 from .lecture import CreateLectureDTO, UpdateLectureDTO, LectureDTO
-from .note import CreateNoteDTO, UpdateNoteDTO, NoteDTO
+from .note import CreateNoteDTO, UpdateNoteDTO, NoteDTO, CourseNoteDTO
 from .recommendation import (
     RecommendationDTO,
     CreateRecommendationDTO,
@@ -21,6 +21,6 @@ from .recommendation_interaction import (
 )
 from .summarization import SummarizationDTO, SummarizationBase
 from .tag import TagDTO, CreateTagDTO, UpdateTagDTO
-from .uploaded_file import UploadedFileDTO, UpdateUploadedFileDTO
+from .uploaded_file import UploadedFileDTO, UpdateUploadedFileDTO, UploadedFileBase, UploadFileRequest, CreateUploadedFile
 from .user import UserDTO, CreateUserDTO, UpdateUserDTO, UpdateUserPasswordDTO
 from .auth import LoginRegisterResponse, RefreshTokenResponse, RefreshTokenRequest

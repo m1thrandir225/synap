@@ -1,6 +1,6 @@
 export type CreateCourseRequest = {
   name: string;
-  content: string;
+  description: string;
 };
 
 export type CreateCourseResponse = {};

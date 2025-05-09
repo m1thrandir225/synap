@@ -21,7 +21,7 @@ const CourseCard: React.FC<ComponentProps> = ({ course, inGrid }) => {
         <Card className="hover:bg-muted/50 cursor-pointer w-full h-full">
           <CardHeader>
             <CardTitle>{course.name}</CardTitle>
-            <CardDescription>{course.content}</CardDescription>
+            <CardDescription>{course.description}</CardDescription>
           </CardHeader>
         </Card>
       </Link>
@@ -33,7 +33,7 @@ const CourseCard: React.FC<ComponentProps> = ({ course, inGrid }) => {
         <div className="flex flex-row items-center justify-between">
           <div className="flex flex-col items-start gap-2">
             <CardTitle>{course.name}</CardTitle>
-            <CardDescription>{course.content}</CardDescription>
+            <CardDescription>{course.description}</CardDescription>
           </div>
           <div className="flex flex-row items-center gap-2">
             <Button asChild size={"icon"} variant={"secondary"}>

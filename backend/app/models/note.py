@@ -1,7 +1,10 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from pydantic import BaseModel, ConfigDict, UUID4
-from .course import CourseDTO
+
+# from .course import CourseDTO
+if TYPE_CHECKING:
+    from .course import CourseDTO
 
 
 class NoteBase(BaseModel):
@@ -11,8 +14,9 @@ class NoteBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True, str_max_length=255)
 
+
 class CreateNoteDTO(NoteBase):
-    user_id: UUID4
+    pass
 
 
 class UpdateNoteDTO(BaseModel):
@@ -23,7 +27,15 @@ class UpdateNoteDTO(BaseModel):
 
 class NoteDTO(NoteBase):
     id: UUID4
+    user_id: UUID4
     created_at: datetime
     updated_at: datetime
 
-    course: CourseDTO
+    course: "CourseDTO"
+
+
+class CourseNoteDTO(NoteBase):
+    id: UUID4
+    user_id: UUID4
+    created_at: datetime
+    updated_at: datetime

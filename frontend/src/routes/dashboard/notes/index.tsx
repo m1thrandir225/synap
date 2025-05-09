@@ -7,22 +7,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { noteQueries } from "@/queries/notes.queries";
 import { dummyNotes } from "@/types/models/note";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/notes/")({
   component: RouteComponent,
-  loader: () => {
-    return {
-      notes: dummyNotes,
-    };
+  loader: ({ context: { queryClient } }) => {
+    return queryClient.ensureQueryData(noteQueries.getNotes);
   },
 });
 
 function RouteComponent() {
-  const { notes } = Route.useLoaderData();
-
+  const { data: notes } = useSuspenseQuery(noteQueries.getNotes);
   return (
     <div className="w-full h-full flex flex-col items-start gap-8">
       <Card className="w-full">

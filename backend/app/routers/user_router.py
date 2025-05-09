@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, Depends, Response, status
 from app.database import User
 from app.dependencies import get_current_token, get_current_user, get_user_service
 from app.models import UpdateUserDTO

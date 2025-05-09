@@ -1,10 +1,22 @@
+from datetime import datetime
+import os
+from uuid import UUID
+import uuid
 from fastapi import APIRouter, UploadFile, Depends, HTTPException, status
 from fastapi.responses import FileResponse
-from typing import List
+from typing import Annotated, List
 from pydantic import BaseModel
-from app.dependencies import get_current_token
+from app.dependencies import (
+    get_current_token,
+    get_current_user,
+    get_uploaded_files_service,
+)
 from app.log import get_logger
 from app.storage_provider import LocalStorageProvider
+from app.services import UploadedFileService
+from app.models import CreateUploadedFile
+from app.database.models import User
+from fastapi import Form
 
 log = get_logger(__name__)
 
@@ -32,8 +44,11 @@ async def list_user_files(
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def upload_file(
-    file: UploadFile,
+    file: Annotated[UploadFile, Form()],
+    course_id: Annotated[str, Form()],
     storage_provider: LocalStorageProvider = Depends(LocalStorageProvider),
+    file_service: UploadedFileService = Depends(get_uploaded_files_service),
+    user: User = Depends(get_current_user),
 ):
     """
     Uploads a new file for the current authenticated user.
@@ -45,11 +60,37 @@ async def upload_file(
         )
 
     try:
+        contents = await file.read()
+        file_size_bytes = len(contents)
+        await file.seek(0)
+
+        _filename, file_extension = os.path.splitext(file.filename)
+        file_type = file_extension.lower() if file_extension else ""
+
+        mime_type = (
+            file.content_type if file.content_type else "application/octet-stream"
+        )
+
         saved_filename = await storage_provider.store_file(file, filename=file.filename)
+
+        file_path = f"{router.prefix}/{saved_filename}"
+
+        uploaded_file_data = CreateUploadedFile(
+            user_id=user.id,
+            course_id=uuid.UUID(course_id),
+            file_name=file.filename,
+            file_path=file_path,
+            file_type=file_type,
+            file_size=str(file_size_bytes),
+            mime_type=mime_type,
+        )
+
+        file_service.create_uploaded_file(file_data=uploaded_file_data)
+
         return {
             "message": "File uploaded successfully",
             "filename": str(saved_filename),
-            "location": router.prefix + "/" + str(saved_filename),
+            "location": file_path,
         }
     except Exception as e:
         log.error("Failed to do something", e)

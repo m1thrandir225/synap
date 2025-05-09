@@ -1,6 +1,7 @@
-from typing import Optional
+from typing import ForwardRef, List, Optional
 from pydantic import UUID4, BaseModel, ConfigDict
 from datetime import datetime
+from .note import CourseNoteDTO
 
 
 class CourseBase(BaseModel):
@@ -11,7 +12,7 @@ class CourseBase(BaseModel):
 
 
 class CreateCourseDTO(CourseBase):
-    user_id: UUID4
+    pass
 
 
 class UpdateCourseDTO(BaseModel):
@@ -21,5 +22,10 @@ class UpdateCourseDTO(BaseModel):
 
 class CourseDTO(CourseBase):
     id: UUID4
+    user_id: UUID4
     created_at: datetime
     updated_at: datetime
+    notes: List[CourseNoteDTO]
+
+
+CourseDTO.model_rebuild()

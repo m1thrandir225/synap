@@ -18,17 +18,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { dummyCourses } from "@/types/models/course";
-import { useMutation } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { courseQueries } from "@/queries/courses.queries";
+import noteServices from "@/services/note.service";
+import type { Course } from "@/types/models/course";
+import type { CreateNoteRequest } from "@/types/responses/notes";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/dashboard/notes/new")({
   component: RouteComponent,
-  loader: async () => {
-    const courses = dummyCourses;
-
+  loader: async ({ context: { queryClient } }) => {
+    const courses = queryClient.ensureQueryData(courseQueries.getCourses());
     return {
       courses,
       crumb: "New",
@@ -37,19 +39,32 @@ export const Route = createFileRoute("/dashboard/notes/new")({
 });
 
 function RouteComponent() {
-  const { courses } = Route.useLoaderData();
-  const [name, setName] = useState("");
-  const [content, setContent] = useState<string | undefined>("");
+  const { data: courses } = useSuspenseQuery(courseQueries.getCourses());
+  const router = useRouter();
+  const [title, setTitle] = useState<string | undefined>(undefined);
+  const [content, setContent] = useState<string | undefined>(undefined);
+  const [selectedCourse, setSelectedCourse] = useState<string | undefined>();
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: async () => "",
+    mutationFn: async (input: CreateNoteRequest) =>
+      noteServices.createNote(input),
     onSuccess: (response) => {
-      //TODO: route to new note
+      router.navigate({
+        to: "/dashboard/notes/$noteId",
+        params: { noteId: response.id },
+      });
     },
   });
 
   const saveNote = async () => {
     try {
-      await mutateAsync();
+      if (!selectedCourse || !title || !content) {
+        return;
+      }
+      await mutateAsync({
+        course_id: selectedCourse,
+        content: content,
+        title: title,
+      });
     } catch (e: unknown) {
       throw e;
     }
@@ -70,14 +85,14 @@ function RouteComponent() {
           <div className="grid gap-2 w-full">
             <Label htmlFor="name"> Name </Label>
             <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               placeholder="The name of the note"
             />
           </div>
           <div className="grid gap-2 w-full">
             <Label htmlFor="courseId">Course</Label>
-            <Select>
+            <Select value={selectedCourse} onValueChange={setSelectedCourse}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a course" />
               </SelectTrigger>

@@ -1,12 +1,16 @@
 import CourseForm from "@/components/courses/CourseForm";
-import { dummyCourses, type Course } from "@/types/models/course";
+import { courseQueries } from "@/queries/courses.queries";
+import coursesServices from "@/services/courses.service";
+import { type Course } from "@/types/models/course";
 import type { EditCourseRequest } from "@/types/responses/courses";
-import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, useParams } from "@tanstack/react-router";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, useParams, useRouter } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard/courses/$courseId/edit")({
-  loader: ({ params }) => {
-    const course = dummyCourses.find((el) => el.id === params.courseId);
+  loader: ({ params, context: { queryClient } }) => {
+    const course = queryClient.ensureQueryData(
+      courseQueries.getCourse(params.courseId),
+    );
     return {
       course,
       crumb: "Edit",
@@ -16,11 +20,19 @@ export const Route = createFileRoute("/dashboard/courses/$courseId/edit")({
 });
 
 function RouteComponent() {
-  const { course } = Route.useLoaderData();
+  const { courseId } = Route.useParams();
+  const { data: course } = useSuspenseQuery(courseQueries.getCourse(courseId));
+  const router = useRouter();
   const { mutateAsync } = useMutation({
     mutationKey: ["edit-course", course?.id],
-    mutationFn: async (input: EditCourseRequest) => "edited data",
-    onSuccess: (response) => {},
+    mutationFn: async (input: EditCourseRequest) =>
+      coursesServices.editCourse(input),
+    onSuccess: (response) => {
+      router.navigate({
+        to: "/dashboard/courses/$courseId",
+        params: { courseId },
+      });
+    },
   });
 
   if (!course) {

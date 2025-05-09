@@ -2,27 +2,24 @@ import NoteDeleteDialog from "@/components/notes/NoteDeleteDialog";
 import NotePreview from "@/components/notes/NotePreview";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { noteQueries } from "@/queries/notes.queries";
 import { dummyNotes } from "@/types/models/note";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import MDEditor from "@uiw/react-md-editor";
 import { Pen } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/notes/$noteId/")({
-  loader: async ({ params }) => {
-    const note = dummyNotes.find((el) => el.id === params.noteId);
-    return {
-      note,
-    };
+  loader: async ({ params, context: { queryClient } }) => {
+    return queryClient.ensureQueryData(noteQueries.getNote(params.noteId));
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { note } = Route.useLoaderData();
+  const { noteId } = Route.useParams();
+  const { data: note } = useSuspenseQuery(noteQueries.getNote(noteId));
 
-  if (!note) {
-    return <p> Not found ...</p>;
-  }
   return (
     <div className="flex flex-col items-start gap-8">
       <Card className="w-full">
