@@ -36,11 +36,6 @@ function RouteComponent() {
               <CardTitle>Files</CardTitle>
               <CardDescription>All of your uploaded files.</CardDescription>
             </div>
-            <Button asChild size={"icon"} variant={"default"}>
-              <Link to="/dashboard/files/upload">
-                <Upload />
-              </Link>
-            </Button>
           </div>
         </CardHeader>
       </Card>

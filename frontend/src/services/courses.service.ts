@@ -11,7 +11,7 @@ const coursesURL = `${config.apiUrl}/courses`;
 const coursesServices = {
   getCoursesForUser: () =>
     apiRequest<Course[]>({
-      url: `${coursesURL}/for-user`,
+      url: `${coursesURL}/user`,
       method: "GET",
       protected: true,
       headers: undefined,
@@ -41,7 +41,7 @@ const coursesServices = {
       headers: undefined,
       protected: true,
       params: undefined,
-      data: { name: input.name, content: input.content },
+      data: input,
     }),
   deleteCourse: (id: string) =>
     apiRequest<Course>({

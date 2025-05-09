@@ -2,10 +2,10 @@ import { FileUpload } from "@/components/files/FileUpload";
 import fileService from "@/services/files.service";
 import type { UploadFileRequest } from "@/types/responses/files";
 import { useMutation } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 
-export const Route = createFileRoute("/dashboard/files/upload")({
+export const Route = createFileRoute("/dashboard/courses/$courseId/upload")({
   component: RouteComponent,
   loader: () => {
     return {
@@ -15,19 +15,25 @@ export const Route = createFileRoute("/dashboard/files/upload")({
 });
 
 function RouteComponent() {
+  const { courseId } = Route.useParams();
   const [files, setFiles] = useState<File[]>([]);
-
+  const router = useRouter();
   const { status, mutateAsync } = useMutation({
     mutationKey: ["upload-file"],
     mutationFn: (input: UploadFileRequest) => fileService.uploadFile(input),
-    onSuccess: (response) => {},
+    onSuccess: () => {
+      router.navigate({
+        to: "/dashboard/courses/$courseId",
+        params: { courseId },
+      });
+    },
   });
 
   const handleUpload = async (file: File): Promise<void> => {
-    // Simulate an upload delay
     try {
       await mutateAsync({
         file,
+        course_id: courseId,
       });
     } catch (err: any) {
       throw err;

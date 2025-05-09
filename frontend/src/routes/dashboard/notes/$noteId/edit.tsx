@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { dummyCourses } from "@/types/models/course";
+import type { Course } from "@/types/models/course";
 import { dummyNotes } from "@/types/models/note";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
@@ -20,7 +20,7 @@ import { useState } from "react";
 export const Route = createFileRoute("/dashboard/notes/$noteId/edit")({
   loader: async ({ params }) => {
     const note = dummyNotes.find((el) => el.id === params.noteId);
-    const courses = dummyCourses;
+    const courses = [] as Course[];
 
     return {
       courses,

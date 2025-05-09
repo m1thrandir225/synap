@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { dummyCourses } from "@/types/models/course";
+import type { Course } from "@/types/models/course";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
@@ -27,7 +27,7 @@ import { useState } from "react";
 export const Route = createFileRoute("/dashboard/notes/new")({
   component: RouteComponent,
   loader: async () => {
-    const courses = dummyCourses;
+    const courses = [] as Course[];
 
     return {
       courses,
