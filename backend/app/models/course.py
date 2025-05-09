@@ -3,6 +3,7 @@ from pydantic import UUID4, BaseModel, ConfigDict
 from datetime import datetime
 from .note import CourseNoteDTO
 
+
 class CourseBase(BaseModel):
     name: str
     description: str
@@ -11,7 +12,7 @@ class CourseBase(BaseModel):
 
 
 class CreateCourseDTO(CourseBase):
-    id: Optional[UUID4] = None
+    pass
 
 
 class UpdateCourseDTO(BaseModel):
@@ -25,5 +26,6 @@ class CourseDTO(CourseBase):
     created_at: datetime
     updated_at: datetime
     notes: List[CourseNoteDTO]
-    
+
+
 CourseDTO.model_rebuild()
