@@ -12,15 +12,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { courseQueries } from "@/queries/courses.queries";
+import { noteQueries } from "@/queries/notes.queries";
+import noteServices from "@/services/note.service";
 import type { Course } from "@/types/models/course";
 import { dummyNotes } from "@/types/models/note";
-import { createFileRoute } from "@tanstack/react-router";
+import type { EditNoteRequest } from "@/types/responses/notes";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/dashboard/notes/$noteId/edit")({
-  loader: async ({ params }) => {
-    const note = dummyNotes.find((el) => el.id === params.noteId);
-    const courses = [] as Course[];
+  loader: async ({ params, context: { queryClient } }) => {
+    const note = queryClient.ensureQueryData(
+      noteQueries.getNote(params.noteId),
+    );
+
+    const courses = queryClient.ensureQueryData(courseQueries.getCourses());
 
     return {
       courses,
@@ -32,9 +41,43 @@ export const Route = createFileRoute("/dashboard/notes/$noteId/edit")({
 });
 
 function RouteComponent() {
-  const { courses, note } = Route.useLoaderData();
-  const [name, setName] = useState<string | undefined>(note?.title);
+  const { noteId } = Route.useParams();
+  const { data: note } = useSuspenseQuery(noteQueries.getNote(noteId));
+  const { data: courses } = useSuspenseQuery(courseQueries.getCourses());
+  const [title, setTitle] = useState<string | undefined>(note?.title);
+  const [selectedCourse, setSelectedCourse] = useState<string | undefined>(
+    note?.course_id,
+  );
   const [content, setContent] = useState<string | undefined>(note?.content);
+
+  const router = useRouter();
+  const { mutateAsync, status } = useMutation({
+    mutationKey: ["edit-note", noteId],
+    mutationFn: (input: EditNoteRequest) =>
+      noteServices.updateNote(noteId, input),
+
+    onSuccess: (response) => {
+      router.navigate({
+        to: "/dashboard/notes/$noteId",
+        params: { noteId: response.id },
+      });
+    },
+  });
+
+  const handleUpdate = async () => {
+    try {
+      if (!title || !selectedCourse || !content) {
+        return;
+      }
+      await mutateAsync({
+        title: title,
+        course_id: selectedCourse,
+        content: content,
+      });
+    } catch (e) {
+      throw e;
+    }
+  };
 
   if (!note) {
     return <p> Not found ...</p>;
@@ -50,11 +93,13 @@ function RouteComponent() {
         <CardContent className="min-h-[400px] flex flex-col gap-4 items-start">
           <div className="grid gap-2 w-full">
             <Label htmlFor="name">Name</Label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} />
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} />
           </div>
           <div className="grid gap-2 w-full">
             <Label htmlFor="courseId">Course</Label>
             <Select
+              value={selectedCourse}
+              onValueChange={setSelectedCourse}
               defaultValue={courses.find((el) => el.id === note.course_id)?.id}
             >
               <SelectTrigger className="w-full">
@@ -75,7 +120,17 @@ function RouteComponent() {
             contentValue={content}
             setContentValue={setContent}
           />
-          <Button className="self-end">Save Changes</Button>
+          <Button
+            className="self-end"
+            disabled={status === "pending"}
+            onClick={handleUpdate}
+          >
+            {status === "pending" ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <span> Save Changes </span>
+            )}
+          </Button>
         </CardContent>
       </Card>
     </div>

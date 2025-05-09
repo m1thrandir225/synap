@@ -11,7 +11,7 @@ const notesURL = `${config.apiUrl}/notes`;
 const noteServices = {
   getUserNotes: () =>
     apiRequest<Note[]>({
-      url: `${notesURL}`,
+      url: `${notesURL}/user`,
       method: "GET",
       protected: true,
       headers: undefined,
@@ -47,6 +47,14 @@ const noteServices = {
     apiRequest<boolean>({
       url: `${notesURL}/${noteId}`,
       method: "DELETE",
+      protected: true,
+      headers: undefined,
+      params: undefined,
+    }),
+  getNote: (noteId: string) =>
+    apiRequest<Note>({
+      url: `${notesURL}/${noteId}`,
+      method: "GET",
       protected: true,
       headers: undefined,
       params: undefined,
