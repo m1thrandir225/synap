@@ -21,7 +21,7 @@ import {
 } from "../ui/card";
 const courseFormSchema = z.object({
   name: z.string(),
-  content: z.string(),
+  description: z.string(),
 });
 
 type CourseFormSchemaType = z.infer<typeof courseFormSchema>;
@@ -82,10 +82,10 @@ const CourseForm: React.FC<ComponentProps> = ({
             <div className="grid gap-2">
               <FormField
                 control={form.control}
-                name="content"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel> Content </FormLabel>
+                    <FormLabel> Short Description </FormLabel>
                     <FormControl>
                       <Textarea {...field} />
                     </FormControl>

@@ -1,7 +1,8 @@
 import CourseForm from "@/components/courses/CourseForm";
+import coursesServices from "@/services/courses.service";
 import type { CreateCourseRequest } from "@/types/responses/courses";
 import { useMutation } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard/courses/new")({
   component: RouteComponent,
@@ -13,10 +14,17 @@ export const Route = createFileRoute("/dashboard/courses/new")({
 });
 
 function RouteComponent() {
+  const router = useRouter();
   const { mutateAsync } = useMutation({
     mutationKey: ["new-course"],
-    mutationFn: async (input: CreateCourseRequest) => "hello World",
-    onSuccess: (response) => {},
+    mutationFn: async (input: CreateCourseRequest) =>
+      coursesServices.createCourse(input),
+    onSuccess: ({ id }) => {
+      router.navigate({
+        to: "/dashboard/courses/$courseId",
+        params: { courseId: id },
+      });
+    },
   });
   return (
     <div className="w-full flex flex-col gap-8 items-center justify-center h-full">

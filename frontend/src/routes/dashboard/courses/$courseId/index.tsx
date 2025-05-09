@@ -1,12 +1,15 @@
 import CourseCard from "@/components/courses/CourseCard";
 import CourseLectures from "@/components/courses/CourseLectures";
 import CourseNotes from "@/components/courses/CourseNotes";
-import { dummyCourses } from "@/types/models/course";
+import { courseQueries } from "@/queries/courses.queries";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard/courses/$courseId/")({
-  loader: ({ params }) => {
-    const course = dummyCourses.find((el) => el.id === params.courseId);
+  loader: ({ params, context: { queryClient } }) => {
+    const course = queryClient.ensureQueryData(
+      courseQueries.getCourse(params.courseId),
+    );
     return {
       course,
     };
@@ -15,7 +18,8 @@ export const Route = createFileRoute("/dashboard/courses/$courseId/")({
 });
 
 function RouteComponent() {
-  const { course } = Route.useLoaderData();
+  const { courseId } = Route.useParams();
+  const { data: course } = useSuspenseQuery(courseQueries.getCourse(courseId));
 
   if (!course) {
     return <h1> Not Found </h1>;
