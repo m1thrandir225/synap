@@ -6,11 +6,11 @@ from .uploaded_file import UploadedFileDTO
 
 
 class SummarizationBase(BaseModel):
-    id: UUID4
+    id: Optional[UUID4] = None
     file_id: UUID4
     summary_text: str
     ai_model_used: Optional[str] = None
-    created_at: datetime
+    created_at: Optional[datetime] = None
     updated_at: datetime
 
     model_config = ConfigDict(str_max_length=255)

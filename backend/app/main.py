@@ -1,7 +1,6 @@
 from fastapi import FastAPI
-from app.routers import authentication_router, file_router, note_router, lecture_router, course_router
+from app.routers import authentication_router, file_router, note_router, lecture_router, course_router, summarization_router, example_router
 from fastapi.middleware.cors import CORSMiddleware
-
 
 app = FastAPI(root_path="/api/v1")
 
@@ -20,6 +19,8 @@ app.include_router(file_router.router)
 app.include_router(note_router.router)
 app.include_router(lecture_router.router)
 app.include_router(course_router.router)
+app.include_router(summarization_router.router)
+app.include_router(example_router.router)
 
 
 @app.get("/status")

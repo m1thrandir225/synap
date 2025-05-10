@@ -30,6 +30,7 @@ class Settings(BaseSettings):
 
     JWT_SECRET: str
     JWT_ALGORITHM: str
+    OPENAI_API_KEY: str
 
 
 class LocalSettings(Settings):

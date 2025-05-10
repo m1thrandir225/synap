@@ -7,7 +7,7 @@ class UploadedFileBase(BaseModel):
     file_name: str
     file_path: str
     file_type: str
-    file_size: str
+    file_size: int
     mime_type: str
 
     model_config = ConfigDict(from_attributes=True, str_max_length=255)
