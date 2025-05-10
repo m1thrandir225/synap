@@ -2,7 +2,6 @@ import json
 from typing import Annotated, Optional
 from fastapi import APIRouter, HTTPException, status
 from fastapi.params import Depends
-from fastapi.responses import FileResponse, JSONResponse
 from app.storage_provider import LocalStorageProvider
 from backend.app.services.openai_service import OpenAIService
 from app.models.summarisation_response import OpenAIServiceResponse
@@ -11,7 +10,7 @@ from app.repositories.summarization_repository import SummarizationRepository
 from openai import OpenAI
 from sqlalchemy.orm import Session
 
-router = APIRouter(prefix="/example_router", tags=["example_router"])
+router = APIRouter(prefix="/summarization", tags=["summarization_router"])
 
 
 def get_openai_service() -> OpenAIService:
@@ -20,18 +19,6 @@ def get_openai_service() -> OpenAIService:
 def get_openai_client(api_key: Optional[str] = None):
     """Creates and returns an OpenAI client."""
     return OpenAI()
-
-@router.get("/")
-def example():
-    return {"text": "hello from example router"}
-
-@router.get("/summarize1")
-def summarize(client: OpenAI = Depends(get_openai_client)):    
-    response = client.responses.create(
-    model="gpt-4.1",
-    input="Give me a short summary of postgres features."
-    )
-    return response
 
     
 @router.get("/fileB64")

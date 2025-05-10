@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from uuid import UUID
-from database.models import Course
+
+from app.database.models import Course
 
 class CourseRepository:
     def __init__(self, db: Session):
