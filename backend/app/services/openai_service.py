@@ -18,7 +18,7 @@ class OpenAIService:
     ) -> OpenAIServiceResponse:
         prompt_text = (
             "You will receive a base64-encoded file. "
-            "Please summarize its content in one paragraph. "
+            "Please summarize its content in one paragraph. Less than 255 characters."
             "Then, extract 3–5 key topics it discusses.\n\n"
             "Respond in this JSON format only:\n"
             "{\n"

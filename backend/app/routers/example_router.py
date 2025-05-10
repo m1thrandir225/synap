@@ -2,9 +2,8 @@ import json
 from typing import Annotated, Optional
 from fastapi import APIRouter, HTTPException, status
 from fastapi.params import Depends
-from fastapi.responses import FileResponse, JSONResponse
-from app.storage_provider import LocalStorageProvider
-from backend.app.services.openai_service import OpenAIService
+from app.storage_provider import LocalStorageProvider, get_local_storage_provider
+from app.services.openai_service import OpenAIService
 from app.models.summarisation_response import OpenAIServiceResponse
 from app.database.db import get_db
 from app.repositories.summarization_repository import SummarizationRepository
@@ -35,13 +34,13 @@ def summarize(client: OpenAI = Depends(get_openai_client)):
 
     
 @router.get("/fileB64")
-def fileB64(storage_provider: LocalStorageProvider = Depends(LocalStorageProvider)):
+def fileB64(storage_provider: LocalStorageProvider = Depends(get_local_storage_provider)):
     filename="essay_engineers.pdf"
     base64_str = storage_provider.get_file_base64(filename)
     return base64_str
 
 @router.get("/summarize")
-def summarize(client: OpenAI = Depends(get_openai_client), storage_provider: LocalStorageProvider = Depends(LocalStorageProvider)):    
+def summarize(client: OpenAI = Depends(get_openai_client), storage_provider: LocalStorageProvider = Depends(get_local_storage_provider)):    
     filename="essay_engineers.pdf"
     encoded_content = storage_provider.get_file_base64(filename)
 

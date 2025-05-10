@@ -4,18 +4,19 @@ from pathlib import Path
 import aiofiles
 import base64
 
-from fastapi import UploadFile
-from fastapi.params import Depends
+from fastapi import Depends, UploadFile
 
 from app.database.models.user import User
-from app.routers.authentication_router import get_current_user
+from app.dependencies import get_current_user
 
 class LocalStorageProvider:
     def __init__(
         self, 
-        user: User = Depends(get_current_user), 
+        user: User, 
         upload_dir: str = "uploads"
     ):
+        if not user or not hasattr(user, 'id'):
+                    raise ValueError("LocalStorageProvider requires a valid User object with an ID.")
 
         self.user = user
         self.upload_dir = Path(upload_dir)
@@ -101,3 +102,10 @@ class LocalStorageProvider:
     def get_file_path(self, filename: str) -> Path:
          """Gets the full Path object for a file in the user's directory."""
          return self.user_upload_dir / filename
+    
+
+def get_local_storage_provider(
+    user: User = Depends(get_current_user)
+) -> LocalStorageProvider:
+    return LocalStorageProvider(user=user)
+
