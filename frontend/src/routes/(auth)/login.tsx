@@ -1,15 +1,4 @@
 import LoginForm from "@/components/auth/LoginForm";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 import authService from "@/services/auth.service";
 import { useAuthStore } from "@/stores/auth.store";
 import type { LoginRequest } from "@/types/responses/auth";
@@ -17,7 +6,6 @@ import { useMutation } from "@tanstack/react-query";
 import {
   createFileRoute,
   Link,
-  useParams,
   useRouter,
   useSearch,
 } from "@tanstack/react-router";

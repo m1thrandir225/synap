@@ -1,5 +1,4 @@
 import FileList from "@/components/files/FileList";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,7 +10,6 @@ import fileQueries from "@/queries/files.queries";
 import { type UploadedFile } from "@/types/models/uploaded-file";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Upload } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/files/")({
   component: RouteComponent,
