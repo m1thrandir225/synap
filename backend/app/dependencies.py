@@ -31,12 +31,11 @@ from app.repositories import (
 )
 from fastapi.security import OAuth2PasswordBearer
 from app.security import JWT_TYPE, decode_token
-# Security
+from app.services.openai_service import OpenAIService
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
-# Dependency functions for repositories
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
     return UserRepository(db)
 
@@ -164,6 +163,11 @@ def get_lecture_service(
     lec_repo: LectureRepository = Depends(get_lecture_repository),
 ) -> LectureService:
     return LectureService(lec_repo)
+
+def get_openai_service(
+) -> OpenAIService:
+    return OpenAIService()
+
 
 
 def get_current_token(token: str = Depends(oauth2_scheme)):

@@ -25,8 +25,10 @@ def get_lecture(
 
 
 @router.get("/", response_model=List[LectureDTO])
-def get_lectures(service: LectureService = Depends(get_lecture_service), current_user: User = Depends(get_current_user)):
-    return service.get_all_lectures()
+def get_lectures(service: LectureService = Depends(get_lecture_service), 
+                 current_user: User = Depends(get_current_user)
+                 ):
+    return service.get_all_lectures(user_id=current_user.id)
 
 
 @router.get("/by_summarization/{summarization_id}", response_model=LectureDTO)
