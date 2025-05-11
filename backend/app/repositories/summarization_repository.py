@@ -2,7 +2,6 @@ from sqlalchemy.orm import Session
 from app.database import (
     Summarization,
     UploadedFile,
-    Lecture,
 )  
 from typing import List, Optional
 from uuid import UUID
@@ -70,8 +69,3 @@ class SummarizationRepository:
         """Get the file associated with a specific summarization."""
         summarization = self.get_by_id(summarization_id)
         return summarization.file if summarization else None
-
-    def get_lecture_by_summarization(self, summarization_id: UUID) -> Optional[Lecture]:
-        """Get the lecture associated with a specific summarization."""
-        summarization = self.get_by_id(summarization_id)
-        return summarization.lecture if summarization else None

@@ -7,11 +7,6 @@ from .models import (
     Note,
     UploadedFile,
     Summarization,
-    Tag,
-    FileTag,
-    LearningMaterial,
-    LearningMaterialTag,
     Recommendation,
-    RecommendationInteraction,
-    Lecture,
+    LearningMaterial
 )

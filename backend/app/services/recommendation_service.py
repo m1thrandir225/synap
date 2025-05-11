@@ -43,12 +43,11 @@ class RecommendationService:
     def __rank_recommendations(
         self, recommendations: list[Recommendation]
     ) -> list[Recommendation]:
-        return sorted(
-            recommendations, key=lambda rec: rec.relevance_score, reverse=True
-        )
+        return sorted(recommendations, key=lambda rec: rec.relevance_score ,reverse=True
+        ) # type: ignore
 
     def get_top_recommendations(
         self, file_id: UUID, top_n: int = 5
     ) -> list[Recommendation]:
         recommendations = self.get_recommendations_for_file(file_id)
-        return self.rank_recommendations(recommendations)[:top_n]
+        return self.__rank_recommendations(recommendations)[:top_n]
