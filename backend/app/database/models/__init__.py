@@ -3,10 +3,5 @@ from .course import Course
 from .note import Note
 from .file import UploadedFile
 from .summarization import Summarization
-from .tag import Tag
-from .file_tag import FileTag
-from .learning_material import LearningMaterial
-from .learning_material_tag import LearningMaterialTag
 from .recommendation import Recommendation
-from .recommendation_interaction import RecommendationInteraction
-from .lecture import Lecture
+from .learning_material import LearningMaterial

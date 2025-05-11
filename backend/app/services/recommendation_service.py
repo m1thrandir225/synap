@@ -1,5 +1,4 @@
 from uuid import UUID
-from sqlalchemy.orm import Session
 from app.repositories import RecommendationRepository
 from app.database import Recommendation
 from app.models import CreateRecommendationDTO, UpdateRecommendationDTO
@@ -12,7 +11,7 @@ class RecommendationService:
     def create_recommendation(
         self, recom_data: CreateRecommendationDTO
     ) -> Recommendation:
-        return self.recommendation_repository.create_recommendation(recom_data.dict())
+        return self.recommendation_repository.create_recommendation(recom_data.model_dump())
 
     def get_recommendation(self, recommendation_id: UUID) -> Recommendation | None:
         return self.recommendation_repository.get_recommendation_by_id(
@@ -44,12 +43,11 @@ class RecommendationService:
     def __rank_recommendations(
         self, recommendations: list[Recommendation]
     ) -> list[Recommendation]:
-        return sorted(
-            recommendations, key=lambda rec: rec.relevance_score, reverse=True
-        )
+        return sorted(recommendations, key=lambda rec: rec.relevance_score ,reverse=True
+        ) # type: ignore
 
     def get_top_recommendations(
         self, file_id: UUID, top_n: int = 5
     ) -> list[Recommendation]:
         recommendations = self.get_recommendations_for_file(file_id)
-        return self.rank_recommendations(recommendations)[:top_n]
+        return self.__rank_recommendations(recommendations)[:top_n]

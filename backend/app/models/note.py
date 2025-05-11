@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional, TYPE_CHECKING
 from pydantic import BaseModel, ConfigDict, UUID4
 
-# from .course import CourseDTO
 if TYPE_CHECKING:
     from .course import CourseDTO
 

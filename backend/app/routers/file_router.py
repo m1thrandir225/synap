@@ -12,7 +12,7 @@ from app.dependencies import (
     get_uploaded_files_service,
 )
 from app.log import get_logger
-from app.storage_provider import LocalStorageProvider
+from app.storage_provider import LocalStorageProvider, get_local_storage_provider
 from app.services import UploadedFileService
 from app.models import CreateUploadedFile
 from app.database.models import User
@@ -32,7 +32,7 @@ router = APIRouter(
 
 @router.get("/", response_model=List[FileInfo])
 async def list_user_files(
-    storage_provider: LocalStorageProvider = Depends(LocalStorageProvider),
+    storage_provider: LocalStorageProvider = Depends(get_local_storage_provider),
 ):
     """
     Lists all files stored for the current authenticated user.
@@ -46,7 +46,7 @@ async def list_user_files(
 async def upload_file(
     file: Annotated[UploadFile, Form()],
     course_id: Annotated[str, Form()],
-    storage_provider: LocalStorageProvider = Depends(LocalStorageProvider),
+    storage_provider: LocalStorageProvider = Depends(get_local_storage_provider),
     file_service: UploadedFileService = Depends(get_uploaded_files_service),
     user: User = Depends(get_current_user),
 ):
@@ -103,7 +103,7 @@ async def upload_file(
 @router.get("/{filename}")
 async def get_file(
     filename: str,
-    storage_provider: LocalStorageProvider = Depends(LocalStorageProvider),
+    storage_provider: LocalStorageProvider = Depends(get_local_storage_provider),
 ):
     """
     Retrieves a specific file for the current authenticated user.
@@ -122,7 +122,7 @@ async def get_file(
 @router.delete("/{filename}")
 async def delete_file(
     filename: str,
-    storage_provider: LocalStorageProvider = Depends(LocalStorageProvider),
+    storage_provider: LocalStorageProvider = Depends(get_local_storage_provider),
 ):
     """
     Deletes a specific file for the current authenticated user.
