@@ -1,6 +1,6 @@
+from app.models.summarization import OpenAIServiceResponse
 from openai import OpenAI, OpenAIError
 import json
-from app.models.summarisation_response import OpenAIServiceResponse 
 from app.config import settings 
 
 class OpenAIService:

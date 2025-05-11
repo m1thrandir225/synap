@@ -1,7 +1,6 @@
 from datetime import datetime
 from uuid import UUID
 import uuid
-from sqlalchemy.orm import Session
 from app.database import Lecture
 from app.repositories import LectureRepository
 from app.models import CreateLectureDTO, UpdateLectureDTO, LectureDTO, SummarizationDTO
@@ -19,22 +18,29 @@ class LectureService:
             name=lecture.name, 
             summarization_id=lecture.summarization_id, 
             id=lecture.id, 
+            created_at=lecture.created_at,
             summarization=SummarizationDTO(
-            id=lecture.summarization.id,
-            file_id=lecture.summarization.file_id,
-            summary_text=lecture.summarization.summary_text,
-            ai_model_used=lecture.summarization.ai_model_used,
+                id=lecture.summarization.id,
+                file_id=lecture.summarization.file_id,
+                summary_text=lecture.summarization.summary_text,
+                ai_model_used=lecture.summarization.ai_model_used,
+                updated_at=lecture.summarization.updated_at,
+                file=lecture.summarization.file,
             )
+            
         )
 
     def create_lecture(self, lec_data: CreateLectureDTO) -> LectureDTO:
+        
         lecture_data_dump = lec_data.model_dump()
         lecture_data_dump["id"] = uuid.uuid4()
+        lecture_data_dump["created_at"] = datetime.now()
+
         lecture: Lecture = self.repository.create_lecture(lecture_data_dump)
         return self._to_dto(lecture=lecture)
 
-    def get_all_lectures(self) -> List[LectureDTO]:
-        lectures: List[Lecture] = self.repository.get_all_lectures()
+    def get_all_lectures(self, user_id: UUID) -> List[LectureDTO]:
+        lectures: List[Lecture] = self.repository.get_lectures_by_user_id(user_id)
         lecture_dto = []
         for lec in lectures:
             lecture_dto.append(self._to_dto(lecture=lec))

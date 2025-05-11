@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from uuid import UUID
-from app.database import Lecture, Summarization
+from app.database import Lecture, Summarization, UploadedFile
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 from typing import List
@@ -24,6 +24,23 @@ class LectureRepository:
     def get_all_lectures(self) -> List[Lecture]:
         return self.db.query(Lecture).all()
     
+    # def get_lectures_by_user_id(self, user_id: UUID) -> List[Lecture]:
+    #     """Get all lectures for a specific user ID"""
+    #     return self.db.query(Lecture).filter(Lecture.summarization.file.user_id == user_id).all()
+
+    def get_lectures_by_user_id(self, user_id: UUID) -> List[Lecture]:
+        """
+        Get all lectures for a specific user ID by traversing
+        Lecture -> Summarization -> UploadedFile -> user_id
+        """
+        return (
+            self.db.query(Lecture)
+            .join(Lecture.summarization) 
+            .join(Summarization.file)
+            .filter(UploadedFile.user_id == user_id)
+            .all()
+        )
+
     def get_lecture_by_id(self, lecture_id: UUID) -> Lecture:
         """Get a lecture by its ID"""
         return self.db.query(Lecture).filter(Lecture.id == lecture_id).first()

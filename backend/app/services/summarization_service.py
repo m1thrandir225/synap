@@ -1,9 +1,8 @@
 import datetime
-from typing import TYPE_CHECKING, List, Dict, Any
+from typing import List, Dict, Any
 from uuid import UUID
 
 from fastapi import Depends
-from app.models.summarisation_response import OpenAIServiceResponse
 from app.database import Summarization
 from app.services.openai_service import OpenAIService
 from app.storage_provider import get_local_storage_provider
@@ -13,6 +12,7 @@ from app.storage_provider import LocalStorageProvider
 
 from app.models import SummarizationBase
 from app.dependencies import  get_openai_service, get_summarization_repository
+from app.models.summarization import OpenAIServiceResponse
 
 class SummarizationService:
     def __init__(
@@ -35,7 +35,6 @@ class SummarizationService:
 
         base64_content = self.storage_service.get_file_base64(filename)
 
-
         ai_response: OpenAIServiceResponse = self.openai_service.get_summary_and_topics_from_base64_content(
             filename=original_filename,
             base64_content=base64_content
@@ -50,8 +49,10 @@ class SummarizationService:
 
 
         # TODO: Create recommendations here.
-        # topics=ai_response.topics,
 
+        topics=ai_response.topics,
+
+        
 
         return self.summarization_repository.create(summarization_data)
 
