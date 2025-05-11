@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
 from pydantic import UUID4, BaseModel, ConfigDict
-from .recommendation_interaction import RecommendationInteractionDTO
 
 
 class RecommendationBase(BaseModel):
@@ -23,6 +22,4 @@ class UpdateRecommendationDTO(BaseModel):
 class RecommendationDTO(RecommendationBase):
     id: UUID4
     relevance_score: float
-    interactions: List[RecommendationInteractionDTO]
-
     created_at: datetime

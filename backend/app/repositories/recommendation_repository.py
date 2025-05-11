@@ -15,7 +15,7 @@ class RecommendationRepository:
         self.db.refresh(recommendation)
         return recommendation
 
-    def get_recommendation_by_id(self, recommendation_id: UUID) -> Recommendation:
+    def get_recommendation_by_id(self, recommendation_id: UUID) -> Recommendation | None:
         return (
             self.db.query(Recommendation)
             .filter(Recommendation.id == recommendation_id)
@@ -40,7 +40,7 @@ class RecommendationRepository:
 
     def update_recommendation_relevance(
         self, recommendation_id: UUID, recom_data: dict
-    ) -> Recommendation:
+    ) -> Recommendation | None:
         recommendation = self.get_recommendation_by_id(recommendation_id)
         for key, value in recom_data.items():
             setattr(recommendation, key, value)

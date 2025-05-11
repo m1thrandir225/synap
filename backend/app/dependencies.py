@@ -4,29 +4,19 @@ from app.database import User, get_db
 from sqlalchemy.orm import Session
 from app.services import (
     UserService,
-    TagService,
-    FileTagService,
     UploadedFileService,
     NoteService,
     RecommendationService,
-    RecommendationInteractionService,
     LearningMaterialService,
-    LearningMaterialTagService,
-    LectureService,
     CourseService,
 )
 from app.repositories import (
     UserRepository,
-    TagRepository,
-    FileTagRepository,
     SummarizationRepository,
     RecommendationRepository,
-    LectureRepository,
     NoteRepository,
     UploadedFileRepository,
     CourseRepository,
-    RecommendationInteractionRepository,
-    LearningMaterialTagRepository,
     LearningMaterialRepository,
 )
 from fastapi.security import OAuth2PasswordBearer
@@ -49,15 +39,6 @@ def get_uploaded_file_repository(
 def get_course_repository(db: Session = Depends(get_db)) -> CourseRepository:
     return CourseRepository(db)
 
-
-def get_tag_repository(db: Session = Depends(get_db)) -> TagRepository:
-    return TagRepository(db)
-
-
-def get_file_tag_repository(db: Session = Depends(get_db)) -> FileTagRepository:
-    return FileTagRepository(db)
-
-
 def get_summarization_repository(
     db: Session = Depends(get_db),
 ) -> SummarizationRepository:
@@ -69,26 +50,8 @@ def get_recommendation_repository(
 ) -> RecommendationRepository:
     return RecommendationRepository(db)
 
-
-def get_recommendation_interaction_repository(
-    db: Session = Depends(get_db),
-) -> RecommendationInteractionRepository:
-    return RecommendationInteractionRepository(db)
-
-
-def get_lecture_repository(db: Session = Depends(get_db)) -> LectureRepository:
-    return LectureRepository(db)
-
-
 def get_note_repository(db: Session = Depends(get_db)) -> NoteRepository:
     return NoteRepository(db)
-
-
-def get_learning_material_tag_repository(
-    db: Session = Depends(get_db),
-) -> LearningMaterialTagRepository:
-    return LearningMaterialTagRepository(db)
-
 
 def get_learning_material_repository(
     db: Session = Depends(get_db),
@@ -109,12 +72,6 @@ def get_user_service(
     return UserService(user_repo)
 
 
-def get_tag_service(
-    tag_repo: TagRepository = Depends(get_tag_repository),
-) -> TagService:
-    return TagService(tag_repo)
-
-
 def get_note_service(
     note_repo: NoteRepository = Depends(get_note_repository),
 ) -> NoteService:
@@ -126,43 +83,16 @@ def get_recommendation_service(
 ) -> RecommendationService:
     return RecommendationService(recom_repo)
 
-
-def get_recommendation_interaction_service(
-    ri_repo: RecommendationInteractionRepository = Depends(
-        get_recommendation_interaction_repository
-    ),
-) -> RecommendationInteractionService:
-    return RecommendationInteractionService(ri_repo)
-
-
 def get_learning_material_service(
     lm_repo: LearningMaterialRepository = Depends(get_learning_material_repository),
 ) -> LearningMaterialService:
     return LearningMaterialService(lm_repo)
 
 
-def get_file_tag_service(
-    file_tag_repo: FileTagRepository = Depends(get_file_tag_repository),
-) -> FileTagService:
-    return FileTagService(file_tag_repo)
-
-
 def get_uploaded_files_service(
     uploaded_file_repo: UploadedFileRepository = Depends(get_uploaded_file_repository),
 ) -> UploadedFileService:
     return UploadedFileService(uploaded_file_repo)
-
-
-def get_learning_material_tag_service(
-    repo: LearningMaterialTagRepository = Depends(get_learning_material_tag_repository),
-) -> LearningMaterialTagService:
-    return LearningMaterialTagService(repo)
-
-
-def get_lecture_service(
-    lec_repo: LectureRepository = Depends(get_lecture_repository),
-) -> LectureService:
-    return LectureService(lec_repo)
 
 def get_openai_service(
 ) -> OpenAIService:
@@ -190,7 +120,6 @@ async def get_current_user(
         )
 
     user = userService.get_user_id(user_id)
-    print(f"user: {user.id}")
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found"
