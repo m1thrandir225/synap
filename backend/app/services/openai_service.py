@@ -61,3 +61,42 @@ class OpenAIService:
             raise ValueError(f"Could not parse AI response as JSON: {e}. Response: {content_str}")
         except Exception as e:
             raise ValueError(f"Error processing OpenAI response: {e}")
+        
+    def get_learning_materials_for_topics(self, topics: list[str]) -> list[dict]:
+        search_prompt = {
+            "role": "user",
+            "content": (
+                f"Based on these topics: {topics}. "
+                "Can you give me relevant YouTube videos and articles to continue my learning journey on these topics? "
+                "Respond only with this model in mind:\n"
+                "{\n"
+                "  \"title\": \"string\",\n"
+                "  \"description\": \"string\",\n"
+                "  \"url\": \"string\",\n"
+                "  \"material_type\": \"string\" // 'article' or 'video'\n"
+                "}"
+            )
+        }
+
+        try:
+            response = self.client.chat.completions.create(
+                model="gpt-4o-search-preview",
+                web_search_options={},
+                messages=[search_prompt],
+                response_format={"type": "json_object"}
+            )
+
+            content_str = response.choices[0].message.content
+            materials = json.loads(content_str)
+
+            # Ensure result is a list
+            if isinstance(materials, dict):
+                return [materials]
+            return materials
+
+        except OpenAIError as e:
+            raise Exception(f"OpenAI API error: {e}")
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Could not parse AI response as JSON: {e}. Response: {content_str}")
+        except Exception as e:
+            raise ValueError(f"Error processing OpenAI search response: {e}")
