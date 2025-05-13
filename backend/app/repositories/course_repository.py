@@ -1,8 +1,7 @@
-from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy.orm import Session, selectinload
 from uuid import UUID
 
-from app.database.models import Course
+from app.database.models import Course, UploadedFile
 
 class CourseRepository:
     def __init__(self, db: Session):
@@ -24,7 +23,7 @@ class CourseRepository:
         """
         Get all courses created by a specific user.
         """
-        return self.db.query(Course).filter(Course.user_id == user_id).all()
+        return self.db.query(Course).options(selectinload(Course.uploaded_files).selectinload(UploadedFile.summarization)).filter(Course.user_id == user_id).all()
 
     def create(self, course_data: dict) -> Course:
         """
