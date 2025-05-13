@@ -25,7 +25,11 @@ class SummarizationService:
         self.openai_service = openai_service
         self.storage_service = storage_service
 
-    async def summarize_file_and_store(self, filename: str, file_id: UUID, original_filename: str = None) -> Summarization:
+    async def summarize_file_and_store(self, 
+                                       filename: str, 
+                                       file_id: UUID,
+                                       summarization_name: str, 
+                                       original_filename: str = None) -> Summarization:
         """
         Retrieves a file, gets its summary from OpenAI, and stores it.
         'filename' is the name in storage, 'original_filename' is for record keeping.
@@ -45,6 +49,7 @@ class SummarizationService:
             summary_text=ai_response.summarization,
             ai_model_used="gpt-4.1-2025-04-14",
             updated_at=datetime.datetime.now(),
+            name=summarization_name
         )
 
 

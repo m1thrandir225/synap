@@ -1,11 +1,10 @@
 from uuid import UUID
-from typing import List, Optional
+from typing import List
 import uuid
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
 from app.repositories import CourseRepository
 from app.database import Course
-from app.models import CreateCourseDTO, UpdateCourseDTO, CourseDTO, CourseNoteDTO
+from app.models import CreateCourseDTO, UpdateCourseDTO, CourseDTO, CourseNoteDTO, UploadedFileDTO, SummarizationBase
 from datetime import datetime
 
 
@@ -18,9 +17,37 @@ class CourseService:
         if course is None:
             return None
         notes: List[CourseNoteDTO] = []
+        uploaded_files: List[UploadedFileDTO] = []
+        summaries: List[SummarizationBase] = []
+
         for note in course.notes:
             notes.append(CourseNoteDTO(id=note.id, title=note.title, content=note.content, user_id=note.user_id, course_id=note.course_id,
                                        created_at=note.created_at, updated_at=note.updated_at))
+        
+        for file in course.uploaded_files:
+            for summary in file.summarization:
+                summaries.append(SummarizationBase(
+                    id=summary.id,
+                    file_id=summary.file_id,
+                    summary_text=summary.summary_text,
+                    ai_model_used=summary.ai_model_used,
+                    updated_at=summary.updated_at,
+                    name=summary.name,
+                    created_at=summary.created_at,
+                ))
+
+            uploaded_files.append(UploadedFileDTO(file_name=file.file_name, 
+                                                  file_path=file.file_path, 
+                                                  file_type=file.file_type, 
+                                                  file_size=file.file_size,
+                                                  mime_type=file.mime_type,
+                                                  id=file.id, 
+                                                  course_id= file.course_id, 
+                                                  user_id=file.user_id, 
+                                                  created_at= file.created_at,
+                                                  ))
+
+
         return CourseDTO(
             name=course.name,
             description=course.description, 
@@ -28,7 +55,9 @@ class CourseService:
             user_id=course.user_id,
             created_at=course.created_at,
             updated_at=course.updated_at,
-            notes=notes
+            notes=notes,
+            uploaded_files=uploaded_files,
+            summaries=summaries
         )
     
     def get_course(self, course_id: UUID) -> CourseDTO:

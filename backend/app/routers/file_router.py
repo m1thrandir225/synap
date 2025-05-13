@@ -1,6 +1,4 @@
-from datetime import datetime
 import os
-from uuid import UUID
 import uuid
 from fastapi import APIRouter, UploadFile, Depends, HTTPException, status
 from fastapi.responses import FileResponse
@@ -17,6 +15,8 @@ from app.services import UploadedFileService
 from app.models import CreateUploadedFile
 from app.database.models import User
 from fastapi import Form
+
+from app.models.uploaded_file import UploadedFileDTO
 
 log = get_logger(__name__)
 
@@ -85,13 +85,10 @@ async def upload_file(
             mime_type=mime_type,
         )
 
-        file_service.create_uploaded_file(file_data=uploaded_file_data)
+        uploaded_file: UploadedFileDTO =  file_service.create_uploaded_file(file_data=uploaded_file_data)
 
-        return {
-            "message": "File uploaded successfully",
-            "filename": str(saved_filename),
-            "location": file_path,
-        }
+        return uploaded_file
+    
     except Exception as e:
         log.error("Failed to do something", e)
         raise HTTPException(
