@@ -10,11 +10,6 @@ router = APIRouter(
     prefix="/courses", tags=["courses"], dependencies=[Depends(get_current_token)]
 )
 
-#FIXME: this may also be redundant because get_by_user will return the courses by the specific authenticated user.
-#FIXME: if this is needed it can be uncommented.
-# @router.get("/with_notes", response_model=List[CourseDTO])
-# def get_courses_with_notes(service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
-#     return service.get_courses_with_notes()
 
 #idk if this works, untested.
 @router.get("/with_files", response_model=List[CourseDTO])

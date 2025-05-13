@@ -1,6 +1,8 @@
 from typing import ForwardRef, List, Optional
 from pydantic import UUID4, BaseModel, ConfigDict
 from datetime import datetime
+
+from app.models.summarization import  UploadedFileDTO, SummarizationBase
 from .note import CourseNoteDTO
 
 
@@ -26,6 +28,8 @@ class CourseDTO(CourseBase):
     created_at: datetime
     updated_at: datetime
     notes: List[CourseNoteDTO]
+    uploaded_files: List[UploadedFileDTO]
+    summaries: List[SummarizationBase]
 
 
 CourseDTO.model_rebuild()

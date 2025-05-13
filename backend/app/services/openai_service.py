@@ -53,6 +53,7 @@ class OpenAIService:
                 raise ValueError("OpenAI returned an empty content string.")
 
             parsed_json = json.loads(content_str)
+            parsed_json["query"] = prompt_text  # Or another useful value
             return OpenAIServiceResponse(**parsed_json)
 
         except OpenAIError as e:

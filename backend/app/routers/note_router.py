@@ -28,13 +28,10 @@ def get_note(note_id: UUID, service: NoteService = Depends(get_note_service), cu
         raise HTTPException(status_code=404, detail="Note not found")
     return note
 
-
-
 #REDUNDANT ROUTE, the get_notes_by_user already returns all notes created by the specific user
 # @router.get("/", response_model=List[NoteDTO])
 # def get_all_notes(service: NoteService = Depends(get_note_service), current_user: User = Depends(get_current_user),):
 #     return service.get_all_notes()
-
 
 @router.get("/course/{course_id}", response_model=List[NoteDTO])
 def get_notes_by_course(

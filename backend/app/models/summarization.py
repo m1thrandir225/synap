@@ -5,6 +5,9 @@ from datetime import datetime
 from .uploaded_file import UploadedFileDTO
 
 
+class CreateSummarization(BaseModel):
+    name: str
+    file_id: UUID4
 class SummarizationBase(BaseModel):
     id: Optional[UUID4] = None
     file_id: UUID4
@@ -12,6 +15,7 @@ class SummarizationBase(BaseModel):
     ai_model_used: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: datetime
+    name: str
 
     model_config = ConfigDict(str_max_length=255)
 
@@ -26,7 +30,8 @@ class OpenAIServiceResponse(BaseModel):
     """
     summarization: str = Field(..., description="A summary of the text content.")
     topics: List[str] = Field(..., description="A list of main topics discussed in the text.")
-    
+    query: str
+
     class Config:
         json_schema_extra = {
             "example": {
