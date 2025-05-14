@@ -65,11 +65,11 @@ class SummarizationService:
                 material["url"]
             )
 
-        recommendation = self.recommendation_service.create_recommendation(
-            file_id=file_id,
-            learning_material=learning_material,
-            query=ai_response.query  # must be set from OpenAIService
-        )
+            recommendation = self.recommendation_service.create_recommendation(
+                file_id=file_id,
+                learning_material=learning_material,
+                query=ai_response.query  # must be set from OpenAIService
+            )
 
         return self.summarization_repository.create(summarization_data)
 
