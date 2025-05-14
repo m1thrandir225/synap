@@ -23,7 +23,10 @@ async def summarize_file(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
 
     return await summarization_service.summarize_file_and_store(
-        filename=uploaded_file.file_name, file_id=summarization.file_id, summarization_name=summarization.name
+        filename=uploaded_file.file_name, 
+        file_id=summarization.file_id, 
+        summarization_name=summarization.name, 
+        original_filename=uploaded_file.file_name
     )
 
 

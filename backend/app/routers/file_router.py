@@ -44,7 +44,8 @@ async def list_user_files(
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def upload_file(
-    file: Annotated[UploadFile, Form()],
+    # file: Annotated[UploadFile, Form()],
+    file: UploadFile,
     course_id: Annotated[str, Form()],
     storage_provider: LocalStorageProvider = Depends(get_local_storage_provider),
     file_service: UploadedFileService = Depends(get_uploaded_files_service),

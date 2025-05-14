@@ -2,7 +2,7 @@ from typing import List, Optional
 from uuid import UUID
 from app.repositories import LearningMaterialRepository
 from app.database import LearningMaterial
-from app.models import CreateLearningMaterialDTO, UpdateLearningMaterialDTO, LearningMaterialDTO
+from app.models import CreateLearningMaterialDTO, UpdateLearningMaterialDTO, LearningMaterialDTO, RecommendationDTO
 from datetime import datetime
 
 class LearningMaterialService:

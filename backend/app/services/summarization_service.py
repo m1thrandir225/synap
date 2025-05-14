@@ -6,13 +6,14 @@ from fastapi import Depends
 from app.database import Summarization
 from app.services.openai_service import OpenAIService
 from app.services.learning_material_service import LearningMaterialService
+from app.services.recommendation_service import RecommendationService
 from app.storage_provider import get_local_storage_provider
 
 from app.repositories import SummarizationRepository
 from app.storage_provider import LocalStorageProvider
 
-from app.models import SummarizationBase
-from app.dependencies import  get_openai_service, get_summarization_repository
+from app.models import SummarizationBase, CreateLearningMaterialDTO
+from app.dependencies import  get_learning_material_service, get_openai_service, get_summarization_repository, get_recommendation_service
 from app.models.summarization import OpenAIServiceResponse
 
 class SummarizationService:
@@ -21,14 +22,16 @@ class SummarizationService:
         summarization_repository: SummarizationRepository,
         openai_service: OpenAIService,
         learning_material_service: LearningMaterialService,
+        recommendation_service: RecommendationService,
         storage_service: LocalStorageProvider
     ):
         self.summarization_repository = summarization_repository
         self.openai_service = openai_service
         self.learning_material_service = learning_material_service
+        self.recommendation_service = recommendation_service
         self.storage_service = storage_service
 
-    async def summarize_file_and_store(self, filename: str, file_id: UUID, original_filename: str = None) -> Summarization:
+    async def summarize_file_and_store(self, filename: str, file_id: UUID, summarization_name: str, original_filename: str = None) -> Summarization:
         """
         Retrieves a file, gets its summary from OpenAI, and stores it.
         'filename' is the name in storage, 'original_filename' is for record keeping.
@@ -47,9 +50,11 @@ class SummarizationService:
             file_id=file_id,
             summary_text=ai_response.summarization,
             ai_model_used="gpt-4.1-2025-04-14",
+            created_at=datetime.datetime.now(),
             updated_at=datetime.datetime.now(),
+            name=summarization_name
         )
-        self.summarization_repository.create(summarization_data)
+        # self.summarization_repository.create(summarization_data)
 
         topics = ai_response.topics
         materials_data = self.openai_service.get_learning_materials_for_topics(topics)
@@ -65,11 +70,11 @@ class SummarizationService:
                 material["url"]
             )
 
-        recommendation = self.recommendation_service.create_recommendation(
-            file_id=file_id,
-            learning_material=learning_material,
-            query=ai_response.query  # must be set from OpenAIService
-        )
+            self.recommendation_service.create_recommendation(
+                file_id=file_id,
+                learning_material=learning_material,
+                query=ai_response.query  # must be set from OpenAIService
+            )
 
         return self.summarization_repository.create(summarization_data)
 
@@ -87,10 +92,14 @@ class SummarizationService:
 def get_summarization_service(
     summarization_repository: SummarizationRepository = Depends(get_summarization_repository),
     openai_service: OpenAIService = Depends(get_openai_service),
+    learning_material_service: LearningMaterialService = Depends(get_learning_material_service),
+    recommendation_service: RecommendationService = Depends(get_recommendation_service),
     storage_service: LocalStorageProvider = Depends(get_local_storage_provider),
 ) -> SummarizationService:
     return SummarizationService(
         summarization_repository=summarization_repository, 
         openai_service=openai_service,
+        learning_material_service=learning_material_service,
+        recommendation_service=recommendation_service,
         storage_service=storage_service     
     )
