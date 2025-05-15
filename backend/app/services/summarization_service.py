@@ -58,23 +58,30 @@ class SummarizationService:
 
         topics = ai_response.topics
         materials_data = self.openai_service.get_learning_materials_for_topics(topics)
-
+        for m in materials_data:
+            print(m)
         
         for material in materials_data:
-            learning_material = self.learning_material_service.create_learning_material(
-                CreateLearningMaterialDTO(
-                    title=material["title"],
-                    description=material["description"],
-                    material_type=material["material_type"]
-                ),
-                material["url"]
-            )
+            required_keys = {"title", "description", "material_type", "url"}
+            if not required_keys.issubset(material):
+                continue
+            try:
+                learning_material = self.learning_material_service.create_learning_material(
+                    CreateLearningMaterialDTO(
+                        title=material["title"],
+                        description=material["description"],
+                        material_type=material["material_type"]
+                    ),
+                    material["url"]
+                )
 
-            self.recommendation_service.create_recommendation(
-                file_id=file_id,
-                learning_material=learning_material,
-                query=ai_response.query  # must be set from OpenAIService
-            )
+                self.recommendation_service.create_recommendation(
+                    file_id=file_id,
+                    learning_material=learning_material,
+                    query=ai_response.query  # must be set from OpenAIService
+                )
+            except Exception as e:
+                print(f"Failed to process material: {material}, error: {e}")
 
         return self.summarization_repository.create(summarization_data)
 

@@ -15,14 +15,16 @@ class NoteService:
         if note is None:
             return None
         return NoteDTO(
-            title=note.title, 
+            title=note.title,
             course=CourseDTO(id=note.course.id,
                              description=note.course.description, 
                              name=note.course.name,
                              user_id=note.course.user_id,
                              created_at=note.course.created_at,
                              updated_at=note.course.updated_at,
-                             notes=[]),
+                             notes=[],
+                             uploaded_files=[], #or uploaded_files=note.course.uploaded_files kako sakas
+                             summaries=[]),     #or summaries=note.course.summaries kako sakas
             id=note.id,
             user_id=note.user_id,
             course_id=note.course.id,

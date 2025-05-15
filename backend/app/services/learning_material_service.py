@@ -47,7 +47,11 @@ class LearningMaterialService:
     def list_learning_materials(
         self, skip: int = 0, limit: int = 100
     ) -> List[LearningMaterialDTO]:
-        return self.repository.get_learning_materials(skip=skip, limit=limit)
+        lm: List[LearningMaterial] = self.repository.get_learning_materials(skip=skip, limit=limit)
+        lm_data = []
+        for l in lm:
+            lm_data.append(self._to_dto(lm=l))
+        return lm_data
 
     def update_learning_material(
         self, learning_material_id: UUID, lm_data: UpdateLearningMaterialDTO
