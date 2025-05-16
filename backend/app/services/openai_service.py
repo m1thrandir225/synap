@@ -102,13 +102,13 @@ class OpenAIService:
 
         try:
             response = self.client.chat.completions.create(
-                model="gpt-4o",
+                model="gpt-4o-search-preview",
                 messages=[search_prompt],
                 response_format={"type": "json_object"}
             )
 
             content_str = response.choices[0].message.content
-            materials = json.loads(content_str)["resources"] #added ["resources"] placeholder
+            materials = json.loads(content_str)["resources"]
 
             # Ensure result is a list
             if isinstance(materials, dict):
