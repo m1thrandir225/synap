@@ -11,7 +11,7 @@ from .recommendation import (
     CreateRecommendationDTO,
     UpdateRecommendationDTO,
 )
-from .summarization import SummarizationDTO, SummarizationBase, CreateSummarization
+from .summarization import SummarizationDTO, SummarizationBase, CreateSummarization, OpenAIServiceResponse
 from .uploaded_file import UploadedFileDTO, UpdateUploadedFileDTO, UploadedFileBase, UploadFileRequest, CreateUploadedFile
 from .user import UserDTO, CreateUserDTO, UpdateUserDTO, UpdateUserPasswordDTO
 from .auth import LoginRegisterResponse, RefreshTokenResponse, RefreshTokenRequest

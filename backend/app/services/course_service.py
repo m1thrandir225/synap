@@ -16,63 +16,32 @@ class CourseService:
     def _to_dto(self, course: Course):
         if course is None:
             return None
+
         notes: List[CourseNoteDTO] = []
         uploaded_files: List[UploadedFileDTO] = []
         summaries: List[SummarizationBase] = []
 
         for note in course.notes:
-<<<<<<< HEAD
             notes.append(CourseNoteDTO.model_validate(note))
         for file in course.uploaded_files:
             for summary in file.summarization:
                 summaries.append(SummarizationBase.model_validate(summary))
 
             uploaded_files.append(UploadedFileDTO.model_validate(file))
-=======
-            notes.append(CourseNoteDTO(id=note.id, title=note.title, content=note.content, user_id=note.user_id, course_id=note.course_id,
-                                       created_at=note.created_at, updated_at=note.updated_at))
-        
-        for file in course.uploaded_files:
-            for summary in file.summarization:
-                summaries.append(SummarizationBase(
-                    id=summary.id,
-                    file_id=summary.file_id,
-                    summary_text=summary.summary_text,
-                    ai_model_used=summary.ai_model_used,
-                    updated_at=summary.updated_at,
-                    name=summary.name,
-                    created_at=summary.created_at,
-                ))
-
-            uploaded_files.append(UploadedFileDTO(file_name=file.file_name, 
-                                                  file_path=file.file_path, 
-                                                  file_type=file.file_type, 
-                                                  file_size=file.file_size,
-                                                  mime_type=file.mime_type,
-                                                  id=file.id, 
-                                                  course_id= file.course_id, 
-                                                  user_id=file.user_id, 
-                                                  created_at= file.created_at,
-                                                  ))
->>>>>>> development
 
 
-        return CourseDTO(
-            name=course.name,
-            description=course.description, 
-            id=course.id,
-            user_id=course.user_id,
-            created_at=course.created_at,
-            updated_at=course.updated_at,
-            notes=notes,
-            uploaded_files=uploaded_files,
-            summaries=summaries
-        )
+        dto = CourseDTO.model_validate(course)
+
+        dto.uploaded_files = uploaded_files
+        dto.notes = notes
+        dto.summaries = summaries
+        return dto
     
     def get_course(self, course_id: UUID) -> CourseDTO:
-        course: Course = self.course_repo.get_by_id(course_id)
+        course = self.course_repo.get_by_id(course_id)
         if not course:
             raise HTTPException(status_code=404, detail="Course not found")
+
         return self._to_dto(course=course)
 
     def get_courses_by_user(self, user_id: UUID) -> List[CourseDTO]:
@@ -102,9 +71,10 @@ class CourseService:
     def update_course(self, course_id: UUID, course_data: UpdateCourseDTO) -> CourseDTO:
         course_data_dump = course_data.model_dump(exclude_unset=True)
         course_data_dump["updated_at"] = datetime.now()
-        course: Course = self.course_repo.update(course_id, course_data_dump)
+        course = self.course_repo.update(course_id, course_data_dump)
         if not course:
             raise HTTPException(status_code=404, detail="Course not found")
+
         return self._to_dto(course=course)
 
     def delete_course(self, course_id: UUID) -> dict:

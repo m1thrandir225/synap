@@ -6,7 +6,6 @@ from app.database import (
 from typing import List, Optional
 from uuid import UUID
 
-
 class SummarizationRepository:
     def __init__(self, db: Session):
         self.db = db

@@ -3,11 +3,8 @@ import uuid
 from pathlib import Path
 import aiofiles
 import base64
-
-from fastapi import Depends, UploadFile
-
-from app.database.models.user import User
-from app.dependencies import get_current_user
+from fastapi import  UploadFile
+from app.database import User
 
 class LocalStorageProvider:
     def __init__(

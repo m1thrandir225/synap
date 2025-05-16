@@ -1,4 +1,4 @@
-from typing import Annotated
+from uuid import UUID
 from fastapi import APIRouter, HTTPException, status
 from fastapi import Depends
 from app.dependencies import  get_uploaded_files_service, get_summarization_service
