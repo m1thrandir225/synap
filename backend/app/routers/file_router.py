@@ -12,11 +12,10 @@ from app.dependencies import (
 from app.log import get_logger
 from app.storage_provider import LocalStorageProvider, get_local_storage_provider
 from app.services import UploadedFileService
-from app.models import CreateUploadedFile
-from app.database.models import User
+from app.models import CreateUploadedFile, UploadedFileDTO
+from app.database import User
 from fastapi import Form
 
-from app.models.uploaded_file import UploadedFileDTO
 
 log = get_logger(__name__)
 
