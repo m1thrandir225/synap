@@ -17,7 +17,7 @@ class SummarizationBase(BaseModel):
     updated_at: datetime
     name: str
 
-    model_config = ConfigDict(str_max_length=255)
+    model_config = ConfigDict(from_attributes=True, str_max_length=255)
 
 
 class SummarizationDTO(SummarizationBase):
@@ -30,7 +30,8 @@ class OpenAIServiceResponse(BaseModel):
     """
     summarization: str = Field(..., description="A summary of the text content.")
     topics: List[str] = Field(..., description="A list of main topics discussed in the text.")
-    
+    query: str
+
     class Config:
         json_schema_extra = {
             "example": {

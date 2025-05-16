@@ -1,9 +1,6 @@
 from datetime import datetime
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 from pydantic import BaseModel, ConfigDict, UUID4
-
-if TYPE_CHECKING:
-    from .course import CourseDTO
 
 
 class NoteBase(BaseModel):
@@ -29,8 +26,7 @@ class NoteDTO(NoteBase):
     user_id: UUID4
     created_at: datetime
     updated_at: datetime
-
-    course: "CourseDTO"
+    course_id: UUID4
 
 
 class CourseNoteDTO(NoteBase):

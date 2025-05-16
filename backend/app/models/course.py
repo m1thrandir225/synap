@@ -1,8 +1,7 @@
 from typing import ForwardRef, List, Optional
 from pydantic import UUID4, BaseModel, ConfigDict
 from datetime import datetime
-
-from app.models.summarization import  UploadedFileDTO, SummarizationBase
+from .summarization import UploadedFileDTO, SummarizationBase
 from .note import CourseNoteDTO
 
 

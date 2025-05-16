@@ -10,20 +10,18 @@ from app.dependencies import (
     get_uploaded_files_service,
 )
 from app.log import get_logger
-from app.storage_provider import LocalStorageProvider, get_local_storage_provider
+from app.storage_provider import LocalStorageProvider
 from app.services import UploadedFileService
-from app.models import CreateUploadedFile
-from app.database.models import User
+from app.models import CreateUploadedFile, UploadedFileDTO
+from app.dependencies import get_local_storage_provider
+from app.database import User
 from fastapi import Form
-
-from app.models.uploaded_file import UploadedFileDTO
 
 log = get_logger(__name__)
 
-
+#FIXME: move to models 
 class FileInfo(BaseModel):
     filename: str
-
 
 router = APIRouter(
     prefix="/files", tags=["Files"], dependencies=[Depends(get_current_token)]
@@ -44,7 +42,7 @@ async def list_user_files(
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def upload_file(
-    file: Annotated[UploadFile, Form()],
+    file: UploadFile,
     course_id: Annotated[str, Form()],
     storage_provider: LocalStorageProvider = Depends(get_local_storage_provider),
     file_service: UploadedFileService = Depends(get_uploaded_files_service),

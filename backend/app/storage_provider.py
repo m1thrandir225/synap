@@ -104,8 +104,3 @@ class LocalStorageProvider:
          return self.user_upload_dir / filename
     
 
-def get_local_storage_provider(
-    user: User = Depends(get_current_user)
-) -> LocalStorageProvider:
-    return LocalStorageProvider(user=user)
-
