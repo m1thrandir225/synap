@@ -54,7 +54,6 @@ class SummarizationService:
             updated_at=datetime.datetime.now(),
             name=summarization_name
         )
-        # self.summarization_repository.create(summarization_data)
 
         topics = ai_response.topics
         materials_data = self.openai_service.get_learning_materials_for_topics(topics)
@@ -78,7 +77,7 @@ class SummarizationService:
                 self.recommendation_service.create_recommendation(
                     file_id=file_id,
                     learning_material=learning_material,
-                    query=ai_response.query  # must be set from OpenAIService
+                    relevance_score=material["relevance_score"]
                 )
             except Exception as e:
                 print(f"Failed to process material: {material}, error: {e}")

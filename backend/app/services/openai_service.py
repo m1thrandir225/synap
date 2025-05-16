@@ -2,6 +2,7 @@ from app.models.summarization import OpenAIServiceResponse
 from openai import OpenAI, OpenAIError
 import json
 from app.config import settings 
+import re
 
 class OpenAIService:
     def __init__(self, api_key: str = settings.OPENAI_API_KEY):
@@ -84,6 +85,7 @@ class OpenAIService:
             "content": (
                 f"Based on these topics: {topics}. "
                 "Can you give me a list of relevant YouTube videos and articles to continue my learning journey on these topics? "
+                "Include a 'relevance_score' between 0 and 1 indicating how relevant each resource is to the topics. "
                 "Respond only with a JSON object in this structure:\n"
                 "{\n"
                 "  \"resources\": [\n"
@@ -92,6 +94,7 @@ class OpenAIService:
                 "      \"description\": \"string\",\n"
                 "      \"url\": \"string\",\n"
                 "      \"material_type\": \"string\" // 'article' or 'video'\n"
+                "      \"relevance_score\": float // value between 0 and 1\n"
                 "    }\n"
                 "  ]\n"
                 "}\n"
@@ -103,14 +106,20 @@ class OpenAIService:
         try:
             response = self.client.chat.completions.create(
                 model="gpt-4o-search-preview",
-                messages=[search_prompt],
-                response_format={"type": "json_object"}
+                messages=[search_prompt]
             )
+            
+            content_str = response.choices[0].message.content.strip()
 
-            content_str = response.choices[0].message.content
-            materials = json.loads(content_str)["resources"]
+            # Remove Markdown code block if it exists
+            if content_str.startswith("```json") or content_str.startswith("```"):
+                content_str = re.sub(r"^```(?:json)?\s*", "", content_str)
+                content_str = re.sub(r"\s*```$", "", content_str)
 
-            # Ensure result is a list
+            # Now parse the cleaned JSON
+            parsed_json = json.loads(content_str)
+            materials = parsed_json.get("resources", [])
+
             if isinstance(materials, dict):
                 return [materials]
             return materials

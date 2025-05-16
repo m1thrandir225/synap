@@ -17,21 +17,13 @@ class RecommendationService:
             created_at=recommendation.created_at
     )
 
-    def _calculate_score(self, query: str, learning_material_text: str) -> float:
-        query_words = set(query.lower().split())
-        lm_words = set(learning_material_text.lower().split())
-        if not query_words:
-            return 0.0
-        return len(query_words & lm_words) / len(query_words)
-    
+
     def create_recommendation(
     self,
     file_id: UUID,
     learning_material: LearningMaterial,
-    query: str
+    relevance_score: float
 ) -> RecommendationDTO:
-        learning_material_text = f"{learning_material.title} {learning_material.description}"
-        relevance_score = self._calculate_score(query, learning_material_text)
 
         rec_data = {
         "file_id": file_id,
@@ -42,7 +34,6 @@ class RecommendationService:
 
         created = self.recommendation_repository.create_recommendation(rec_data)
 
-        # Here's where _to_dto matters:
         return self._to_dto(created)
 
 

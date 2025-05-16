@@ -5,7 +5,7 @@ from uuid import UUID
 from app.dependencies import  get_uploaded_files_service
 from app.services import SummarizationService, get_summarization_service
 from app.services import UploadedFileService
-from app.models CreateSummarization
+from app.models import CreateSummarization
 
 
 router = APIRouter(prefix="/summarization", tags=["summarization_router"])

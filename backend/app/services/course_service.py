@@ -21,31 +21,12 @@ class CourseService:
         summaries: List[SummarizationBase] = []
 
         for note in course.notes:
-            notes.append(CourseNoteDTO(id=note.id, title=note.title, content=note.content, user_id=note.user_id, course_id=note.course_id,
-                                       created_at=note.created_at, updated_at=note.updated_at))
-        
+            notes.append(CourseNoteDTO.model_validate(note))
         for file in course.uploaded_files:
             for summary in file.summarization:
-                summaries.append(SummarizationBase(
-                    id=summary.id,
-                    file_id=summary.file_id,
-                    summary_text=summary.summary_text,
-                    ai_model_used=summary.ai_model_used,
-                    updated_at=summary.updated_at,
-                    name=summary.name,
-                    created_at=summary.created_at,
-                ))
+                summaries.append(SummarizationBase.model_validate(summary))
 
-            uploaded_files.append(UploadedFileDTO(file_name=file.file_name, 
-                                                  file_path=file.file_path, 
-                                                  file_type=file.file_type, 
-                                                  file_size=file.file_size,
-                                                  mime_type=file.mime_type,
-                                                  id=file.id, 
-                                                  course_id= file.course_id, 
-                                                  user_id=file.user_id, 
-                                                  created_at= file.created_at,
-                                                  ))
+            uploaded_files.append(UploadedFileDTO.model_validate(file))
 
 
         return CourseDTO(
@@ -65,13 +46,6 @@ class CourseService:
         if not course:
             raise HTTPException(status_code=404, detail="Course not found")
         return self._to_dto(course=course)
-
-    # def get_all_courses(self) -> List[CourseDTO]:
-    #     courses: List[Course] = self.course_repo.get_all()
-    #     course_dto = []
-    #     for c in courses:
-    #         course_dto.append(self._to_dto(course=c))
-    #     return course_dto
 
     def get_courses_by_user(self, user_id: UUID) -> List[CourseDTO]:
         courses: List[Course] = self.course_repo.get_by_user_id(user_id)
@@ -109,13 +83,6 @@ class CourseService:
         if not self.course_repo.delete(course_id):
             raise HTTPException(status_code=404, detail="Course not found")
         return {"message": f"Course has been successfully deleted."}
-
-    # def get_courses_with_notes(self) -> List[CourseDTO]:
-    #     courses: List[Course] = self.course_repo.get_courses_with_notes()
-    #     course_dto = []
-    #     for c in courses:
-    #         course_dto.append(self._to_dto(course=c))
-    #     return course_dto
 
     def get_courses_with_uploaded_files(self) -> List[CourseDTO]:
         courses: List[Course] = self.course_repo.get_courses_with_uploaded_files()

@@ -23,8 +23,8 @@ class NoteService:
                              created_at=note.course.created_at,
                              updated_at=note.course.updated_at,
                              notes=[],
-                             uploaded_files=[], #or uploaded_files=note.course.uploaded_files kako sakas
-                             summaries=[]),     #or summaries=note.course.summaries kako sakas
+                             uploaded_files=[],
+                             summaries=[]),
             id=note.id,
             user_id=note.user_id,
             course_id=note.course.id,
@@ -46,14 +46,6 @@ class NoteService:
         note_data_dump["updated_at"] = datetime.now()
         created_note: Note = self.repository.create_note(note_data_dump)
         return self._to_dto(note=created_note)
-
-    #REDUNDANT, the get_notes_by_user_id already returns all of the notes created by the current user.
-    # def get_all_notes(self) -> List[NoteDTO]:
-    #     notes: list[Note] = self.repository.get_all_notes()
-    #     notes_dto = []
-    #     for note in notes:
-    #         notes_dto.append(self._to_dto(note=note))
-    #     return notes_dto
 
     def get_note_by_id(self, note_id: UUID) -> Optional[NoteDTO]:
         note: Optional[Note] = self.repository.get_note_by_id(note_id)
