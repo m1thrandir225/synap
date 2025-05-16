@@ -29,7 +29,7 @@ class CourseDTO(CourseBase):
     updated_at: datetime
     notes: List[CourseNoteDTO]
     uploaded_files: List[UploadedFileDTO]
-    summaries: Optional[List[SummarizationBase]] = None
+    summaries: List[SummarizationBase]
 
 
 CourseDTO.model_rebuild()
