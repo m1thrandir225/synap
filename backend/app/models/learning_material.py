@@ -23,12 +23,9 @@ class UpdateLearningMaterialDTO(BaseModel):
     material_type: Optional[str] = None
 
 
-class LearningMaterialDTO(BaseModel):
+class LearningMaterialDTO(LearningMaterialBase):
     id: UUID4
     url: str
-    title: str
-    description: str
-    material_type: str
     created_at: datetime
 
     recommendations: List[RecommendationDTO]
