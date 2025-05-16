@@ -1,41 +1,34 @@
 from uuid import UUID
 from app.repositories import RecommendationRepository
 from app.database import Recommendation, LearningMaterial
-from app.models import CreateRecommendationDTO, UpdateRecommendationDTO, RecommendationDTO
+from app.models import (
+    CreateRecommendationDTO,
+    UpdateRecommendationDTO,
+    RecommendationDTO,
+)
 from datetime import datetime
+
 
 class RecommendationService:
     def __init__(self, recom_repo: RecommendationRepository):
         self.recommendation_repository = recom_repo
 
-    def _to_dto(self, recommendation: Recommendation | None):
-        return RecommendationDTO(
-            id=recommendation.id,
-            file_id=recommendation.file_id,
-            learning_material_id=recommendation.learning_material_id,
-            relevance_score=recommendation.relevance_score,
-            created_at=recommendation.created_at
-    )
-
+    def _to_dto(self, recommendation: Recommendation | None) -> RecommendationDTO:
+        return RecommendationDTO.model_validate(recommendation)
 
     def create_recommendation(
-    self,
-    file_id: UUID,
-    learning_material: LearningMaterial,
-    relevance_score: float
-) -> RecommendationDTO:
-
+        self, file_id: UUID, learning_material: LearningMaterial, relevance_score: float
+    ) -> RecommendationDTO:
         rec_data = {
-        "file_id": file_id,
-        "learning_material_id": learning_material.id,
-        "created_at": datetime.now(),
-        "relevance_score": relevance_score
+            "file_id": file_id,
+            "learning_material_id": learning_material.id,
+            "created_at": datetime.now(),
+            "relevance_score": relevance_score,
         }
 
         created = self.recommendation_repository.create_recommendation(rec_data)
 
         return self._to_dto(created)
-
 
     def get_recommendation(self, recommendation_id: UUID) -> Recommendation | None:
         return self.recommendation_repository.get_recommendation_by_id(
@@ -67,7 +60,8 @@ class RecommendationService:
     def _rank_recommendations(
         self, recommendations: list[Recommendation]
     ) -> list[Recommendation]:
-        return sorted(recommendations, key=lambda rec: rec.relevance_score ,reverse=True
+        return sorted(
+            recommendations, key=lambda rec: rec.relevance_score, reverse=True
         )
 
     def get_top_recommendations(
