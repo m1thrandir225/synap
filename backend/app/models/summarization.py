@@ -8,6 +8,7 @@ from .uploaded_file import UploadedFileDTO
 class CreateSummarization(BaseModel):
     name: str
     file_id: UUID4
+
 class SummarizationBase(BaseModel):
     id: Optional[UUID4] = None
     file_id: UUID4
@@ -16,7 +17,6 @@ class SummarizationBase(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: datetime
     name: str
-
     model_config = ConfigDict(from_attributes=True, str_max_length=255)
 
 

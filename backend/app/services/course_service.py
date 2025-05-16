@@ -4,7 +4,7 @@ import uuid
 from fastapi import HTTPException
 from app.repositories import CourseRepository
 from app.database import Course
-from app.models import CreateCourseDTO, UpdateCourseDTO, CourseDTO, CourseNoteDTO, UploadedFileDTO, SummarizationBase
+from app.models import CreateCourseDTO, UpdateCourseDTO, CourseDTO, CourseNoteDTO, UploadedFileDTO, SummarizationBase, NoteDTO
 from datetime import datetime
 
 
@@ -16,25 +16,34 @@ class CourseService:
     def _to_dto(self, course: Course):
         if course is None:
             return None
+        notes_dto: List[CourseNoteDTO] = []
+        if hasattr(course, 'notes'):
+            for note_model in course.notes:
+                notes_dto.append(CourseNoteDTO.model_validate(note_model))
+        
+        uploaded_files_dto: List[UploadedFileDTO] = []
+        summaries_collected: List[SummarizationBase] = []
+        if hasattr(course, 'uploaded_files'):
+            for file_model in course.uploaded_files:
+                if hasattr(file_model, 'summarization'):
+                    for summarization_insance in file_model.summarization:
+                        summaries_collected.append(SummarizationBase.model_validate(summarization_insance))
 
-        notes: List[CourseNoteDTO] = []
-        uploaded_files: List[UploadedFileDTO] = []
-        summaries: List[SummarizationBase] = []
+                uploaded_files_dto.append(UploadedFileDTO.model_validate(file_model))
+        
+        course_data_dto = {
+            "id": course.id,
+            "name": course.name,
+            "description": course.description,
+            "created_at": course.created_at,
+            "updated_at": course.updated_at,
+            "user_id": course.user_id,
+            "notes": notes_dto,
+            "uploaded_files": uploaded_files_dto,
+            "summaries": summaries_collected
+        }
 
-        for note in course.notes:
-            notes.append(CourseNoteDTO.model_validate(note))
-        for file in course.uploaded_files:
-            for summary in file.summarization:
-                summaries.append(SummarizationBase.model_validate(summary))
-
-            uploaded_files.append(UploadedFileDTO.model_validate(file))
-
-
-        dto = CourseDTO.model_validate(course)
-
-        dto.uploaded_files = uploaded_files
-        dto.notes = notes
-        dto.summaries = summaries
+        dto = CourseDTO.model_validate(course_data_dto)
         return dto
     
     def get_course(self, course_id: UUID) -> CourseDTO:
@@ -46,9 +55,7 @@ class CourseService:
 
     def get_courses_by_user(self, user_id: UUID) -> List[CourseDTO]:
         courses: List[Course] = self.course_repo.get_by_user_id(user_id)
-        course_dto = []
-        for c in courses:
-            course_dto.append(self._to_dto(course=c))
+        course_dto = [self._to_dto(course) for course in courses]
         return course_dto
 
     def create_course(self, course_data: CreateCourseDTO, user_id: UUID) -> CourseDTO:
