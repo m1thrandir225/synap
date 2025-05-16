@@ -1,3 +1,4 @@
+from typing import List
 from uuid import UUID
 from app.repositories import RecommendationRepository
 from app.database import Recommendation, LearningMaterial
@@ -17,11 +18,11 @@ class RecommendationService:
         return RecommendationDTO.model_validate(recommendation)
 
     def create_recommendation(
-        self, file_id: UUID, learning_material: LearningMaterial, relevance_score: float
+        self, file_id: UUID, learning_material_id: UUID , relevance_score: float
     ) -> RecommendationDTO:
         rec_data = {
             "file_id": file_id,
-            "learning_material_id": learning_material.id,
+            "learning_material_id": learning_material_id,
             "created_at": datetime.now(),
             "relevance_score": relevance_score,
         }
@@ -35,8 +36,11 @@ class RecommendationService:
             recommendation_id
         )
 
-    def get_recommendations_for_file(self, file_id: UUID) -> list[RecommendationDTO]:
-        return self.recommendation_repository.get_recommendations_by_file_id(file_id)
+    def get_recommendations_for_file(self, file_id: UUID) -> List[RecommendationDTO]:
+        recommendations =  self.recommendation_repository.get_recommendations_by_file_id(file_id)
+
+        dtos = [self._to_dto(recommendation) for recommendation in recommendations]
+        return dtos
 
     def get_recommendations_for_learning_material(
         self, learning_material_id: UUID

@@ -10,19 +10,18 @@ from app.dependencies import (
     get_uploaded_files_service,
 )
 from app.log import get_logger
-from app.storage_provider import LocalStorageProvider, get_local_storage_provider
+from app.storage_provider import LocalStorageProvider
 from app.services import UploadedFileService
 from app.models import CreateUploadedFile, UploadedFileDTO
+from app.dependencies import get_local_storage_provider
 from app.database import User
 from fastapi import Form
 
-
 log = get_logger(__name__)
 
-
+#FIXME: move to models 
 class FileInfo(BaseModel):
     filename: str
-
 
 router = APIRouter(
     prefix="/files", tags=["Files"], dependencies=[Depends(get_current_token)]

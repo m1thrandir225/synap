@@ -31,7 +31,7 @@ class SummarizationService:
         self.recommendation_service = recommendation_service
         self.storage_service = storage_service
 
-    async def summarize_file_and_store(self, filename: str, file_id: UUID, summarization_name: str, original_filename: str = None) -> Summarization:
+    async def summarize_file_and_store(self, filename: str, file_id: UUID, summarization_name: str, original_filename: str | None = None) -> Summarization:
         """
         Retrieves a file, gets its summary from OpenAI, and stores it.
         'filename' is the name in storage, 'original_filename' is for record keeping.
@@ -76,7 +76,7 @@ class SummarizationService:
 
                 self.recommendation_service.create_recommendation(
                     file_id=file_id,
-                    learning_material=learning_material,
+                    learning_material_id=learning_material.id,
                     relevance_score=material["relevance_score"]
                 )
             except Exception as e:
@@ -94,18 +94,3 @@ class SummarizationService:
 
     async def get_summary_by_id(self, summary_id: UUID) -> Summarization | None:
         return self.summarization_repository.get_by_id(summary_id)
-
-def get_summarization_service(
-    summarization_repository: SummarizationRepository = Depends(get_summarization_repository),
-    openai_service: OpenAIService = Depends(get_openai_service),
-    learning_material_service: LearningMaterialService = Depends(get_learning_material_service),
-    recommendation_service: RecommendationService = Depends(get_recommendation_service),
-    storage_service: LocalStorageProvider = Depends(get_local_storage_provider),
-) -> SummarizationService:
-    return SummarizationService(
-        summarization_repository=summarization_repository, 
-        openai_service=openai_service,
-        learning_material_service=learning_material_service,
-        recommendation_service=recommendation_service,
-        storage_service=storage_service     
-    )

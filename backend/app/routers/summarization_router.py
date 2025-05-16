@@ -1,9 +1,8 @@
 from typing import Annotated
 from fastapi import APIRouter, HTTPException, status
-from fastapi.params import Depends
-from uuid import UUID
-from app.dependencies import  get_uploaded_files_service
-from app.services import SummarizationService, get_summarization_service
+from fastapi import Depends
+from app.dependencies import  get_uploaded_files_service, get_summarization_service
+from app.services import SummarizationService
 from app.services import UploadedFileService
 from app.models import CreateSummarization
 
@@ -14,8 +13,8 @@ router = APIRouter(prefix="/summarization", tags=["summarization_router"])
 @router.post("/summarize")
 async def summarize_file(
     summarization: CreateSummarization,
-    summarization_service: Annotated[SummarizationService, Depends(get_summarization_service)],
-    uploaded_files_service: Annotated[UploadedFileService, Depends(get_uploaded_files_service)], 
+    summarization_service: SummarizationService = Depends(get_summarization_service),
+    uploaded_files_service: UploadedFileService = Depends(get_uploaded_files_service), 
 ):
     uploaded_file = uploaded_files_service.get_uploaded_file(summarization.file_id)
     

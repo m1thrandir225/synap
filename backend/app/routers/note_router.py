@@ -41,7 +41,6 @@ def get_note(
         raise HTTPException(status_code=404, detail="Note not found")
     return note
 
-
 @router.get("/course/{course_id}", response_model=List[NoteDTO])
 def get_notes_by_course(
     course_id: UUID,

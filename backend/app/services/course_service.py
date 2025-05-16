@@ -21,12 +21,40 @@ class CourseService:
         summaries: List[SummarizationBase] = []
 
         for note in course.notes:
+<<<<<<< HEAD
             notes.append(CourseNoteDTO.model_validate(note))
         for file in course.uploaded_files:
             for summary in file.summarization:
                 summaries.append(SummarizationBase.model_validate(summary))
 
             uploaded_files.append(UploadedFileDTO.model_validate(file))
+=======
+            notes.append(CourseNoteDTO(id=note.id, title=note.title, content=note.content, user_id=note.user_id, course_id=note.course_id,
+                                       created_at=note.created_at, updated_at=note.updated_at))
+        
+        for file in course.uploaded_files:
+            for summary in file.summarization:
+                summaries.append(SummarizationBase(
+                    id=summary.id,
+                    file_id=summary.file_id,
+                    summary_text=summary.summary_text,
+                    ai_model_used=summary.ai_model_used,
+                    updated_at=summary.updated_at,
+                    name=summary.name,
+                    created_at=summary.created_at,
+                ))
+
+            uploaded_files.append(UploadedFileDTO(file_name=file.file_name, 
+                                                  file_path=file.file_path, 
+                                                  file_type=file.file_type, 
+                                                  file_size=file.file_size,
+                                                  mime_type=file.mime_type,
+                                                  id=file.id, 
+                                                  course_id= file.course_id, 
+                                                  user_id=file.user_id, 
+                                                  created_at= file.created_at,
+                                                  ))
+>>>>>>> development
 
 
         return CourseDTO(

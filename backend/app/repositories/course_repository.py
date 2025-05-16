@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session, selectinload
 from uuid import UUID
-
 from app.database import Course, UploadedFile
 
 class CourseRepository:
