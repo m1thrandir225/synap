@@ -11,7 +11,6 @@ import fileQueries from "@/queries/files.queries";
 import { type UploadedFile } from "@/types/models/uploaded-file";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Upload } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/files/")({
   component: RouteComponent,
@@ -20,7 +19,6 @@ export const Route = createFileRoute("/dashboard/files/")({
 
     return {
       files,
-      crumb: "Index",
     };
   },
 });
@@ -42,7 +40,7 @@ function RouteComponent() {
 
       <Card className="w-full">
         <CardContent>
-          <FileList items={files as unknown as UploadedFile[]} />
+          <FileList items={files} />
         </CardContent>
       </Card>
     </div>

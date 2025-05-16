@@ -68,11 +68,6 @@ const DashboardLayout: React.FC = () => {
         icon: Library,
       },
       {
-        title: "Lectures",
-        url: "/dashboard/lectures",
-        icon: Book,
-      },
-      {
         title: "Notes",
         url: "/dashboard/notes",
         icon: Pen,

@@ -9,7 +9,7 @@ const fileURL = `${config.apiUrl}/files`;
 
 const fileService = {
   getUserFiles: () =>
-    apiRequest<{ filename: string }[]>({
+    apiRequest<UploadFileResponse>({
       url: fileURL,
       method: "GET",
       headers: undefined,
