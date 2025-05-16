@@ -1,20 +1,13 @@
 import datetime
 from typing import List, Dict, Any
 from uuid import UUID
-
-from fastapi import Depends
 from app.database import Summarization
-from app.services.openai_service import OpenAIService
-from app.services.learning_material_service import LearningMaterialService
-from app.services.recommendation_service import RecommendationService
-from app.storage_provider import get_local_storage_provider
-
+from .openai_service import OpenAIService
+from .learning_material_service import LearningMaterialService
+from .recommendation_service import RecommendationService
 from app.repositories import SummarizationRepository
 from app.storage_provider import LocalStorageProvider
-
-from app.models import SummarizationBase, CreateLearningMaterialDTO
-from app.dependencies import  get_learning_material_service, get_openai_service, get_summarization_repository, get_recommendation_service
-from app.models.summarization import OpenAIServiceResponse
+from app.models import SummarizationBase, CreateLearningMaterialDTO, OpenAIServiceResponse
 
 class SummarizationService:
     def __init__(
@@ -82,12 +75,12 @@ class SummarizationService:
             except Exception as e:
                 print(f"Failed to process material: {material}, error: {e}")
 
-        return self.summarization_repository.create(summarization_data)
+        return self.summarization_repository.create(summarization_data) # type: ignore
 
     async def create_manual_summary(self, summary_data: Dict[str, Any]) -> Summarization:
         """Creates a summary from provided data (e.g., for testing or manual input)."""
         db_summarization_data = SummarizationBase(**summary_data)
-        return self.summarization_repository.create(db_summarization_data)
+        return self.summarization_repository.create(db_summarization_data) # type: ignore
 
     async def get_all_summaries(self) -> List[Summarization]:
         return self.summarization_repository.get_all()

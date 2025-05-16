@@ -9,6 +9,7 @@ from app.services import (
     RecommendationService,
     LearningMaterialService,
     CourseService,
+    OpenAIService,
     SummarizationService
 )
 from app.repositories import (
@@ -22,8 +23,7 @@ from app.repositories import (
 )
 from fastapi.security import OAuth2PasswordBearer
 from app.security import JWT_TYPE, decode_token
-from app.services.openai_service import OpenAIService
-from app.storage_provider import LocalStorageProvider
+from .storage_provider import LocalStorageProvider
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
@@ -131,12 +131,14 @@ def get_local_storage_provider(
 ) -> LocalStorageProvider:
     return LocalStorageProvider(user=user)
 
-
 def get_summarization_service(
         repo: SummarizationRepository = Depends(get_summarization_repository), openai_service: OpenAIService  = Depends(get_openai_service), learning_material_service: LearningMaterialService = Depends(get_learning_material_service), 
         recommendation_service: RecommendationService = Depends(get_recommendation_service), 
         storage_provider: LocalStorageProvider = Depends(get_local_storage_provider)
 ) -> SummarizationService:
-    return SummarizationService(summarization_repository=repo, openai_service=openai_service, learning_material_service=learning_material_service, recommendation_service=recommendation_service, storage_service=storage_provider)
+    return SummarizationService(
+        summarization_repository=repo, 
+        openai_service=openai_service, learning_material_service=learning_material_service, recommendation_service=recommendation_service, storage_service=storage_provider
+    )
 
 

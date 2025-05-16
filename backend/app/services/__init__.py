@@ -5,3 +5,4 @@ from .recommendation_service import RecommendationService
 from .uploaded_files_service import UploadedFileService
 from .user_service import UserService
 from .summarization_service import SummarizationService
+from .openai_service import OpenAIService
