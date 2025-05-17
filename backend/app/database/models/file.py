@@ -2,7 +2,7 @@ import uuid
 from sqlalchemy import UUID, BigInteger, Column, DateTime, ForeignKey, String, func
 from sqlalchemy.orm import relationship
 from app.database import Base
-
+from sqlalchemy.ext.hybrid import hybrid_property
 
 class UploadedFile(Base):
     __tablename__ = "uploaded_files"
@@ -14,13 +14,18 @@ class UploadedFile(Base):
     file_size = Column(BigInteger, nullable=False)
     mime_type = Column(String, nullable=False)
     course_id = Column(UUID, ForeignKey("courses.id"), nullable=True)
+    openai_id = Column(String, nullable=True)
     course = relationship("Course", back_populates="uploaded_files", cascade="all, delete")
     user_id = Column(UUID, ForeignKey("users.id"), nullable=False)
     user = relationship("User", back_populates="uploaded_files", cascade="all, delete")
 
-    summarization = relationship("Summarization", back_populates="file")
+    summarization = relationship("Summarization", back_populates="file", uselist=False)
     recommendations = relationship("Recommendation", back_populates="file")
 
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+    @hybrid_property
+    def has_summarization(self):
+        return self.summarization is not None

@@ -7,10 +7,19 @@ from app.database import Base
 class Recommendation(Base):
     __tablename__ = "recommendations"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True, server_default=func.gen_random_uuid(), nullable=False, unique=True)
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        index=True,
+        server_default=func.gen_random_uuid(),
+        nullable=False,
+        unique=True,
+    )
 
     file_id = Column(UUID, ForeignKey("uploaded_files.id"), nullable=False)
-    file = relationship("UploadedFile", back_populates="recommendations", cascade="all, delete")
+    file = relationship(
+        "UploadedFile", back_populates="recommendations", cascade="all, delete"
+    )
 
     learning_material_id = Column(
         UUID, ForeignKey("learning_materials.id"), nullable=False

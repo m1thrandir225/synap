@@ -1,10 +1,10 @@
-import type { Lecture } from "@/types/models/lecture";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import LectureCard from "./LectureCard";
 import ListEmpty from "../ListEmpty";
+import type { Summarization } from "@/types/models/summarization";
+import LectureListItem from "./LectureListItem";
 
 interface ComponentProps {
-  items: Lecture[];
+  items: Summarization[];
 }
 
 const LectureList: React.FC<ComponentProps> = (props) => {
@@ -17,7 +17,7 @@ const LectureList: React.FC<ComponentProps> = (props) => {
   return (
     <ScrollArea className="w-full h-[400px]">
       {items.map((item) => (
-        <LectureCard item={item} />
+        <LectureListItem lecture={item} />
       ))}
     </ScrollArea>
   );

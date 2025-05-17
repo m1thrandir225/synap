@@ -5,4 +5,4 @@ export type UploadFileRequest = {
   course_id: string;
 };
 
-export type UploadFileResponse = string;
+export type UploadFileResponse = UploadedFile;

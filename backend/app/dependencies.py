@@ -9,6 +9,8 @@ from app.services import (
     RecommendationService,
     LearningMaterialService,
     CourseService,
+    OpenAIService,
+    SummarizationService
 )
 from app.repositories import (
     UserRepository,
@@ -21,7 +23,7 @@ from app.repositories import (
 )
 from fastapi.security import OAuth2PasswordBearer
 from app.security import JWT_TYPE, decode_token
-from app.services.openai_service import OpenAIService
+from .storage_provider import LocalStorageProvider
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
@@ -98,8 +100,6 @@ def get_openai_service(
 ) -> OpenAIService:
     return OpenAIService()
 
-
-
 def get_current_token(token: str = Depends(oauth2_scheme)):
     if not decode_token(token):
         raise HTTPException(
@@ -125,3 +125,20 @@ async def get_current_user(
             status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found"
         )
     return user
+
+def get_local_storage_provider(
+    user: User = Depends(get_current_user)
+) -> LocalStorageProvider:
+    return LocalStorageProvider(user=user)
+
+def get_summarization_service(
+        repo: SummarizationRepository = Depends(get_summarization_repository), openai_service: OpenAIService  = Depends(get_openai_service), learning_material_service: LearningMaterialService = Depends(get_learning_material_service), 
+        recommendation_service: RecommendationService = Depends(get_recommendation_service), 
+        storage_provider: LocalStorageProvider = Depends(get_local_storage_provider)
+) -> SummarizationService:
+    return SummarizationService(
+        summarization_repository=repo, 
+        openai_service=openai_service, learning_material_service=learning_material_service, recommendation_service=recommendation_service, storage_service=storage_provider
+    )
+
+

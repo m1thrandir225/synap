@@ -2,8 +2,6 @@ from datetime import datetime
 from typing import List, Optional
 from pydantic import UUID4, BaseModel, ConfigDict
 
-from .recommendation import RecommendationDTO
-
 
 class LearningMaterialBase(BaseModel):
     title: str
@@ -23,9 +21,7 @@ class UpdateLearningMaterialDTO(BaseModel):
     material_type: Optional[str] = None
 
 
-class LearningMaterialDTO(BaseModel):
+class LearningMaterialDTO(LearningMaterialBase):
     id: UUID4
     url: str
     created_at: datetime
-
-    recommendations: List[RecommendationDTO]

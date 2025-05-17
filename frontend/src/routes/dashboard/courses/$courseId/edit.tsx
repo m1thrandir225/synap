@@ -1,4 +1,5 @@
 import CourseForm from "@/components/courses/CourseForm";
+import Loader from "@/components/Loader";
 import { courseQueries } from "@/queries/courses.queries";
 import coursesServices from "@/services/courses.service";
 import { type Course } from "@/types/models/course";
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/dashboard/courses/$courseId/edit")({
     };
   },
   component: RouteComponent,
+  pendingComponent: Loader,
 });
 
 function RouteComponent() {

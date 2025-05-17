@@ -1,8 +1,9 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.database import (
     Summarization,
     UploadedFile,
-)  
+    Recommendation,
+)
 from typing import List, Optional
 from uuid import UUID
 
@@ -27,13 +28,19 @@ class SummarizationRepository:
             .first()
         )
 
-    def get_all(self) -> List[Summarization]:
+    def get_all(self, user_id: UUID) -> List[Summarization]:
         """Get all summarizations."""
-        return self.db.query(Summarization).all()
+        query = (
+            self.db.query(Summarization)
+            .join(Summarization.file)
+            .filter(UploadedFile.user_id == user_id)
+            .options(joinedload(Summarization.file))
+        )
+        return query.all()
 
     def create(self, summarization_data: dict) -> Summarization:
         """Create a new summarization."""
-        
+
         summarization_dict = summarization_data.model_dump()
         db_summarization = Summarization(**summarization_dict)
         self.db.add(db_summarization)
@@ -69,3 +76,4 @@ class SummarizationRepository:
         """Get the file associated with a specific summarization."""
         summarization = self.get_by_id(summarization_id)
         return summarization.file if summarization else None
+

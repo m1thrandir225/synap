@@ -1,3 +1,4 @@
+import Loader from "@/components/Loader";
 import DashboardLayout from "@/layouts/dashboard";
 import { useAuthStore } from "@/stores/auth.store";
 import { createFileRoute, redirect } from "@tanstack/react-router";
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/dashboard")({
       crumb: "Dashboard",
     };
   },
+  pendingComponent: Loader,
 });
 
 function RouteComponent() {

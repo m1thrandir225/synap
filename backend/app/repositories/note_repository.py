@@ -17,10 +17,6 @@ class NoteRepository:
         self.db.refresh(note)
         return note
     
-    #REDUNDANT, the get_notes_by_user_id already returns all notes created by the current authenticated user.
-    # def get_all_notes(self) -> List[Note]:
-    #     return self.db.query(Note).all()
-    
     def get_note_by_id(self, note_id: UUID) -> Optional[Note]:
         return self.db.query(Note).filter(Note.id == note_id).first()
 

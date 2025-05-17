@@ -1,6 +1,9 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
+
 from pydantic import UUID4, BaseModel, ConfigDict
+
+from .learning_material import LearningMaterialDTO
 
 
 class RecommendationBase(BaseModel):
@@ -23,3 +26,4 @@ class RecommendationDTO(RecommendationBase):
     id: UUID4
     relevance_score: float
     created_at: datetime
+    learning_material: LearningMaterialDTO

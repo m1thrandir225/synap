@@ -1,20 +1,37 @@
-import FileList from "@/components/files/FileList";
+import CourseLectures from "@/components/courses/CourseLectures";
 import LectureList from "@/components/lectures/LectureList";
 import NoteList from "@/components/notes/NoteList";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { noteQueries } from "@/queries/notes.queries";
+import { summarizationQueries } from "@/queries/summarization.queries";
+import summarizationService from "@/services/summarization.service";
 import { dummyNotes } from "@/types/models/note";
-import { dummyFiles } from "@/types/models/uploaded-file";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Book, Library, Notebook, Pen } from "lucide-react";
+import { Library, Notebook } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/")({
   component: RouteComponent,
+  loader: ({ context: { queryClient } }) => {
+    const summaries = queryClient.ensureQueryData(
+      summarizationQueries.getUserSummarizations,
+    );
+    const notes = queryClient.ensureQueryData(noteQueries.getNotes);
+    return {
+      summaries,
+      notes,
+    };
+  },
 });
 
 function RouteComponent() {
+  const { data: notes } = useSuspenseQuery(noteQueries.getNotes);
+  const { data: summaries } = useSuspenseQuery(
+    summarizationQueries.getUserSummarizations,
+  );
   return (
     <div className="flex flex-col items-start gap-8">
-      <div className="w-full h-full grid grid-cols-3 gap-4">
+      <div className="w-full h-full grid grid-cols-2 gap-4">
         <Link
           to="/dashboard/courses"
           className="w-full h-[250px] flex items-center justify-center border  rounded-lg group hover:shadow-md transition-all ease-in-out duration-300 gap-4 "
@@ -25,19 +42,9 @@ function RouteComponent() {
           />
           <h1> Courses </h1>
         </Link>
-        <Link
-          to="/dashboard/courses"
-          className="w-full h-[250px] flex items-center justify-center border  rounded-lg group hover:shadow-md transition-all ease-in-out duration-300 gap-4 "
-        >
-          <Book
-            size={32}
-            className=" transition-all ease-in-out duration-300"
-          />
-          <h1> Lectures </h1>
-        </Link>
 
         <Link
-          to="/dashboard/courses"
+          to="/dashboard/notes"
           className="w-full h-[250px] flex items-center justify-center border  rounded-lg group hover:shadow-md transition-all ease-in-out duration-300 gap-4 "
         >
           <Notebook
@@ -53,7 +60,7 @@ function RouteComponent() {
             <CardTitle>Recent Notes</CardTitle>
           </CardHeader>
           <CardContent>
-            <NoteList items={dummyNotes} />
+            <NoteList items={notes} />
           </CardContent>
         </Card>
 
@@ -62,7 +69,7 @@ function RouteComponent() {
             <CardTitle>Recent Lectures</CardTitle>
           </CardHeader>
           <CardContent>
-            <NoteList items={dummyNotes} />
+            <LectureList items={summaries} />
           </CardContent>
         </Card>
       </div>

@@ -10,13 +10,6 @@ router = APIRouter(
     prefix="/courses", tags=["courses"], dependencies=[Depends(get_current_token)]
 )
 
-#FIXME: this may also be redundant because get_by_user will return the courses by the specific authenticated user.
-#FIXME: if this is needed it can be uncommented.
-# @router.get("/with_notes", response_model=List[CourseDTO])
-# def get_courses_with_notes(service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
-#     return service.get_courses_with_notes()
-
-#idk if this works, untested.
 @router.get("/with_files", response_model=List[CourseDTO])
 def get_courses_with_uploaded_files(service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
     return service.get_courses_with_uploaded_files()
@@ -43,17 +36,8 @@ def get_course(course_id: UUID, service: CourseService = Depends(get_course_serv
     except HTTPException as e:
         raise e
 
-#REDUNDANT, same reason as the note_router's get_all()  
-# @router.get("/", response_model=List[CourseDTO])
-# def get_all_courses(service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
-#     return service.get_all_courses()
-
 @router.post("/", response_model=CourseDTO)
 def create_course(course_data: CreateCourseDTO, service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
-    # course_data_dump = course_data.model_dump()
-    # if course_data_dump.get("user_id") is None:
-    #    course_data_dump["user_id"] = current_user.id
-    # course_data.user_id = current_user.id
     return service.create_course(course_data, current_user.id)
 
 @router.put("/{course_id}", response_model=CourseDTO)

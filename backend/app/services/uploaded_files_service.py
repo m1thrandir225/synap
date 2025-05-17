@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from app.models.uploaded_file import (
     UploadedFileDTO,
     UpdateUploadedFileDTO,
-    CreateUploadedFile
+    CreateUploadedFile,
 )
 from app.repositories import UploadedFileRepository
 
@@ -17,13 +17,11 @@ class UploadedFileService:
         uploaded_file = self.file_repo.get_by_id(file_id)
         if not uploaded_file:
             raise HTTPException(status_code=404, detail="File not found")
-        return UploadedFileDTO.model_validate(uploaded_file) 
+        return UploadedFileDTO.model_validate(uploaded_file)
 
     def get_uploaded_files_by_user(self, user_id: UUID) -> List[UploadedFileDTO]:
         uploaded_files = self.file_repo.get_by_user_id(user_id)
-        return [
-            UploadedFileDTO.model_validate(file) for file in uploaded_files
-        ] 
+        return [UploadedFileDTO.model_validate(file) for file in uploaded_files]
 
     def get_uploaded_files_by_course(self, course_id: UUID) -> List[UploadedFileDTO]:
         uploaded_files = self.file_repo.get_by_course_id(course_id)
@@ -49,12 +47,6 @@ class UploadedFileService:
         if not self.file_repo.delete(file_id):
             raise HTTPException(status_code=404, detail="File not found")
         return {"message": f"File with ID {file_id} has been successfully deleted."}
-
-    def get_files_by_tag(self, tag_name: str) -> List[UploadedFileDTO]:
-        uploaded_files = self.file_repo.get_files_by_tag(tag_name)
-        return [
-            UploadedFileDTO.model_validate(file) for file in uploaded_files
-        ]  # Convert ORM to DTO
 
     def get_files_by_recommendation(
         self, recommendation_id: UUID
