@@ -18,7 +18,6 @@ export const Route = createFileRoute("/dashboard/files/")({
 
     return {
       files,
-      crumb: "Index",
     };
   },
 });
@@ -40,7 +39,7 @@ function RouteComponent() {
 
       <Card className="w-full">
         <CardContent>
-          <FileList items={files as unknown as UploadedFile[]} />
+          <FileList items={files} />
         </CardContent>
       </Card>
     </div>

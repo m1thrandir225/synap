@@ -5,4 +5,8 @@ export type UploadFileRequest = {
   course_id: string;
 };
 
-export type UploadFileResponse = string;
+export type FileInfo = {
+  filename: string;
+};
+
+export type UploadFileResponse = FileInfo[];

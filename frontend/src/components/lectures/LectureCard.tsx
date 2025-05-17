@@ -1,7 +1,7 @@
-import type { Lecture } from "@/types/models/lecture";
+import type { Summarization } from "@/types/models/summarization";
 
 interface ComponentProps {
-  item: Lecture;
+  item: Summarization;
 }
 
 //TODO: implement

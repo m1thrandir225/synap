@@ -24,25 +24,14 @@ import {
 } from "../ui/table";
 import { TablePagination } from "../table/TablePagination";
 import { formatBytesToMb } from "@/lib/utils";
+import type { FileInfo, UploadFileResponse } from "@/types/responses/files";
 
-const columns: ColumnDef<UploadedFile>[] = [
+const columns: ColumnDef<FileInfo>[] = [
   {
-    accessorKey: "file_name",
+    accessorKey: "filename",
     header: "Name",
   },
-  {
-    accessorKey: "file_size",
-    header: "Size",
-    cell: (props) => {
-      const value = props.getValue() as number;
 
-      return formatBytesToMb(value);
-    },
-  },
-  {
-    accessorKey: "created_at",
-    header: "Uploaded At",
-  },
   {
     id: "actions",
     cell: ({ row }) => {
@@ -65,7 +54,7 @@ const columns: ColumnDef<UploadedFile>[] = [
 ];
 
 interface ComponentProps {
-  items: UploadedFile[];
+  items: FileInfo[];
 }
 
 const FileList: React.FC<ComponentProps> = ({ items }) => {

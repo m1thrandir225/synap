@@ -1,10 +1,10 @@
-import type { Lecture } from "@/types/models/lecture";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import LectureCard from "./LectureCard";
 import ListEmpty from "../ListEmpty";
+import type { Summarization } from "@/types/models/summarization";
 
 interface ComponentProps {
-  items: Lecture[];
+  items: Summarization[];
 }
 
 const LectureList: React.FC<ComponentProps> = (props) => {

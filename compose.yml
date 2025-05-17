@@ -10,6 +10,8 @@ services:
       - "3000:80"
     networks:
       - synap-network
+    volumes:
+      - uploads_data:/code/uploads
   db:
     platform: linux/amd64
     image: postgres:17
@@ -39,6 +41,7 @@ services:
 
 volumes:
   postgres_data:
+  uploads_data:
 
 networks:
   synap-network:
