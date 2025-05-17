@@ -12,6 +12,8 @@ from app.models import (
     SummarizationBase,
     CreateLearningMaterialDTO,
     OpenAIServiceResponse,
+    SummarizationDTO,
+    UploadedFileDTO
 )
 
 class SummarizationService:
@@ -85,9 +87,25 @@ class SummarizationService:
     def get_all_summaries(self) -> List[Summarization]:
         return self.summarization_repository.get_all()
 
-    def get_summary_by_id(self, summary_id: UUID) -> Summarization | None:
+    def get_summary_by_id(self, summary_id: UUID) -> SummarizationDTO:
         summary = self.summarization_repository.get_by_id(summary_id)
-        if not summary:
-            raise HTTPException(status_code=404, detail="Not found")
 
-        return summary
+        if not summary :
+            raise HTTPException(status_code=404, detail="Not found")
+        
+        recommendations = self.recommendation_service.get_recommendations_for_file(summary.file_id) # type: ignore
+        uploaded_file_dto = UploadedFileDTO.model_validate(summary.file)
+
+        dto = {
+            "id": summary.id,
+            "file_id": summary.file_id,
+            "summary_text": summary.summary_text,
+            "ai_model_used": summary.ai_model_used,
+            "created_at": summary.created_at,
+            "updated_at": summary.updated_at,
+            "name": summary.name,
+            "recommendations": recommendations,
+            "file": uploaded_file_dto,
+        }
+
+        return SummarizationDTO.model_validate(dto) 

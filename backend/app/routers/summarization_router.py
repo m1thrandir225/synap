@@ -22,11 +22,11 @@ async def summarize_file(
     uploaded_file = uploaded_files_service.get_uploaded_file(summarization.file_id)
 
     return await summarization_service.summarize_file_and_store(
-        filename=uploaded_file.file_name, 
+        filename=uploaded_file.file_name,
         file_id=summarization.file_id,
-        openai_id=uploaded_file.openai_id, 
-        summarization_name=summarization.name, 
-        original_filename=uploaded_file.file_name
+        openai_id=uploaded_file.openai_id,
+        summarization_name=summarization.name,
+        original_filename=uploaded_file.file_name,
     )
 
 
@@ -37,7 +37,6 @@ def get_summarization_by_id(
 ):
     try:
         summarization = service.get_summary_by_id(summarization_id)
-        log.info("SUMMARIZATION: ", summarization)
         return SummarizationDTO.model_validate(summarization)
     except HTTPException as e:
         raise e

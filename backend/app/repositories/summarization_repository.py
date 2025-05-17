@@ -1,7 +1,8 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.database import (
     Summarization,
     UploadedFile,
+    Recommendation,
 )
 from typing import List, Optional
 from uuid import UUID

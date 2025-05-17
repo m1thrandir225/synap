@@ -2,6 +2,8 @@ from pydantic import UUID4, BaseModel, ConfigDict, Field
 from typing import List, Optional
 from datetime import datetime
 
+from .recommendation import RecommendationDTO
+
 from .uploaded_file import UploadedFileDTO
 
 
@@ -22,7 +24,8 @@ class SummarizationBase(BaseModel):
 
 
 class SummarizationDTO(SummarizationBase):
-    pass
+    file: UploadedFileDTO
+    recommendations: List[RecommendationDTO]
 
 
 class OpenAIServiceResponse(BaseModel):
