@@ -1,9 +1,5 @@
-import FileList from "@/components/files/FileList";
-import LectureList from "@/components/lectures/LectureList";
 import NoteList from "@/components/notes/NoteList";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { dummyNotes } from "@/types/models/note";
-import { dummyFiles } from "@/types/models/uploaded-file";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Book, Library, Notebook, Pen } from "lucide-react";
 
