@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     JWT_SECRET: str
     JWT_ALGORITHM: str
     OPENAI_API_KEY: str
+    PRODUCTION_FRONTEND_URL: str
 
 
 class LocalSettings(Settings):
