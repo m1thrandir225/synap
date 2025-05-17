@@ -27,6 +27,7 @@ class UploadedFileDTO(UploadedFileBase):
     course_id: UUID4
     user_id: UUID4
     created_at: datetime
+    has_summarization: bool 
 
 
 class UploadFileRequest(BaseModel):

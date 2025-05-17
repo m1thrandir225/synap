@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from app.dependencies import (
     get_current_token,
     get_current_user,
+    get_local_storage_provider,
     get_uploaded_files_service,
 )
 from app.log import get_logger
@@ -30,7 +31,6 @@ router = APIRouter(
 
 @router.get("/", response_model=List[UploadedFileDTO])
 async def list_user_files(
-    storage_provider: LocalStorageProvider = Depends(get_local_storage_provider),
     uploaded_files_service: UploadedFileService = Depends(get_uploaded_files_service),
     user: User = Depends(get_current_user),
 ):
@@ -43,9 +43,6 @@ async def list_user_files(
         user_id=user.id
     )
     return response
-
-    filenames = storage_provider.list_files()
-    return [{"filename": name} for name in filenames]
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
