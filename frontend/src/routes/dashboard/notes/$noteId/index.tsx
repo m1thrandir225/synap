@@ -4,10 +4,8 @@ import NotePreview from "@/components/notes/NotePreview";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { noteQueries } from "@/queries/notes.queries";
-import { dummyNotes } from "@/types/models/note";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import MDEditor from "@uiw/react-md-editor";
 import { Pen, Undo2 } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/notes/$noteId/")({

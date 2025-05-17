@@ -15,8 +15,6 @@ import {
 import { courseQueries } from "@/queries/courses.queries";
 import { noteQueries } from "@/queries/notes.queries";
 import noteServices from "@/services/note.service";
-import type { Course } from "@/types/models/course";
-import { dummyNotes } from "@/types/models/note";
 import type { EditNoteRequest } from "@/types/responses/notes";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
