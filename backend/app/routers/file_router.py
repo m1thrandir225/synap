@@ -13,9 +13,9 @@ from app.log import get_logger
 from app.storage_provider import LocalStorageProvider
 from app.services import UploadedFileService
 from app.models import CreateUploadedFile, UploadedFileDTO
-from app.dependencies import get_local_storage_provider
-from app.database import User
+from app.database.models import User
 from fastapi import Form
+
 
 log = get_logger(__name__)
 
@@ -28,14 +28,22 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[FileInfo])
+@router.get("/", response_model=List[UploadedFileDTO])
 async def list_user_files(
     storage_provider: LocalStorageProvider = Depends(get_local_storage_provider),
+    uploaded_files_service: UploadedFileService = Depends(get_uploaded_files_service),
+    user: User = Depends(get_current_user),
 ):
     """
     Lists all files stored for the current authenticated user.
     Requires authentication because LocalStorageProvider depends on the user.
     """
+
+    response = uploaded_files_service.get_uploaded_files_by_user(
+        user_id=user.id
+    )
+    return response
+
     filenames = storage_provider.list_files()
     return [{"filename": name} for name in filenames]
 

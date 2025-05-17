@@ -90,7 +90,7 @@ const FileList: React.FC<ComponentProps> = ({ items }) => {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </TableHead>
                   );
@@ -109,7 +109,7 @@ const FileList: React.FC<ComponentProps> = ({ items }) => {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}

@@ -8,7 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { noteQueries } from "@/queries/notes.queries";
-import { dummyNotes } from "@/types/models/note";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
