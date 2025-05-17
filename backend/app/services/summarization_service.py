@@ -13,8 +13,9 @@ from app.models import (
     CreateLearningMaterialDTO,
     OpenAIServiceResponse,
     SummarizationDTO,
-    UploadedFileDTO
+    UploadedFileDTO,
 )
+
 
 class SummarizationService:
     def __init__(
@@ -31,7 +32,14 @@ class SummarizationService:
         self.recommendation_service = recommendation_service
         self.storage_service = storage_service
 
-    async def summarize_file_and_store(self, filename: str, file_id: UUID, openai_id: str, summarization_name: str, original_filename: str | None = None) -> Summarization:
+    async def summarize_file_and_store(
+        self,
+        filename: str,
+        file_id: UUID,
+        openai_id: str,
+        summarization_name: str,
+        original_filename: str | None = None,
+    ) -> Summarization:
         """
         Retrieves a file, gets its summary from OpenAI, and stores it.
         'filename' is the name in storage, 'original_filename' is for record keeping.
@@ -39,7 +47,9 @@ class SummarizationService:
         if not original_filename:
             original_filename = filename
 
-        ai_response: OpenAIServiceResponse = self.openai_service.get_summary_and_topics(openai_id=openai_id)
+        ai_response: OpenAIServiceResponse = self.openai_service.get_summary_and_topics(
+            openai_id=openai_id
+        )
 
         summarization_data = SummarizationBase(
             file_id=file_id,
@@ -86,24 +96,24 @@ class SummarizationService:
 
     def get_all_summaries(self, user_id: UUID) -> List[SummarizationBase]:
         summaries = self.summarization_repository.get_all(user_id=user_id)
-
         if not summaries:
-            raise HTTPException(status_code=404, detail="Not Found")
+            return []
         summary_dto: List[SummarizationBase] = []
         for summary in summaries:
             dto = SummarizationBase.model_validate(summary)
             summary_dto.append(dto)
 
-        return summary_dto   
-
+        return summary_dto
 
     def get_summary_by_id(self, summary_id: UUID) -> SummarizationDTO:
         summary = self.summarization_repository.get_by_id(summary_id)
 
-        if not summary :
+        if not summary:
             raise HTTPException(status_code=404, detail="Not found")
-        
-        recommendations = self.recommendation_service.get_recommendations_for_file(summary.file_id) # type: ignore
+
+        recommendations = self.recommendation_service.get_recommendations_for_file(
+            summary.file_id
+        )  # type: ignore
         uploaded_file_dto = UploadedFileDTO.model_validate(summary.file)
 
         dto = {
@@ -118,4 +128,4 @@ class SummarizationService:
             "file": uploaded_file_dto,
         }
 
-        return SummarizationDTO.model_validate(dto) 
+        return SummarizationDTO.model_validate(dto)
