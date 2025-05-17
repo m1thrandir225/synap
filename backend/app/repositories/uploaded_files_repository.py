@@ -1,9 +1,10 @@
-from app.database import  Recommendation, UploadedFile
+from app.database import Recommendation, UploadedFile
 from sqlalchemy.orm import Session
 from typing import List
 from uuid import UUID
 
 from app.models import UploadedFileDTO
+
 
 class UploadedFileRepository:
     def __init__(self, db: Session):
@@ -52,7 +53,6 @@ class UploadedFileRepository:
             self.db.commit()
             return True
         return False
-
 
     def get_files_by_recommendation(
         self, recommendation_id: UUID

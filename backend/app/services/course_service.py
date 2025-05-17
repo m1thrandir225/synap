@@ -4,9 +4,16 @@ import uuid
 from fastapi import HTTPException
 from app.repositories import CourseRepository
 from app.database import Course
-from app.models import CreateCourseDTO, UpdateCourseDTO, CourseDTO, CourseNoteDTO, UploadedFileDTO, SummarizationBase, NoteDTO
+from app.models import (
+    CreateCourseDTO,
+    UpdateCourseDTO,
+    CourseDTO,
+    CourseNoteDTO,
+    UploadedFileDTO,
+    SummarizationBase,
+    NoteDTO,
+)
 from datetime import datetime
-
 
 
 class CourseService:
@@ -17,20 +24,22 @@ class CourseService:
         if course is None:
             return None
         notes_dto: List[CourseNoteDTO] = []
-        if hasattr(course, 'notes'):
+        if hasattr(course, "notes"):
             for note_model in course.notes:
                 notes_dto.append(CourseNoteDTO.model_validate(note_model))
-        
+
         uploaded_files_dto: List[UploadedFileDTO] = []
         summaries_collected: List[SummarizationBase] = []
-        if hasattr(course, 'uploaded_files'):
+        if hasattr(course, "uploaded_files"):
             for file_model in course.uploaded_files:
-                if hasattr(file_model, 'summarization'):
+                if hasattr(file_model, "summarization"):
                     for summarization_insance in file_model.summarization:
-                        summaries_collected.append(SummarizationBase.model_validate(summarization_insance))
+                        summaries_collected.append(
+                            SummarizationBase.model_validate(summarization_insance)
+                        )
 
                 uploaded_files_dto.append(UploadedFileDTO.model_validate(file_model))
-        
+
         course_data_dto = {
             "id": course.id,
             "name": course.name,
@@ -40,12 +49,12 @@ class CourseService:
             "user_id": course.user_id,
             "notes": notes_dto,
             "uploaded_files": uploaded_files_dto,
-            "summaries": summaries_collected
+            "summaries": summaries_collected,
         }
 
         dto = CourseDTO.model_validate(course_data_dto)
         return dto
-    
+
     def get_course(self, course_id: UUID) -> CourseDTO:
         course = self.course_repo.get_by_id(course_id)
         if not course:
@@ -59,20 +68,20 @@ class CourseService:
         return course_dto
 
     def create_course(self, course_data: CreateCourseDTO, user_id: UUID) -> CourseDTO:
-        existing_course: List[Course] = self.course_repo.get_courses_by_name(course_data.name)
+        existing_course: List[Course] = self.course_repo.get_courses_by_name(
+            course_data.name
+        )
         if existing_course:
             raise HTTPException(
                 status_code=400, detail="Course with this name already exists."
             )
-        
+
         course_data_dump = course_data.model_dump()
         course_data_dump["id"] = uuid.uuid4()
         course_data_dump["user_id"] = user_id
         course_data_dump["created_at"] = datetime.now()
         course_data_dump["updated_at"] = datetime.now()
-        course: Course = self.course_repo.create(
-            course_data_dump
-        )
+        course: Course = self.course_repo.create(course_data_dump)
         return self._to_dto(course=course)
 
     def update_course(self, course_id: UUID, course_data: UpdateCourseDTO) -> CourseDTO:
@@ -106,8 +115,11 @@ class CourseService:
     def get_courses_by_created_at_range(
         self, start_date: str, end_date: str
     ) -> List[CourseDTO]:
-        courses: List[Course] = self.course_repo.get_courses_by_created_at_range(start_date, end_date)
+        courses: List[Course] = self.course_repo.get_courses_by_created_at_range(
+            start_date, end_date
+        )
         course_dto = []
         for c in courses:
             course_dto.append(self._to_dto(course=c))
         return course_dto
+
