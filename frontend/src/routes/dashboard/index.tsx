@@ -1,20 +1,19 @@
 import CourseLectures from "@/components/courses/CourseLectures";
 import LectureList from "@/components/lectures/LectureList";
 import NoteList from "@/components/notes/NoteList";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { noteQueries } from "@/queries/notes.queries";
-import { summarizationQueries } from "@/queries/summarization.queries";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {noteQueries} from "@/queries/notes.queries";
+import {summarizationQueries} from "@/queries/summarization.queries";
 import summarizationService from "@/services/summarization.service";
-import { dummyNotes } from "@/types/models/note";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Library, Notebook } from "lucide-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {createFileRoute, Link} from "@tanstack/react-router";
+import {Library, Notebook} from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/")({
   component: RouteComponent,
-  loader: ({ context: { queryClient } }) => {
+  loader: ({context: {queryClient}}) => {
     const summaries = queryClient.ensureQueryData(
-      summarizationQueries.getUserSummarizations,
+      summarizationQueries.getUserSummarizations
     );
     const notes = queryClient.ensureQueryData(noteQueries.getNotes);
     return {
@@ -25,9 +24,9 @@ export const Route = createFileRoute("/dashboard/")({
 });
 
 function RouteComponent() {
-  const { data: notes } = useSuspenseQuery(noteQueries.getNotes);
-  const { data: summaries } = useSuspenseQuery(
-    summarizationQueries.getUserSummarizations,
+  const {data: notes} = useSuspenseQuery(noteQueries.getNotes);
+  const {data: summaries} = useSuspenseQuery(
+    summarizationQueries.getUserSummarizations
   );
   return (
     <div className="flex flex-col items-start gap-8">

@@ -1,6 +1,5 @@
 import Loader from "@/components/Loader";
 import { noteQueries } from "@/queries/notes.queries";
-import { dummyNotes } from "@/types/models/note";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard/notes/$noteId")({
