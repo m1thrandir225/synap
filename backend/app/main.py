@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(root_path="/api/v1")
 
-origins = ["http://localhost:3001"]
+origins = ["http://localhost:3001", 'http://localhost:3000']
 
 app.add_middleware(
     CORSMiddleware,
@@ -12,6 +12,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Disposition"]
 )
 
 app.include_router(authentication_router.router)

@@ -1,14 +1,6 @@
 import type { Note } from "@/types/models/note";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "../ui/card";
-import { ScrollArea } from "../ui/scroll-area";
+
 import NoteCard from "./NoteCard";
-import { PackageOpen } from "lucide-react";
 import ListEmpty from "../ListEmpty";
 
 interface ComponentProps {

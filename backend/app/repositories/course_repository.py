@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy.orm import Session, selectinload
 from uuid import UUID
 from app.database import Course, UploadedFile
@@ -12,11 +13,13 @@ class CourseRepository:
         """
         return self.db.query(Course).filter(Course.id == course_id).first()
 
-    def get_by_user_id(self, user_id: UUID) -> list[Course]:
+    def get_by_user_id(self, user_id: UUID) -> List[Course]:
         """
         Get all courses created by a specific user.
         """
-        return self.db.query(Course).options(selectinload(Course.uploaded_files).selectinload(UploadedFile.summarization)).filter(Course.user_id == user_id).all()
+        return self.db.query(Course).options(
+            selectinload(Course.uploaded_files).selectinload(UploadedFile.summarization)
+            ).filter(Course.user_id == user_id).all()
 
     def create(self, course_data: dict) -> Course:
         """

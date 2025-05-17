@@ -10,7 +10,6 @@ router = APIRouter(
     prefix="/courses", tags=["courses"], dependencies=[Depends(get_current_token)]
 )
 
-
 @router.get("/with_files", response_model=List[CourseDTO])
 def get_courses_with_uploaded_files(service: CourseService = Depends(get_course_service), current_user: User = Depends(get_current_user)):
     return service.get_courses_with_uploaded_files()

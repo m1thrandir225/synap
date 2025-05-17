@@ -33,16 +33,13 @@ const columns: ColumnDef<UploadedFile>[] = [
   {
     accessorKey: "file_size",
     header: "Size",
-    cell: (props) => {
-      const value = props.getValue() as number;
+    cell: ({ row }) => {
+      const file_size = row.original.file_size;
 
-      return formatBytesToMb(value);
+      return <span>{formatBytesToMb(file_size)}</span>;
     },
   },
-  {
-    accessorKey: "created_at",
-    header: "Uploaded At",
-  },
+
   {
     id: "actions",
     cell: ({ row }) => {

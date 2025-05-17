@@ -1,4 +1,3 @@
-import type { Lecture } from "@/types/models/lecture";
 import {
   Card,
   CardContent,
@@ -7,9 +6,10 @@ import {
   CardTitle,
 } from "../ui/card";
 import LectureList from "../lectures/LectureList";
+import type { Summarization } from "@/types/models/summarization";
 
 interface ComponentProps extends React.ComponentPropsWithoutRef<"div"> {
-  items: Lecture[];
+  items: Summarization[];
 }
 
 const CourseLectures: React.FC<ComponentProps> = (props) => {

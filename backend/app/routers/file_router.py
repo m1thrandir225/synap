@@ -7,37 +7,46 @@ from pydantic import BaseModel
 from app.dependencies import (
     get_current_token,
     get_current_user,
+    get_local_storage_provider,
     get_uploaded_files_service,
+    get_local_storage_provider,
 )
 from app.log import get_logger
 from app.storage_provider import LocalStorageProvider
 from app.services import UploadedFileService
 from app.models import CreateUploadedFile, UploadedFileDTO
-from app.dependencies import get_local_storage_provider
-from app.database import User
+from app.database.models import User
 from fastapi import Form
+from openai import OpenAI
+from app.config import settings 
+
+
 
 log = get_logger(__name__)
 
-#FIXME: move to models 
+
+# FIXME: move to models
 class FileInfo(BaseModel):
     filename: str
+
 
 router = APIRouter(
     prefix="/files", tags=["Files"], dependencies=[Depends(get_current_token)]
 )
 
 
-@router.get("/", response_model=List[FileInfo])
+@router.get("/", response_model=List[UploadedFileDTO])
 async def list_user_files(
-    storage_provider: LocalStorageProvider = Depends(get_local_storage_provider),
+    uploaded_files_service: UploadedFileService = Depends(get_uploaded_files_service),
+    user: User = Depends(get_current_user),
 ):
     """
     Lists all files stored for the current authenticated user.
     Requires authentication because LocalStorageProvider depends on the user.
     """
-    filenames = storage_provider.list_files()
-    return [{"filename": name} for name in filenames]
+
+    response = uploaded_files_service.get_uploaded_files_by_user(user_id=user.id)
+    return response
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -46,7 +55,7 @@ async def upload_file(
     course_id: Annotated[str, Form()],
     storage_provider: LocalStorageProvider = Depends(get_local_storage_provider),
     file_service: UploadedFileService = Depends(get_uploaded_files_service),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user)
 ):
     """
     Uploads a new file for the current authenticated user.
@@ -73,20 +82,32 @@ async def upload_file(
 
         file_path = f"{router.prefix}/{saved_filename}"
 
+        client = OpenAI(api_key=settings.OPENAI_API_KEY)
+
+        original_filename = file.filename or "uploaded.pdf"
+
+        file_upload_response = client.files.create(
+            file=(original_filename, file.file),
+            purpose="user_data"
+        )
+
         uploaded_file_data = CreateUploadedFile(
             user_id=user.id,
             course_id=uuid.UUID(course_id),
             file_name=file.filename,
+            openai_id=file_upload_response.id,
             file_path=file_path,
             file_type=file_type,
             file_size=str(file_size_bytes),
             mime_type=mime_type,
         )
 
-        uploaded_file: UploadedFileDTO =  file_service.create_uploaded_file(file_data=uploaded_file_data)
+        uploaded_file: UploadedFileDTO = file_service.create_uploaded_file(
+            file_data=uploaded_file_data
+        )
 
         return uploaded_file
-    
+
     except Exception as e:
         log.error("Failed to do something", e)
         raise HTTPException(
@@ -139,3 +160,16 @@ async def delete_file(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to delete file",
         )
+    
+@router.post("/openai")
+def upload_to_openai(file: UploadFile):
+    client = OpenAI(api_key=settings.OPENAI_API_KEY)
+
+    original_filename = file.filename or "uploaded.pdf"
+
+    response = client.files.create(
+        file=(original_filename, file.file),
+        purpose="user_data"
+    )
+
+    return response
