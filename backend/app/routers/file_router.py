@@ -9,6 +9,7 @@ from app.dependencies import (
     get_current_user,
     get_local_storage_provider,
     get_uploaded_files_service,
+    get_local_storage_provider,
 )
 from app.log import get_logger
 from app.storage_provider import LocalStorageProvider
@@ -23,9 +24,11 @@ from app.config import settings
 
 log = get_logger(__name__)
 
-#FIXME: move to models 
+
+# FIXME: move to models
 class FileInfo(BaseModel):
     filename: str
+
 
 router = APIRouter(
     prefix="/files", tags=["Files"], dependencies=[Depends(get_current_token)]
@@ -42,9 +45,7 @@ async def list_user_files(
     Requires authentication because LocalStorageProvider depends on the user.
     """
 
-    response = uploaded_files_service.get_uploaded_files_by_user(
-        user_id=user.id
-    )
+    response = uploaded_files_service.get_uploaded_files_by_user(user_id=user.id)
     return response
 
 
@@ -101,10 +102,12 @@ async def upload_file(
             mime_type=mime_type,
         )
 
-        uploaded_file: UploadedFileDTO =  file_service.create_uploaded_file(file_data=uploaded_file_data)
+        uploaded_file: UploadedFileDTO = file_service.create_uploaded_file(
+            file_data=uploaded_file_data
+        )
 
         return uploaded_file
-    
+
     except Exception as e:
         log.error("Failed to do something", e)
         raise HTTPException(

@@ -2,6 +2,7 @@ import CourseCard from "@/components/courses/CourseCard";
 import CourseFiles from "@/components/courses/CourseFiles";
 import CourseLectures from "@/components/courses/CourseLectures";
 import CourseNotes from "@/components/courses/CourseNotes";
+import Loader from "@/components/Loader";
 import { courseQueries } from "@/queries/courses.queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/dashboard/courses/$courseId/")({
     };
   },
   component: RouteComponent,
+  pendingComponent: Loader,
 });
 
 function RouteComponent() {

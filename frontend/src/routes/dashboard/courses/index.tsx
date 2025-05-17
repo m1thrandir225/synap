@@ -11,11 +11,13 @@ import {
 } from "@/components/ui/card";
 import { courseQueries } from "@/queries/courses.queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import Loader from "@/components/Loader";
 export const Route = createFileRoute("/dashboard/courses/")({
   loader: ({ context: { queryClient } }) => {
     return queryClient.ensureQueryData(courseQueries.getCourses());
   },
   component: RouteComponent,
+  pendingComponent: Loader,
 });
 
 function RouteComponent() {

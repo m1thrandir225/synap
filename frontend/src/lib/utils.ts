@@ -31,3 +31,7 @@ export function formatBytesToMb(bytes: number): string {
 
   return `${megabytes.toFixed(2)} MB`;
 }
+
+export function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

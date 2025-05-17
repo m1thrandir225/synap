@@ -42,7 +42,7 @@ const AppRoot: React.FC = () => {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />;
+        <RouterProvider router={router} />
       </QueryClientProvider>
     </ThemeProvider>
   );

@@ -1,3 +1,4 @@
+import Loader from "@/components/Loader";
 import { courseQueries } from "@/queries/courses.queries";
 import { Outlet } from "@tanstack/react-router";
 
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/dashboard/courses/$courseId")({
     };
   },
   component: RouteComponent,
+  pendingComponent: Loader,
 });
 
 function RouteComponent() {

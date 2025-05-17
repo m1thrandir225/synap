@@ -24,12 +24,20 @@ import {
 } from "../ui/table";
 import { TablePagination } from "../table/TablePagination";
 import { formatBytesToMb } from "@/lib/utils";
-import type { FileInfo, UploadFileResponse } from "@/types/responses/files";
 
-const columns: ColumnDef<FileInfo>[] = [
+const columns: ColumnDef<UploadedFile>[] = [
   {
-    accessorKey: "filename",
+    accessorKey: "file_name",
     header: "Name",
+  },
+  {
+    accessorKey: "file_size",
+    header: "Size",
+    cell: ({ row }) => {
+      const file_size = row.original.file_size;
+
+      return <span>{formatBytesToMb(file_size)}</span>;
+    },
   },
 
   {
@@ -54,7 +62,7 @@ const columns: ColumnDef<FileInfo>[] = [
 ];
 
 interface ComponentProps {
-  items: FileInfo[];
+  items: UploadedFile[];
 }
 
 const FileList: React.FC<ComponentProps> = ({ items }) => {
@@ -79,7 +87,7 @@ const FileList: React.FC<ComponentProps> = ({ items }) => {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -98,7 +106,7 @@ const FileList: React.FC<ComponentProps> = ({ items }) => {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

@@ -4,12 +4,13 @@ import type {
   UploadFileRequest,
   UploadFileResponse,
 } from "@/types/responses/files";
+import type { UploadedFile } from "@/types/models/uploaded-file";
 
 const fileURL = `${config.apiUrl}/files`;
 
 const fileService = {
   getUserFiles: () =>
-    apiRequest<UploadFileResponse>({
+    apiRequest<UploadedFile[]>({
       url: fileURL,
       method: "GET",
       headers: undefined,
@@ -24,6 +25,15 @@ const fileService = {
       protected: true,
       data: input,
       params: undefined,
+    }),
+  downloadFile: (filename: string) =>
+    apiRequest<Blob>({
+      url: `${fileURL}/${filename}`,
+      method: "GET",
+      headers: undefined,
+      protected: true,
+      params: undefined,
+      responseType: "blob",
     }),
 };
 

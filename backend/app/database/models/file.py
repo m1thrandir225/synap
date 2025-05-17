@@ -14,11 +14,10 @@ class UploadedFile(Base):
     file_size = Column(BigInteger, nullable=False)
     mime_type = Column(String, nullable=False)
     course_id = Column(UUID, ForeignKey("courses.id"), nullable=True)
+    openai_id = Column(String, nullable=True)
     course = relationship("Course", back_populates="uploaded_files", cascade="all, delete")
     user_id = Column(UUID, ForeignKey("users.id"), nullable=False)
     user = relationship("User", back_populates="uploaded_files", cascade="all, delete")
-    
-    openai_id = Column(String, nullable=True)
 
     summarization = relationship("Summarization", back_populates="file", uselist=False)
     recommendations = relationship("Recommendation", back_populates="file")

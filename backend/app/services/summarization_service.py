@@ -1,13 +1,20 @@
 import datetime
 from typing import List, Dict, Any
 from uuid import UUID
+from fastapi import HTTPException
 from app.database import Summarization
 from .openai_service import OpenAIService
 from .learning_material_service import LearningMaterialService
 from .recommendation_service import RecommendationService
 from app.repositories import SummarizationRepository
 from app.storage_provider import LocalStorageProvider
-from app.models import SummarizationBase, CreateLearningMaterialDTO, OpenAIServiceResponse
+from app.models import (
+    SummarizationBase,
+    CreateLearningMaterialDTO,
+    OpenAIServiceResponse,
+    SummarizationDTO,
+    UploadedFileDTO
+)
 
 class SummarizationService:
     def __init__(
@@ -16,7 +23,7 @@ class SummarizationService:
         openai_service: OpenAIService,
         learning_material_service: LearningMaterialService,
         recommendation_service: RecommendationService,
-        storage_service: LocalStorageProvider
+        storage_service: LocalStorageProvider,
     ):
         self.summarization_repository = summarization_repository
         self.openai_service = openai_service
@@ -40,7 +47,7 @@ class SummarizationService:
             ai_model_used="gpt-4.1-2025-04-14",
             created_at=datetime.datetime.now(),
             updated_at=datetime.datetime.now(),
-            name=summarization_name
+            name=summarization_name,
         )
 
         topics = ai_response.topics
@@ -51,32 +58,64 @@ class SummarizationService:
             if not required_keys.issubset(material):
                 continue
             try:
-                learning_material = self.learning_material_service.create_learning_material(
-                    CreateLearningMaterialDTO(
-                        title=material["title"],
-                        description=material["description"],
-                        material_type=material["material_type"]
-                    ),
-                    material["url"]
+                learning_material = (
+                    self.learning_material_service.create_learning_material(
+                        CreateLearningMaterialDTO(
+                            title=material["title"],
+                            description=material["description"],
+                            material_type=material["material_type"],
+                        ),
+                        material["url"],
+                    )
                 )
 
                 self.recommendation_service.create_recommendation(
                     file_id=file_id,
                     learning_material_id=learning_material.id,
-                    relevance_score=material["relevance_score"]
+                    relevance_score=material["relevance_score"],
                 )
             except Exception as e:
                 print(f"Failed to process material: {material}, error: {e}")
 
-        return self.summarization_repository.create(summarization_data) # type: ignore
+        return self.summarization_repository.create(summarization_data)  # type: ignore
 
-    async def create_manual_summary(self, summary_data: Dict[str, Any]) -> Summarization:
+    def create_manual_summary(self, summary_data: Dict[str, Any]) -> Summarization:
         """Creates a summary from provided data (e.g., for testing or manual input)."""
         db_summarization_data = SummarizationBase(**summary_data)
-        return self.summarization_repository.create(db_summarization_data) # type: ignore
+        return self.summarization_repository.create(db_summarization_data)  # type: ignore
 
-    async def get_all_summaries(self) -> List[Summarization]:
-        return self.summarization_repository.get_all()
+    def get_all_summaries(self, user_id: UUID) -> List[SummarizationBase]:
+        summaries = self.summarization_repository.get_all(user_id=user_id)
 
-    async def get_summary_by_id(self, summary_id: UUID) -> Summarization | None:
-        return self.summarization_repository.get_by_id(summary_id)
+        if not summaries:
+            raise HTTPException(status_code=404, detail="Not Found")
+        summary_dto: List[SummarizationBase] = []
+        for summary in summaries:
+            dto = SummarizationBase.model_validate(summary)
+            summary_dto.append(dto)
+
+        return summary_dto   
+
+
+    def get_summary_by_id(self, summary_id: UUID) -> SummarizationDTO:
+        summary = self.summarization_repository.get_by_id(summary_id)
+
+        if not summary :
+            raise HTTPException(status_code=404, detail="Not found")
+        
+        recommendations = self.recommendation_service.get_recommendations_for_file(summary.file_id) # type: ignore
+        uploaded_file_dto = UploadedFileDTO.model_validate(summary.file)
+
+        dto = {
+            "id": summary.id,
+            "file_id": summary.file_id,
+            "summary_text": summary.summary_text,
+            "ai_model_used": summary.ai_model_used,
+            "created_at": summary.created_at,
+            "updated_at": summary.updated_at,
+            "name": summary.name,
+            "recommendations": recommendations,
+            "file": uploaded_file_dto,
+        }
+
+        return SummarizationDTO.model_validate(dto) 

@@ -140,8 +140,8 @@ export const apiRequest = async <T>(config: ApiRequestOptions) => {
       params: config.params,
       data: config.data,
       withCredentials: config.withCredentials,
+      responseType: config.responseType,
     });
-    console.log(config.headers);
 
     return response.data;
   } catch (e: unknown) {

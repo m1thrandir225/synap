@@ -9,6 +9,7 @@ type RequestOptions = {
 export type ApiRequestOptions = RequestOptions & {
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   data?: Record<string, unknown>;
+  responseType?: "json" | "blob" | "stream" | "arraybuffer";
 };
 
 export type MultipartRequestOptions<T extends Record<string, unknown>> =

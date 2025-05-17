@@ -6,6 +6,7 @@ from app.models import (
     CreateRecommendationDTO,
     UpdateRecommendationDTO,
     RecommendationDTO,
+    LearningMaterialDTO
 )
 from datetime import datetime
 
@@ -14,8 +15,18 @@ class RecommendationService:
     def __init__(self, recom_repo: RecommendationRepository):
         self.recommendation_repository = recom_repo
 
-    def _to_dto(self, recommendation: Recommendation | None) -> RecommendationDTO:
-        return RecommendationDTO.model_validate(recommendation)
+    def _to_dto(self, recommendation: Recommendation) -> RecommendationDTO:
+        learning_material_dto = LearningMaterialDTO.model_validate(recommendation.learning_material)
+
+        dto = {
+            "id": recommendation.id,
+            "relevance_score": recommendation.relevance_score,
+            "created_at": recommendation.created_at,
+            "file_id": recommendation.file_id,
+            "learning_material_id": recommendation.file_id,
+            "learning_material": learning_material_dto 
+        }
+        return RecommendationDTO.model_validate(dto)
 
     def create_recommendation(
         self, file_id: UUID, learning_material_id: UUID , relevance_score: float

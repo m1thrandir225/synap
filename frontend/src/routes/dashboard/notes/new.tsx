@@ -26,9 +26,15 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import * as z from "zod";
+
+const searchParams = z.object({
+  courseId: z.string().optional(),
+});
 
 export const Route = createFileRoute("/dashboard/notes/new")({
   component: RouteComponent,
+  validateSearch: searchParams,
   loader: async ({ context: { queryClient } }) => {
     const courses = queryClient.ensureQueryData(courseQueries.getCourses());
     return {
@@ -41,9 +47,12 @@ export const Route = createFileRoute("/dashboard/notes/new")({
 function RouteComponent() {
   const { data: courses } = useSuspenseQuery(courseQueries.getCourses());
   const router = useRouter();
+  const { courseId } = Route.useSearch();
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [content, setContent] = useState<string | undefined>(undefined);
-  const [selectedCourse, setSelectedCourse] = useState<string | undefined>();
+  const [selectedCourse, setSelectedCourse] = useState<string | undefined>(
+    courseId,
+  );
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async (input: CreateNoteRequest) =>
       noteServices.createNote(input),
