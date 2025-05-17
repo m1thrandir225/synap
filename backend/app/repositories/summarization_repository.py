@@ -2,9 +2,10 @@ from sqlalchemy.orm import Session
 from app.database import (
     Summarization,
     UploadedFile,
-)  
+)
 from typing import List, Optional
 from uuid import UUID
+
 
 class SummarizationRepository:
     def __init__(self, db: Session):
@@ -32,7 +33,7 @@ class SummarizationRepository:
 
     def create(self, summarization_data: dict) -> Summarization:
         """Create a new summarization."""
-        
+
         summarization_dict = summarization_data.model_dump()
         db_summarization = Summarization(**summarization_dict)
         self.db.add(db_summarization)
@@ -68,3 +69,4 @@ class SummarizationRepository:
         """Get the file associated with a specific summarization."""
         summarization = self.get_by_id(summarization_id)
         return summarization.file if summarization else None
+

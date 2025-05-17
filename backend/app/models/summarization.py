@@ -9,6 +9,7 @@ class CreateSummarization(BaseModel):
     name: str
     file_id: UUID4
 
+
 class SummarizationBase(BaseModel):
     id: Optional[UUID4] = None
     file_id: UUID4
@@ -21,21 +22,30 @@ class SummarizationBase(BaseModel):
 
 
 class SummarizationDTO(SummarizationBase):
-    file: UploadedFileDTO
+    pass
 
 
 class OpenAIServiceResponse(BaseModel):
     """
     Pydantic model for the expected OpenAI service response.
     """
+
     summarization: str = Field(..., description="A summary of the text content.")
-    topics: List[str] = Field(..., description="A list of main topics discussed in the text.")
+    topics: List[str] = Field(
+        ..., description="A list of main topics discussed in the text."
+    )
     query: str
 
     class Config:
         json_schema_extra = {
             "example": {
                 "summarization": "The document discusses the features and benefits of the PostgreSQL database system, including its data types, indexing, and scalability.",
-                "topics": ["PostgreSQL", "database", "data types", "indexing", "scalability"]
+                "topics": [
+                    "PostgreSQL",
+                    "database",
+                    "data types",
+                    "indexing",
+                    "scalability",
+                ],
             }
         }
