@@ -84,8 +84,18 @@ class SummarizationService:
         db_summarization_data = SummarizationBase(**summary_data)
         return self.summarization_repository.create(db_summarization_data)  # type: ignore
 
-    def get_all_summaries(self) -> List[Summarization]:
-        return self.summarization_repository.get_all()
+    def get_all_summaries(self, user_id: UUID) -> List[SummarizationBase]:
+        summaries = self.summarization_repository.get_all(user_id=user_id)
+
+        if not summaries:
+            raise HTTPException(status_code=404, detail="Not Found")
+        summary_dto: List[SummarizationBase] = []
+        for summary in summaries:
+            dto = SummarizationBase.model_validate(summary)
+            summary_dto.append(dto)
+
+        return summary_dto   
+
 
     def get_summary_by_id(self, summary_id: UUID) -> SummarizationDTO:
         summary = self.summarization_repository.get_by_id(summary_id)

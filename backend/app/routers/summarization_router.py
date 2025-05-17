@@ -1,12 +1,13 @@
+from typing import List
 from uuid import UUID
 from fastapi import APIRouter, HTTPException, status
 from fastapi import Depends
-from app.dependencies import get_uploaded_files_service, get_summarization_service
+from app.dependencies import get_uploaded_files_service, get_summarization_service, get_current_user
 from app.log import get_logger
-from app.models.summarization import SummarizationDTO
 from app.services import SummarizationService
 from app.services import UploadedFileService
-from app.models import CreateSummarization
+from app.models import CreateSummarization, SummarizationBase, SummarizationDTO
+from app.database import User
 
 
 log = get_logger(__name__)
@@ -37,6 +38,17 @@ def get_summarization_by_id(
 ):
     try:
         summarization = service.get_summary_by_id(summarization_id)
-        return SummarizationDTO.model_validate(summarization)
+        return summarization
+    except HTTPException as e:
+        raise e
+
+@router.get("/", response_model=List[SummarizationBase])
+def get_summarizations_for_user(
+    service: SummarizationService = Depends(get_summarization_service),
+    current_user: User = Depends(get_current_user)
+):
+    try:
+        summarizations = service.get_all_summaries(current_user.id)
+        return summarizations
     except HTTPException as e:
         raise e

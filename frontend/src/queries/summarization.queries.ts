@@ -8,4 +8,8 @@ export const summarizationQueries = {
       queryKey: ["summarization", id],
       queryFn: () => summarizationService.getSummarization(id),
     }),
+  getUserSummarizations: queryOptions({
+    queryKey: ["summarizations"],
+    queryFn: () => summarizationService.getUserSummaries(),
+  }),
 };

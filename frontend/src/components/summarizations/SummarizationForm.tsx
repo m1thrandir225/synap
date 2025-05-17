@@ -24,6 +24,8 @@ import { useMutation } from "@tanstack/react-query";
 import summarizationService from "@/services/summarization.service";
 import type { CreateSummarizationRequest } from "@/types/responses/summarization";
 import { useState } from "react";
+import queryClient from "@/lib/queryClient";
+import { useParams, useRouter } from "@tanstack/react-router";
 
 const createSummarizationSchema = z.object({
   name: z.string(),
@@ -37,7 +39,9 @@ interface ComponentProps {
 
 const SummarizationForm: React.FC<ComponentProps> = (props) => {
   const { file_id } = props;
+  const { courseId } = useParams({ from: "/dashboard/courses/$courseId/" });
 
+  const router = useRouter();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { mutateAsync, status } = useMutation({
@@ -45,7 +49,14 @@ const SummarizationForm: React.FC<ComponentProps> = (props) => {
     mutationFn: (input: CreateSummarizationRequest) =>
       summarizationService.createSummarization(input),
     onSuccess: (response) => {
-      console.log(response);
+      setDialogOpen(false);
+      queryClient.invalidateQueries({
+        queryKey: ["course", courseId],
+      });
+      router.navigate({
+        to: "/dashboard/lectures/$summarizationId",
+        params: { summarizationId: response.id },
+      });
     },
   });
   const form = useForm({

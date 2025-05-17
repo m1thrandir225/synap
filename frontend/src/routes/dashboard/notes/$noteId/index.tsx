@@ -1,3 +1,4 @@
+import CourseGoto from "@/components/courses/CourseGoto";
 import NoteDeleteDialog from "@/components/notes/NoteDeleteDialog";
 import NotePreview from "@/components/notes/NotePreview";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import { dummyNotes } from "@/types/models/note";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import MDEditor from "@uiw/react-md-editor";
-import { Pen } from "lucide-react";
+import { Pen, Undo2 } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/notes/$noteId/")({
   loader: async ({ params, context: { queryClient } }) => {
@@ -26,6 +27,8 @@ function RouteComponent() {
         <CardHeader className="w-full flex flex-row items-center justify-between">
           <CardTitle>{note.title}</CardTitle>
           <div className="flex flex-row items-center gap-2">
+            <CourseGoto course_id={note.course_id} />
+
             <Button asChild size={"icon"} variant={"outline"}>
               <Link
                 to="/dashboard/notes/$noteId/edit"

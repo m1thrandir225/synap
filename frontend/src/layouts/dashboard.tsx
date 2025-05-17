@@ -27,7 +27,6 @@ import {
 import UserMenu from "@/components/UserMenu";
 import { Link, Outlet } from "@tanstack/react-router";
 import {
-  Book,
   ChevronRight,
   Files,
   LayoutPanelTop,
@@ -72,6 +71,7 @@ const DashboardLayout: React.FC = () => {
   const userShortcutItems = useMemo<SidebarItem[]>(() => {
     return [];
   }, []);
+
   return (
     <SidebarProvider>
       <Sidebar variant="inset">

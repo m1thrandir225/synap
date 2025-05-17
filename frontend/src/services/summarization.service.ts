@@ -23,6 +23,15 @@ const summarizationService = {
       protected: true,
       params: undefined,
     }),
+  getUserSummaries: () =>
+    apiRequest<Summarization[]>({
+      url: summarizationURL,
+      method: "GET",
+      headers: undefined,
+      protected: true,
+      params: undefined,
+      responseType: "json",
+    }),
 };
 
 export default summarizationService;

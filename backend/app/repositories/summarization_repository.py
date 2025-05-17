@@ -28,9 +28,15 @@ class SummarizationRepository:
             .first()
         )
 
-    def get_all(self) -> List[Summarization]:
+    def get_all(self, user_id: UUID) -> List[Summarization]:
         """Get all summarizations."""
-        return self.db.query(Summarization).all()
+        query = (
+            self.db.query(Summarization)
+            .join(Summarization.file)
+            .filter(UploadedFile.user_id == user_id)
+            .options(joinedload(Summarization.file))
+        )
+        return query.all()
 
     def create(self, summarization_data: dict) -> Summarization:
         """Create a new summarization."""
