@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from fastapi import UploadFile
 from pydantic import UUID4, BaseModel, ConfigDict
 
@@ -9,7 +10,8 @@ class UploadedFileBase(BaseModel):
     file_type: str
     file_size: int
     mime_type: str
-
+    openai_id: Optional[str]
+    
     model_config = ConfigDict(from_attributes=True, str_max_length=255)
 
 
