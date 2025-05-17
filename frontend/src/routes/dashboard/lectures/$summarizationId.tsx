@@ -1,4 +1,5 @@
 import LectureCard from "@/components/lectures/LectureCard";
+import RecommendationList from "@/components/recommendations/RecommendationList";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import queryClient from "@/lib/queryClient";
 import { summarizationQueries } from "@/queries/summarization.queries";
@@ -44,6 +45,7 @@ function RouteComponent() {
           <p>{summarization.summary_text}</p>
         </CardContent>
       </Card>
+      <RecommendationList items={summarization.recommendations} />
     </div>
   );
 }

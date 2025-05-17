@@ -1,5 +1,7 @@
 import type { Summarization } from "@/types/models/summarization";
-import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardHeader, CardTitle } from "../ui/card";
+
+import FileDownload from "../files/FileDownload";
 
 interface ComponentProps {
   item: Summarization;
@@ -7,10 +9,17 @@ interface ComponentProps {
 
 const LectureCard: React.FC<ComponentProps> = (props) => {
   const { item } = props;
+
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>{item.name}</CardTitle>
+        <div className="flex flex-row items-center w-full justify-between">
+          <CardTitle>{item.name}</CardTitle>
+          <FileDownload
+            filename={item.file.file_name}
+            text="Download Original"
+          />
+        </div>
       </CardHeader>
     </Card>
   );

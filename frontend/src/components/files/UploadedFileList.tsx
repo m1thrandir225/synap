@@ -14,6 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import summarizationService from "@/services/summarization.service";
 import type { CreateSummarizationRequest } from "@/types/responses/summarization";
 import SummarizationForm from "../summarizations/SummarizationForm";
+import FileDownload from "./FileDownload";
 
 interface ComponentProps {
   items: UploadedFile[];
@@ -29,10 +30,7 @@ const UploadedFileList: React.FC<ComponentProps> = (props) => {
           <p>{item.file_name}</p>
           <div className="flex flex-row items-center gap-4">
             <SummarizationForm file_id={item.id} />
-            <Button variant={"outline"}>
-              <Download />
-              Download
-            </Button>
+            <FileDownload filename={item.file_name} text="Download" />
           </div>
         </div>
       ))}
