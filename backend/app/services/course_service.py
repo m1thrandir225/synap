@@ -33,11 +33,11 @@ class CourseService:
         if hasattr(course, "uploaded_files"):
             for file_model in course.uploaded_files:
                 if hasattr(file_model, "summarization"):
-                    for summarization_insance in file_model.summarization:
+                    if(file_model.has_summarization):
                         summaries_collected.append(
-                            SummarizationBase.model_validate(summarization_insance)
+                            SummarizationBase.model_validate(file_model.summarization)
                         )
-
+                        
                 uploaded_files_dto.append(UploadedFileDTO.model_validate(file_model))
 
         course_data_dto = {

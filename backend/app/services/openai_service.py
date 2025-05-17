@@ -11,14 +11,12 @@ class OpenAIService:
         self.client = OpenAI(api_key=api_key)
         self.model = "gpt-4.1-2025-04-14"
 
-    def get_summary_and_topics_from_base64_content(
+    def get_summary_and_topics(
         self,
-        filename: str,
-        base64_content: str,
-        file_mime_type: str = "application/pdf"
+        openai_id: str,
     ) -> OpenAIServiceResponse:
         prompt_text = (
-            "You will receive a base64-encoded file. "
+            "You will receive a file. "
             "Please summarize its content in one paragraph. Less than 255 characters."
             "Then, extract 3–5 key topics it discusses.\n\n"
             "Respond in this JSON format only:\n"
@@ -39,8 +37,10 @@ class OpenAIService:
                                 "text": prompt_text
                             },
                             {
-                                "type": "text",
-                                "text": f"The following is the content of '{filename}' encoded in base64: data:{file_mime_type};base64,{base64_content}"
+                                "type": "file",
+                                "file": {
+                                    "file_id": openai_id
+                                }
                             }
                 
                         ],
@@ -54,7 +54,7 @@ class OpenAIService:
                 raise ValueError("OpenAI returned an empty content string.")
 
             parsed_json = json.loads(content_str)
-            parsed_json["query"] = prompt_text  # Or another useful value
+            parsed_json["query"] = prompt_text
             return OpenAIServiceResponse(**parsed_json)
 
         except OpenAIError as e:
@@ -65,21 +65,6 @@ class OpenAIService:
             raise ValueError(f"Error processing OpenAI response: {e}")
         
     def get_learning_materials_for_topics(self, topics: list[str]) -> list[dict]:
-        # search_prompt = {
-        #     "role": "user",
-        #     "content": (
-        #         f"Based on these topics: {topics}. "
-        #         "Can you give me relevant YouTube videos and articles to continue my learning journey on these topics? "
-        #         "Respond only with a JSON object in this structure:\n"
-        #         "{\n"
-        #         "  \"title\": \"string\",\n"
-        #         "  \"description\": \"string\",\n"
-        #         "  \"url\": \"string\",\n"
-        #         "  \"material_type\": \"string\" // 'article' or 'video'\n"
-        #         "}\n"
-        #         "Respond in JSON format only."
-        #     )
-        # }
         search_prompt = {
             "role": "user",
             "content": (
