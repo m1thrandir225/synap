@@ -1,14 +1,6 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { ModeToggle } from "@/components/DarkToggle";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
@@ -30,16 +22,13 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarProvider,
-  SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import UserMenu from "@/components/UserMenu";
 import { Link, Outlet } from "@tanstack/react-router";
 import {
   Book,
-  BookA,
   ChevronRight,
-  Computer,
   Files,
   LayoutPanelTop,
   Library,
