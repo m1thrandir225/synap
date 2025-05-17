@@ -17,6 +17,8 @@ class UploadedFile(Base):
     course = relationship("Course", back_populates="uploaded_files", cascade="all, delete")
     user_id = Column(UUID, ForeignKey("users.id"), nullable=False)
     user = relationship("User", back_populates="uploaded_files", cascade="all, delete")
+    
+    openai_id = Column(String, nullable=True)
 
     summarization = relationship("Summarization", back_populates="file", uselist=False)
     recommendations = relationship("Recommendation", back_populates="file")

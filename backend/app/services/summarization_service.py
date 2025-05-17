@@ -24,7 +24,7 @@ class SummarizationService:
         self.recommendation_service = recommendation_service
         self.storage_service = storage_service
 
-    async def summarize_file_and_store(self, filename: str, file_id: UUID, summarization_name: str, original_filename: str | None = None) -> Summarization:
+    async def summarize_file_and_store(self, filename: str, file_id: UUID, openai_id: str, summarization_name: str, original_filename: str | None = None) -> Summarization:
         """
         Retrieves a file, gets its summary from OpenAI, and stores it.
         'filename' is the name in storage, 'original_filename' is for record keeping.
@@ -32,12 +32,7 @@ class SummarizationService:
         if not original_filename:
             original_filename = filename
 
-        base64_content = self.storage_service.get_file_base64(filename)
-
-        ai_response: OpenAIServiceResponse = self.openai_service.get_summary_and_topics_from_base64_content(
-            filename=original_filename,
-            base64_content=base64_content
-        )
+        ai_response: OpenAIServiceResponse = self.openai_service.get_summary_and_topics(openai_id=openai_id)
 
         summarization_data = SummarizationBase(
             file_id=file_id,
@@ -50,9 +45,7 @@ class SummarizationService:
 
         topics = ai_response.topics
         materials_data = self.openai_service.get_learning_materials_for_topics(topics)
-        for m in materials_data:
-            print(m)
-        
+
         for material in materials_data:
             required_keys = {"title", "description", "material_type", "url"}
             if not required_keys.issubset(material):

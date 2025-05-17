@@ -23,7 +23,8 @@ async def summarize_file(
 
     return await summarization_service.summarize_file_and_store(
         filename=uploaded_file.file_name, 
-        file_id=summarization.file_id, 
+        file_id=summarization.file_id,
+        openai_id=uploaded_file.openai_id, 
         summarization_name=summarization.name, 
         original_filename=uploaded_file.file_name
     )
