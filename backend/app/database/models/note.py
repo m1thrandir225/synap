@@ -13,10 +13,10 @@ class Note(Base):
     content = Column(String, nullable=False)
 
     user_id = Column(UUID, ForeignKey("users.id"), nullable=False)
-    user = relationship("User", back_populates="notes", cascade="all, delete")
+    user = relationship("User", back_populates="notes")
 
     course_id = Column(UUID, ForeignKey("courses.id"), nullable=False)
-    course = relationship("Course", back_populates="notes", cascade="all, delete")
+    course = relationship("Course", back_populates="notes")
 
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
