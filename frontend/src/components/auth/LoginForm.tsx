@@ -15,6 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { Loader2 } from "lucide-react";
 
 const loginFormSchema = z.object({
   username: z.string().email(),
@@ -25,11 +26,13 @@ type LoginFormSchemaType = z.infer<typeof loginFormSchema>;
 
 interface ComponentProps extends React.ComponentPropsWithoutRef<"div"> {
   submitValues: (values: LoginFormSchemaType) => Promise<void>;
+  isLoading: boolean;
 }
 
 const LoginForm: React.FC<ComponentProps> = ({
   submitValues,
   className,
+  isLoading,
   ...props
 }) => {
   const form = useForm<LoginFormSchemaType>({
@@ -90,8 +93,12 @@ const LoginForm: React.FC<ComponentProps> = ({
                       )}
                     />
                   </div>
-                  <Button type="submit" className="w-full">
-                    Login
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      <span>Login</span>
+                    )}
                   </Button>
                 </div>
                 <div className="text-center text-sm">

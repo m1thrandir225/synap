@@ -25,7 +25,7 @@ function RouteComponent() {
   const authStore = useAuthStore();
   const { redirect } = useSearch({ strict: false });
   const router = useRouter();
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, status } = useMutation({
     mutationKey: ["login"],
     mutationFn: (input: LoginRequest) => authService.login(input),
     onSuccess: (response) => {
@@ -57,6 +57,7 @@ function RouteComponent() {
           submitValues={async (values) => {
             await mutateAsync(values);
           }}
+          isLoading={status === "pending"}
         />
       </div>
     </div>

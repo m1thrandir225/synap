@@ -13,7 +13,7 @@ export const Route = createFileRoute("/(auth)/register")({
 function RouteComponent() {
   const authStore = useAuthStore();
   const router = useRouter();
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, status } = useMutation({
     mutationKey: ["register"],
     mutationFn: (input: RegisterRequest) => authService.register(input),
     onSuccess: (response) => {
@@ -39,6 +39,7 @@ function RouteComponent() {
           submitValues={async (input) => {
             mutateAsync(input);
           }}
+          isLoading={status === "pending"}
         />
       </div>
     </div>
