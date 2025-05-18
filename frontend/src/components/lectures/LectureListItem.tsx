@@ -1,5 +1,7 @@
+import { formatDate } from "@/lib/utils";
 import type { Summarization } from "@/types/models/summarization";
 import { Link } from "@tanstack/react-router";
+import { Asterisk } from "lucide-react";
 
 interface ComponentProps {
   lecture: Summarization;
@@ -11,11 +13,16 @@ const LectureListItem: React.FC<ComponentProps> = (props) => {
     <Link
       to="/dashboard/lectures/$summarizationId"
       params={{ summarizationId: lecture.id }}
-      className="my-2 group"
+      className="w-ful h-full"
     >
-      <h1 className="w-full border px-4 py-2 rounded-lg my-2 group-hover:bg-neutral-100 transition-all ease-in-out duration-300">
+      <div className="p-4 border rounded-md my-2 hover:bg-muted transition-all ease-in-out duration-300 flex flex-row items-center justify-between">
         {lecture.name}
-      </h1>
+
+        <div className="text-sm text-neutral-500 flex flex-row items-center gap-2">
+          {formatDate(lecture.updated_at)}
+          <Asterisk size={16} />
+        </div>
+      </div>
     </Link>
   );
 };
