@@ -45,15 +45,13 @@ const createApiInstance = (): AxiosInstance => {
    * Used for adding JWT token if the request is protected
    */
   api.interceptors.request.use((config) => {
-    const accessToken = authStore.accessToken;
+    const accessToken = useAuthStore.getState().accessToken;
 
     const isProtected = config.headers?.protected !== false;
 
     if (isProtected && accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
-
-    console.log(config.headers);
 
     if (config.headers?.protected !== undefined) {
       delete config.headers.protected;
@@ -68,9 +66,16 @@ const createApiInstance = (): AxiosInstance => {
     (response) => response,
     async (error) => {
       const originalRequest = error.config;
+
+      if (!originalRequest || originalRequest._isRetry) {
+        return Promise.reject(error);
+      }
+
       const status = error.response?.status;
 
-      if (status === 401 && originalRequest.url !== "/auth/refresh") {
+      if (status === 401 && !originalRequest.url?.includes("/auth/refresh")) {
+        originalRequest._isRetry = true;
+
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
             failedQueue.push({ resolve, reject });
@@ -81,41 +86,45 @@ const createApiInstance = (): AxiosInstance => {
             })
             .catch((err) => Promise.reject(err));
         }
-
         isRefreshing = true;
 
         try {
+          const authStore = useAuthStore.getState();
           const canRefresh = authStore.checkAuth();
+
           if (!canRefresh) {
-            throw new Error("logged out.");
+            throw new Error("User is logged out or refresh token expired");
           }
 
           const refreshToken = authStore.refreshToken;
 
-          if (!refreshToken) throw new Error("missing refresh token");
+          if (!refreshToken) {
+            throw new Error("Missing refresh token");
+          }
 
           const newToken = await authService.refreshToken(refreshToken);
+          if (!newToken.access_token) {
+            throw new Error("Refresh endpoint did not return an access token");
+          }
 
-          authStore.login(newToken); //set the new stuff
+          authStore.login(newToken);
 
           originalRequest.headers["Authorization"] =
             `Bearer ${newToken.access_token}`;
 
-          if (!newToken?.access_token) {
-            throw new Error("Refresh endpoint did not return an access token.");
-          }
-
           processQueue(null, newToken.access_token);
+
           return api(originalRequest);
         } catch (refreshError) {
           processQueue(refreshError, null);
+
+          useAuthStore.getState().logout();
 
           return Promise.reject(refreshError);
         } finally {
           isRefreshing = false;
         }
       }
-
       return Promise.reject(error);
     },
   );
@@ -146,9 +155,9 @@ export const apiRequest = async <T>(config: ApiRequestOptions) => {
     return response.data;
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
-      throw new Error(e.response?.data.message);
+      throw new Error(e.response?.data.detail);
     } else {
-      throw new Error("something went wrong. please try again later.");
+      throw new Error("Unknown error happened.");
     }
   }
 };
@@ -180,14 +189,13 @@ export const multipartApiRequest = async <
       withCredentials: config.withCredentials,
       params: config.params,
     });
-    console.log(config.headers);
 
     return response.data;
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
-      throw new Error(e.response?.data.message);
+      throw new Error(e.response?.data.detail);
     } else {
-      throw new Error("Something went wrong. Please try again later.");
+      throw new Error("Unknown error happened.");
     }
   }
 };

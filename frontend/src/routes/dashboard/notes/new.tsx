@@ -26,6 +26,7 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const searchParams = z.object({
@@ -53,14 +54,18 @@ function RouteComponent() {
   const [selectedCourse, setSelectedCourse] = useState<string | undefined>(
     courseId,
   );
-  const { mutateAsync, isPending } = useMutation({
+  const { mutateAsync, status } = useMutation({
     mutationFn: async (input: CreateNoteRequest) =>
       noteServices.createNote(input),
     onSuccess: (response) => {
+      toast.success("Sucessfully created a new note!");
       router.navigate({
         to: "/dashboard/notes/$noteId",
         params: { noteId: response.id },
       });
+    },
+    onError: (error) => {
+      toast.error(`Erorr: ${error.message}`);
     },
   });
 
@@ -120,8 +125,16 @@ function RouteComponent() {
             contentValue={content}
             setContentValue={setContent}
           />
-          <Button className="self-end" disabled={isPending} onClick={saveNote}>
-            {isPending ? <Loader2 className="animate-spin" /> : <p> Save </p>}
+          <Button
+            className="self-end"
+            disabled={status === "pending"}
+            onClick={saveNote}
+          >
+            {status === "pending" ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <p> Save </p>
+            )}
           </Button>
         </CardContent>
       </Card>

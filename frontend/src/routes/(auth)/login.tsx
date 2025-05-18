@@ -44,7 +44,7 @@ function RouteComponent() {
       }
     },
     onError: (error) => {
-      toast.error(`Something went wrong, cause: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
     },
   });
   return (
