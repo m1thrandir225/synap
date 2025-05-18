@@ -4,7 +4,8 @@ import { useAuthStore } from "@/stores/auth.store";
 import type { RegisterRequest } from "@/types/responses/auth";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { Activity, GalleryVerticalEnd } from "lucide-react";
+import { Activity } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/(auth)/register")({
   component: RouteComponent,
@@ -23,6 +24,9 @@ function RouteComponent() {
         to: "/dashboard",
         replace: true,
       });
+    },
+    onError: (error) => {
+      toast.error(`Something went wrong, cause: ${error.message}`);
     },
   });
   return (

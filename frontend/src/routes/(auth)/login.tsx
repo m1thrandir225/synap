@@ -9,7 +9,8 @@ import {
   useRouter,
   useSearch,
 } from "@tanstack/react-router";
-import { Activity, GalleryVerticalEnd } from "lucide-react";
+import { Activity } from "lucide-react";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const loginSearchSchema = z.object({
@@ -41,6 +42,9 @@ function RouteComponent() {
           replace: true,
         });
       }
+    },
+    onError: (error) => {
+      toast.error(`Something went wrong, cause: ${error.message}`);
     },
   });
   return (
