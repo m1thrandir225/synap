@@ -16,6 +16,7 @@ import coursesServices from "@/services/courses.service";
 import { useState } from "react";
 import queryClient from "@/lib/queryClient";
 import { useRouter } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 interface ComponentProps {
   courseId: string;
@@ -28,12 +29,16 @@ const CourseDeleteDialog: React.FC<ComponentProps> = (props) => {
   const { mutateAsync, status } = useMutation({
     mutationFn: async () => coursesServices.deleteCourse(courseId),
     onSuccess: () => {
+      toast.success("Sucessfully deleted course!");
       setDialogActive(false);
 
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       router.navigate({
         to: "/dashboard/courses",
       });
+    },
+    onError: (error) => {
+      toast.error(`Error: ${error.message}`);
     },
   });
 

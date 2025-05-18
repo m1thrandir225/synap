@@ -20,6 +20,7 @@ function RouteComponent() {
     onSuccess: (response) => {
       authStore.login(response);
 
+      toast.success("Welcome to Synap!");
       router.navigate({
         to: "/dashboard",
         replace: true,

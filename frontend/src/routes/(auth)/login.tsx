@@ -32,6 +32,7 @@ function RouteComponent() {
     onSuccess: (response) => {
       authStore.login(response);
 
+      toast.success("Welcome Back!");
       //Redirect to redirectRoute or to dashboard
       if (redirect && typeof redirect === "string") {
         const decodedRedirect = decodeURIComponent(redirect);
