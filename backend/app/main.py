@@ -12,11 +12,7 @@ from app.config import settings
 
 app = FastAPI(root_path="/api/v1")
 
-origins = [
-    "http://localhost:3001",
-    "http://localhost:3000",
-    settings.PRODUCTION_FRONTEND_URL,
-]
+origins = [settings.PRODUCTION_FRONTEND_URL]
 
 app.add_middleware(
     CORSMiddleware,

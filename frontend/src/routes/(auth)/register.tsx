@@ -4,7 +4,8 @@ import { useAuthStore } from "@/stores/auth.store";
 import type { RegisterRequest } from "@/types/responses/auth";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { Activity, GalleryVerticalEnd } from "lucide-react";
+import { Activity } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/(auth)/register")({
   component: RouteComponent,
@@ -13,16 +14,20 @@ export const Route = createFileRoute("/(auth)/register")({
 function RouteComponent() {
   const authStore = useAuthStore();
   const router = useRouter();
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, status } = useMutation({
     mutationKey: ["register"],
     mutationFn: (input: RegisterRequest) => authService.register(input),
     onSuccess: (response) => {
       authStore.login(response);
 
+      toast.success("Welcome to Synap!");
       router.navigate({
         to: "/dashboard",
         replace: true,
       });
+    },
+    onError: (error) => {
+      toast.error(`Error: ${error.message}`);
     },
   });
   return (
@@ -39,6 +44,7 @@ function RouteComponent() {
           submitValues={async (input) => {
             mutateAsync(input);
           }}
+          isLoading={status === "pending"}
         />
       </div>
     </div>

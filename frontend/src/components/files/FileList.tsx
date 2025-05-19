@@ -9,6 +9,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
@@ -24,6 +25,9 @@ import {
 } from "../ui/table";
 import { TablePagination } from "../table/TablePagination";
 import { formatBytesToMb } from "@/lib/utils";
+import fileService from "@/services/files.service";
+import { toast } from "sonner";
+import queryClient from "@/lib/queryClient";
 
 const columns: ColumnDef<UploadedFile>[] = [
   {
@@ -44,6 +48,17 @@ const columns: ColumnDef<UploadedFile>[] = [
     id: "actions",
     cell: ({ row }) => {
       const uploaded_file = row.original;
+      const deleteFile = async () => {
+        try {
+          const response = await fileService.deleteFile(uploaded_file.id);
+          toast.success(response.message);
+          queryClient.invalidateQueries({
+            queryKey: ["files"],
+          });
+        } catch (e) {
+          toast.error(`Error: ${e}`);
+        }
+      };
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -54,6 +69,7 @@ const columns: ColumnDef<UploadedFile>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel> Actions </DropdownMenuLabel>
+            <DropdownMenuItem onClick={deleteFile}>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

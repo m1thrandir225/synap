@@ -20,7 +20,7 @@ class SummarizationBase(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: datetime
     name: str
-    model_config = ConfigDict(from_attributes=True, str_max_length=255)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SummarizationDTO(SummarizationBase):

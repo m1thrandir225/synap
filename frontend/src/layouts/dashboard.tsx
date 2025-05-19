@@ -148,51 +148,52 @@ const DashboardLayout: React.FC = () => {
               </SidebarMenu>
             ))}
           </SidebarGroup>
-
-          <SidebarGroup>
-            <SidebarGroupLabel> Your Shortcuts </SidebarGroupLabel>
-            {userShortcutItems.map((item) => (
-              <SidebarMenu key={item.title}>
-                <Collapsible
-                  key={item.title}
-                  asChild
-                  defaultOpen={item.isActive}
-                >
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip={item.title}>
-                      <Link to={item.url}>
-                        <item.icon className="opacity-75" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                    {item.items?.length ? (
-                      <>
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuAction className="data-[state=open]:rotate-90">
-                            <ChevronRight />
-                            <span className="sr-only">Toggle</span>
-                          </SidebarMenuAction>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <SidebarMenuSub>
-                            {item.items?.map((subItem) => (
-                              <SidebarMenuSubItem key={subItem.title}>
-                                <SidebarMenuSubButton asChild>
-                                  <Link to={subItem.url}>
-                                    <span>{subItem.title}</span>
-                                  </Link>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
-                      </>
-                    ) : null}
-                  </SidebarMenuItem>
-                </Collapsible>
-              </SidebarMenu>
-            ))}
-          </SidebarGroup>
+          {userShortcutItems.length > 0 && (
+            <SidebarGroup>
+              <SidebarGroupLabel> Your Shortcuts </SidebarGroupLabel>
+              {userShortcutItems.map((item) => (
+                <SidebarMenu key={item.title}>
+                  <Collapsible
+                    key={item.title}
+                    asChild
+                    defaultOpen={item.isActive}
+                  >
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild tooltip={item.title}>
+                        <Link to={item.url}>
+                          <item.icon className="opacity-75" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                      {item.items?.length ? (
+                        <>
+                          <CollapsibleTrigger asChild>
+                            <SidebarMenuAction className="data-[state=open]:rotate-90">
+                              <ChevronRight />
+                              <span className="sr-only">Toggle</span>
+                            </SidebarMenuAction>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <SidebarMenuSub>
+                              {item.items?.map((subItem) => (
+                                <SidebarMenuSubItem key={subItem.title}>
+                                  <SidebarMenuSubButton asChild>
+                                    <Link to={subItem.url}>
+                                      <span>{subItem.title}</span>
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              ))}
+                            </SidebarMenuSub>
+                          </CollapsibleContent>
+                        </>
+                      ) : null}
+                    </SidebarMenuItem>
+                  </Collapsible>
+                </SidebarMenu>
+              ))}
+            </SidebarGroup>
+          )}
         </SidebarContent>
         <SidebarFooter>
           <UserMenu />

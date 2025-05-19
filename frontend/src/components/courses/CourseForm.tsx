@@ -19,6 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { Loader2 } from "lucide-react";
 const courseFormSchema = z.object({
   name: z.string(),
   description: z.string(),
@@ -30,6 +31,7 @@ interface ComponentProps {
   defaultValues?: CourseFormSchemaType;
   title: string;
   description: string;
+  isLoading: boolean;
   submitValues: (input: CourseFormSchemaType) => Promise<void>;
 }
 
@@ -37,6 +39,7 @@ const CourseForm: React.FC<ComponentProps> = ({
   defaultValues,
   submitValues,
   title,
+  isLoading,
   description,
 }) => {
   const form = useForm<CourseFormSchemaType>({
@@ -94,8 +97,13 @@ const CourseForm: React.FC<ComponentProps> = ({
                 )}
               />
             </div>
-            <Button type="submit" size={"default"} variant={"outline"}>
-              Submit
+            <Button
+              disabled={isLoading}
+              type="submit"
+              size={"default"}
+              variant={"outline"}
+            >
+              {isLoading ? <Loader2 className="animate-spin" /> : "Submit"}
             </Button>
           </form>
         </Form>

@@ -7,7 +7,6 @@ from .openai_service import OpenAIService
 from .learning_material_service import LearningMaterialService
 from .recommendation_service import RecommendationService
 from app.repositories import SummarizationRepository
-from app.storage_provider import LocalStorageProvider
 from app.models import (
     SummarizationBase,
     CreateLearningMaterialDTO,
@@ -16,7 +15,6 @@ from app.models import (
     UploadedFileDTO,
 )
 
-
 class SummarizationService:
     def __init__(
         self,
@@ -24,13 +22,13 @@ class SummarizationService:
         openai_service: OpenAIService,
         learning_material_service: LearningMaterialService,
         recommendation_service: RecommendationService,
-        storage_service: LocalStorageProvider,
+      
     ):
         self.summarization_repository = summarization_repository
         self.openai_service = openai_service
         self.learning_material_service = learning_material_service
         self.recommendation_service = recommendation_service
-        self.storage_service = storage_service
+        
 
     async def summarize_file_and_store(
         self,
@@ -96,8 +94,10 @@ class SummarizationService:
 
     def get_all_summaries(self, user_id: UUID) -> List[SummarizationBase]:
         summaries = self.summarization_repository.get_all(user_id=user_id)
+        
         if not summaries:
             return []
+
         summary_dto: List[SummarizationBase] = []
         for summary in summaries:
             dto = SummarizationBase.model_validate(summary)
@@ -112,8 +112,8 @@ class SummarizationService:
             raise HTTPException(status_code=404, detail="Not found")
 
         recommendations = self.recommendation_service.get_recommendations_for_file(
-            summary.file_id
-        )  # type: ignore
+            summary.file_id # type: ignore
+        )
         uploaded_file_dto = UploadedFileDTO.model_validate(summary.file)
 
         dto = {

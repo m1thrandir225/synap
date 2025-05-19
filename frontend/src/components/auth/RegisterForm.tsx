@@ -8,6 +8,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { Loader2 } from "lucide-react";
 
 const registerFormSchema = z.object({
   first_name: z.string(),
@@ -20,11 +21,13 @@ type RegisterFormSchemaType = z.infer<typeof registerFormSchema>;
 
 interface ComponentProps extends React.ComponentPropsWithoutRef<"div"> {
   submitValues: (values: RegisterFormSchemaType) => Promise<void>;
+  isLoading: boolean;
 }
 
 const RegisterForm: React.FC<ComponentProps> = ({
   submitValues,
   className,
+  isLoading,
   ...props
 }) => {
   const form = useForm<RegisterFormSchemaType>({
@@ -113,8 +116,12 @@ const RegisterForm: React.FC<ComponentProps> = ({
                       )}
                     />
                   </div>
-                  <Button type="submit" className="w-full">
-                    Register
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      <span>Register</span>
+                    )}
                   </Button>
                 </div>
                 <div className="text-center text-sm">

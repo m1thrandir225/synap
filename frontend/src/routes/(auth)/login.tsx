@@ -9,7 +9,8 @@ import {
   useRouter,
   useSearch,
 } from "@tanstack/react-router";
-import { Activity, GalleryVerticalEnd } from "lucide-react";
+import { Activity } from "lucide-react";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const loginSearchSchema = z.object({
@@ -25,12 +26,13 @@ function RouteComponent() {
   const authStore = useAuthStore();
   const { redirect } = useSearch({ strict: false });
   const router = useRouter();
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, status } = useMutation({
     mutationKey: ["login"],
     mutationFn: (input: LoginRequest) => authService.login(input),
     onSuccess: (response) => {
       authStore.login(response);
 
+      toast.success("Welcome Back!");
       //Redirect to redirectRoute or to dashboard
       if (redirect && typeof redirect === "string") {
         const decodedRedirect = decodeURIComponent(redirect);
@@ -41,6 +43,9 @@ function RouteComponent() {
           replace: true,
         });
       }
+    },
+    onError: (error) => {
+      toast.error(`Error: ${error.message}`);
     },
   });
   return (
@@ -57,6 +62,7 @@ function RouteComponent() {
           submitValues={async (values) => {
             await mutateAsync(values);
           }}
+          isLoading={status === "pending"}
         />
       </div>
     </div>

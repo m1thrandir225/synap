@@ -31,14 +31,18 @@ class Settings(BaseSettings):
     JWT_SECRET: str
     JWT_ALGORITHM: str
     OPENAI_API_KEY: str
+    
     PRODUCTION_FRONTEND_URL: str
 
+    S3_BUCKET_NAME: str
+    S3_ACCESS_KEY_ID: str
+    S3_SECRET_ACCESS_KEY: str
+    AWS_REGION_NAME: str
 
 class LocalSettings(Settings):
     """
     Settings for running the app in development mode
     """
-
     model_config = SettingsConfigDict(
         env_file="./.env.local",
         env_file_encoding="utf-8",
@@ -56,6 +60,6 @@ def get_settings(env: str = "") -> Settings:
     raise ValueError("Invalid Environment setup")
 
 
-_env = os.environ.get("ENV", "dev")
+_env = os.environ.get("ENV", "prod")
 
 settings = get_settings(_env)

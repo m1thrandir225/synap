@@ -24,7 +24,7 @@ const CourseNotes: React.FC<ComponentProps> = (props) => {
     <Card className="w-full h-auto">
       <CardHeader>
         <div className="flex flex-row items-center justify-between w-full">
-          <div className="flex flex-col items-start gap-2">
+          <div className="flex flex-col items-start">
             <CardTitle> Notes </CardTitle>
             <CardDescription>Your notes on the course:</CardDescription>
           </div>

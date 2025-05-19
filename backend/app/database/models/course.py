@@ -12,7 +12,7 @@ class Course(Base):
     description = Column(String)
 
     user_id = Column(UUID, ForeignKey("users.id"))
-    user = relationship("User", back_populates="courses", cascade="all, delete")
+    user = relationship("User", back_populates="courses")
 
     notes = relationship("Note", back_populates="course", cascade="all, delete")
 
