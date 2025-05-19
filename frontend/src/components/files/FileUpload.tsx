@@ -1,6 +1,14 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { X, Upload, FileIcon, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  X,
+  Upload,
+  FileIcon,
+  CheckCircle,
+  AlertCircle,
+  Presentation,
+  FileTextIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -40,7 +48,6 @@ export function FileUpload({
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  // Update files when value changes
   useEffect(() => {
     if (value) {
       const newFiles = value.map((file) => ({
@@ -53,7 +60,6 @@ export function FileUpload({
     }
   }, [value]);
 
-  // Clean up previews when component unmounts
   useEffect(() => {
     return () => {
       files.forEach((file) => {
@@ -68,43 +74,68 @@ export function FileUpload({
     async (newFiles: File[]) => {
       if (disabled) return;
 
-      // Filter files based on maxSize
+      const acceptedExtensions = accept
+        .split(",")
+        .map((ext) => ext.trim().toLowerCase());
+      const extensionValidatedFiles: File[] = [];
+      const rejectedForExtension: string[] = [];
+
+      newFiles.forEach((file) => {
+        const fileName = file.name || "";
+        const extensionParts = fileName.split(".");
+        // Ensure there's an actual extension part after the dot
+        const fileExtension =
+          extensionParts.length > 1
+            ? `.${extensionParts.pop()?.toLowerCase()}`
+            : "";
+
+        if (fileExtension && acceptedExtensions.includes(fileExtension)) {
+          extensionValidatedFiles.push(file);
+        } else {
+          rejectedForExtension.push(fileName || "Unnamed file");
+        }
+      });
+
+      if (rejectedForExtension.length > 0) {
+        alert(
+          `The following files have unsupported extensions and were not added: ${rejectedForExtension.join(", ")}.\nAccepted extensions: ${accept}`,
+        );
+      }
+
+      if (extensionValidatedFiles.length === 0 && newFiles.length > 0) {
+        return;
+      }
+
       const validFiles = newFiles.filter(
         (file) => file.size <= maxSize * 1024 * 1024,
       );
 
-      // Check if adding these files would exceed maxFiles
       if (multiple && files.length + validFiles.length > maxFiles) {
         alert(`You can only upload up to ${maxFiles} files.`);
         return;
       }
 
-      // Create file previews
       const filesWithPreviews = validFiles.map((file) => ({
         file,
         preview: undefined,
         progress: 0,
       }));
 
-      // Update state
       const updatedFiles = multiple
         ? [...files, ...filesWithPreviews]
         : filesWithPreviews;
 
       setFiles(updatedFiles);
 
-      // Call onChange with the raw File objects
       if (onChange) {
         onChange(updatedFiles.map((f) => f.file));
       }
 
-      // Handle upload if onUpload is provided
       if (onUpload) {
         for (let i = 0; i < filesWithPreviews.length; i++) {
           const fileWithPreview = filesWithPreviews[i];
 
           try {
-            // Update progress (simulated here)
             const updateProgress = (progress: number) => {
               setFiles((currentFiles) => {
                 return currentFiles.map((f) => {
@@ -116,7 +147,6 @@ export function FileUpload({
               });
             };
 
-            // Simulate progress updates
             const progressInterval = setInterval(() => {
               setFiles((currentFiles) => {
                 return currentFiles.map((f) => {
@@ -137,7 +167,6 @@ export function FileUpload({
 
             clearInterval(progressInterval);
 
-            // Mark as uploaded
             setFiles((currentFiles) => {
               return currentFiles.map((f) => {
                 if (f.file === fileWithPreview.file) {
@@ -147,7 +176,6 @@ export function FileUpload({
               });
             });
           } catch (error) {
-            // Handle error
             setFiles((currentFiles) => {
               return currentFiles.map((f) => {
                 if (f.file === fileWithPreview.file) {
@@ -248,13 +276,13 @@ export function FileUpload({
 
     switch (extension) {
       case "pdf":
-        return <FileIcon className="h-6 w-6 text-red-500" />;
+        return <FileTextIcon className="h-6 w-6 text-red-500" />;
       case "doc":
       case "docx":
         return <FileIcon className="h-6 w-6 text-blue-500" />;
       case "ppt":
       case "pptx":
-        return <FileIcon className="h-6 w-6 text-orange-500" />;
+        return <Presentation className="h-6 w-6 text-orange-500" />;
       default:
         return <FileIcon className="h-6 w-6" />;
     }

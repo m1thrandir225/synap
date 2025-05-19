@@ -65,7 +65,7 @@ function RouteComponent() {
       });
     },
     onError: (error) => {
-      toast.error(`Erorr: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
     },
   });
 
