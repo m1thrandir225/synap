@@ -24,7 +24,7 @@ def upgrade() -> None:
     op.create_table('notes',
     sa.Column('id', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
-    sa.Column('content', sa.String(), nullable=False),
+    sa.Column('content', sa.Text(), nullable=False),
     sa.Column('user_id', sa.UUID(), nullable=False),
     sa.Column('course_id', sa.UUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
