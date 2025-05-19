@@ -94,9 +94,12 @@ class CourseService:
         return self._to_dto(course=course)
 
     def delete_course(self, course_id: UUID) -> dict:
-        if not self.course_repo.delete(course_id):
-            raise HTTPException(status_code=404, detail="Course not found")
-        return {"message": f"Course has been successfully deleted."}
+        try:
+            self.course_repo.delete(course_id)
+
+            return {"message": f"Course has been successfully deleted."}
+        except HTTPException as e:
+            raise e
 
     def get_courses_with_uploaded_files(self) -> List[CourseDTO]:
         courses: List[Course] = self.course_repo.get_courses_with_uploaded_files()

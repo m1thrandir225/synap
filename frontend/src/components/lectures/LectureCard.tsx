@@ -18,10 +18,7 @@ const LectureCard: React.FC<ComponentProps> = (props) => {
           <CardTitle>{item.name}</CardTitle>
           <div className="flex flex-row gap-2">
             <CourseGoto course_id={item.file.course_id} />
-            <FileDownload
-              filename={item.file.file_name}
-              text="Download Original"
-            />
+            <FileDownload id={item.file.id} text="Download Original" />
           </div>
         </div>
       </CardHeader>

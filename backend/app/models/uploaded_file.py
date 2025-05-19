@@ -35,3 +35,7 @@ class UploadedFileDTO(UploadedFileBase):
 class UploadFileRequest(BaseModel):
     file: UploadFile
     course_id: UUID4
+
+class PresignedUrlDTO(BaseModel):
+    url: str
+    filename: str

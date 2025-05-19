@@ -60,7 +60,7 @@ async def login(
 
     if not user or not verify_password(form_data.password, str(user.password)):
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Incorrect password",
             headers={"WWW-Authenticate": "Bearer"},
         )
