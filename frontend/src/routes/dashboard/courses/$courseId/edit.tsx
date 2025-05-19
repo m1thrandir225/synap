@@ -25,7 +25,7 @@ function RouteComponent() {
   const { courseId } = Route.useParams();
   const { data: course } = useSuspenseQuery(courseQueries.getCourse(courseId));
   const router = useRouter();
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, status } = useMutation({
     mutationKey: ["edit-course", course?.id],
     mutationFn: async (input: EditCourseRequest) =>
       coursesServices.editCourse(input),
@@ -53,6 +53,7 @@ function RouteComponent() {
             id: course.id,
           });
         }}
+        isLoading={status === "pending"}
       />
     </div>
   );
