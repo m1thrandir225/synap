@@ -10,7 +10,8 @@ from app.services import (
     LearningMaterialService,
     CourseService,
     OpenAIService,
-    SummarizationService
+    SummarizationService,
+    FileService
 )
 from app.repositories import (
     UserRepository,
@@ -24,6 +25,8 @@ from app.repositories import (
 from fastapi.security import OAuth2PasswordBearer
 from app.security import JWT_TYPE, decode_token
 from .storage_provider import LocalStorageProvider
+from .s3_storage_provider import S3StorageProvider
+from .config import Settings, settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
@@ -79,7 +82,6 @@ def get_note_service(
 ) -> NoteService:
     return NoteService(note_repo)
 
-
 def get_recommendation_service(
     recom_repo: RecommendationRepository = Depends(get_recommendation_repository),
 ) -> RecommendationService:
@@ -131,14 +133,33 @@ def get_local_storage_provider(
 ) -> LocalStorageProvider:
     return LocalStorageProvider(user=user)
 
+def get_s3_storage_provider(
+        user: User = Depends(get_current_user),
+        settings: Settings = settings
+) -> S3StorageProvider:
+    return S3StorageProvider(
+        user=user,
+        bucket_name=settings.S3_BUCKET_NAME,
+        aws_access_key_id=settings.S3_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.S3_SECRET_ACCESS_KEY,
+        endpoint_url=None,
+        region_name=settings.AWS_REGION_NAME
+    )
+
+def get_file_service(
+        repo: UploadedFileRepository = Depends(get_uploaded_file_repository),
+        service: UploadedFileService = Depends(get_uploaded_files_service),
+        s3: S3StorageProvider = Depends(get_s3_storage_provider)
+) -> FileService:
+    return FileService(repo=repo, s3_provider=s3, uploaded_file_service=service)
+
 def get_summarization_service(
         repo: SummarizationRepository = Depends(get_summarization_repository), openai_service: OpenAIService  = Depends(get_openai_service), learning_material_service: LearningMaterialService = Depends(get_learning_material_service), 
         recommendation_service: RecommendationService = Depends(get_recommendation_service), 
-        storage_provider: LocalStorageProvider = Depends(get_local_storage_provider)
 ) -> SummarizationService:
     return SummarizationService(
         summarization_repository=repo, 
-        openai_service=openai_service, learning_material_service=learning_material_service, recommendation_service=recommendation_service, storage_service=storage_provider
+        openai_service=openai_service, learning_material_service=learning_material_service, recommendation_service=recommendation_service
     )
 
 

@@ -1,18 +1,5 @@
 import type { UploadedFile } from "@/types/models/uploaded-file";
 import { ScrollArea } from "../ui/scroll-area";
-import { Button } from "../ui/button";
-import { Download, Stars } from "lucide-react";
-import {
-  Dialog,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogContent,
-} from "../ui/dialog";
-import { useMutation } from "@tanstack/react-query";
-import summarizationService from "@/services/summarization.service";
-import type { CreateSummarizationRequest } from "@/types/responses/summarization";
 import SummarizationForm from "../summarizations/SummarizationForm";
 import FileDownload from "./FileDownload";
 
@@ -30,7 +17,7 @@ const UploadedFileList: React.FC<ComponentProps> = (props) => {
           <p>{item.file_name}</p>
           <div className="flex flex-row items-center gap-4">
             <SummarizationForm file_id={item.id} />
-            <FileDownload filename={item.file_name} text="Download" />
+            <FileDownload id={item.id} text="Download" />
           </div>
         </div>
       ))}

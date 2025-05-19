@@ -9,19 +9,19 @@ interface ComponentProps {
 
 const NoteCard: React.FC<ComponentProps> = ({ item }) => {
   return (
-    <div className="p-4 border rounded-md my-2 hover:bg-muted transition-all ease-in-out duration-300 flex flex-row items-center justify-between">
-      <Link
-        to="/dashboard/notes/$noteId"
-        params={{ noteId: item.id }}
-        className="w-ful h-full"
-      >
+    <Link
+      to="/dashboard/notes/$noteId"
+      params={{ noteId: item.id }}
+      className="w-ful h-full"
+    >
+      <div className="p-4 border rounded-md my-2 hover:bg-muted transition-all ease-in-out duration-300 flex flex-row items-center justify-between">
         {item.title}
-      </Link>
-      <div className="text-sm text-neutral-500 flex flex-row items-center gap-2">
-        {formatDate(item.updated_at)}
-        <Pen width={16} height={16} />
+        <div className="text-sm text-neutral-500 flex flex-row items-center gap-2">
+          {formatDate(item.updated_at)}
+          <Pen width={16} height={16} />
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

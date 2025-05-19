@@ -17,16 +17,14 @@ class Recommendation(Base):
     )
 
     file_id = Column(UUID, ForeignKey("uploaded_files.id"), nullable=False)
-    file = relationship(
-        "UploadedFile", back_populates="recommendations", cascade="all, delete"
-    )
+    file = relationship("UploadedFile", back_populates="recommendations")
 
     learning_material_id = Column(
         UUID, ForeignKey("learning_materials.id"), nullable=False
     )
 
     learning_material = relationship(
-        "LearningMaterial", back_populates="recommendations"
+        "LearningMaterial", back_populates="recommendations", cascade="all, delete"
     )
 
     relevance_score = Column(Float, nullable=False)

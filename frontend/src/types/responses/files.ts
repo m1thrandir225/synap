@@ -6,3 +6,12 @@ export type UploadFileRequest = {
 };
 
 export type UploadFileResponse = UploadedFile;
+
+export type DownloadFileResponse = {
+  url: string;
+  filename: string;
+};
+
+export type DeleteFileResponse = {
+  message: string;
+};

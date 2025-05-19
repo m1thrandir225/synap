@@ -16,7 +16,9 @@ const queryClient = new QueryClient({
           isAxiosError(error) &&
           HTTP_STATUS_TO_NOT_RETRY.includes(error.response?.status ?? 0)
         ) {
-          console.log(`Aborting retry due to ${error.response?.status} status`);
+          console.error(
+            `Aborting retry due to ${error.response?.status} status`,
+          );
           return false;
         }
         return true;

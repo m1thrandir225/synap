@@ -45,6 +45,10 @@ class NoteService:
 
     def get_notes_by_user_id(self, user_id: UUID) -> List[NoteDTO]:
         notes: List[Note] = self.repository.get_notes_by_user_id(user_id)
+
+        if not notes:
+            return []
+
         dtos = [self._to_dto(note) for note in notes]
         return dtos
 

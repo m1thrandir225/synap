@@ -18,6 +18,7 @@ import { useAuthStore } from "@/stores/auth.store";
 import { useCallback, useMemo } from "react";
 import { redirect, useLocation, useRouter } from "@tanstack/react-router";
 import { extractInitials } from "@/lib/utils";
+import { toast } from "sonner";
 const UserMenu: React.FC = () => {
   const { isMobile } = useSidebar();
   const { logout, user } = useAuthStore();
@@ -26,6 +27,7 @@ const UserMenu: React.FC = () => {
 
   const logoutWithRedirect = useCallback(() => {
     logout();
+    toast.success("Logged out!");
     router.navigate({
       to: "/login",
       search: {

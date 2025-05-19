@@ -26,6 +26,7 @@ import type { CreateSummarizationRequest } from "@/types/responses/summarization
 import { useState } from "react";
 import queryClient from "@/lib/queryClient";
 import { useParams, useRouter } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 const createSummarizationSchema = z.object({
   name: z.string(),
@@ -49,6 +50,7 @@ const SummarizationForm: React.FC<ComponentProps> = (props) => {
     mutationFn: (input: CreateSummarizationRequest) =>
       summarizationService.createSummarization(input),
     onSuccess: (response) => {
+      toast.success("Sucessfully created a lecture!");
       setDialogOpen(false);
       queryClient.invalidateQueries({
         queryKey: ["course", courseId],
@@ -57,6 +59,9 @@ const SummarizationForm: React.FC<ComponentProps> = (props) => {
         to: "/dashboard/lectures/$summarizationId",
         params: { summarizationId: response.id },
       });
+    },
+    onError: (error) => {
+      toast.error(`Error: ${error.message}`);
     },
   });
   const form = useForm({

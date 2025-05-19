@@ -1,6 +1,7 @@
 import { Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
+import { Toaster } from "@/components/ui/sonner";
 /*
  * Default Layout for all pages
  */
@@ -10,6 +11,7 @@ const DefaultLayout: React.FC<React.PropsWithChildren> = (props) => {
       <main className="h-full w-full">
         <Outlet />
       </main>
+      <Toaster />
       <TanStackRouterDevtools position="top-right" />
     </div>
   );

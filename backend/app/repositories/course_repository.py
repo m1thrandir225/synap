@@ -1,4 +1,5 @@
 from typing import List
+from fastapi import HTTPException
 from sqlalchemy.orm import Session, selectinload
 from uuid import UUID
 from app.database import Course, UploadedFile
@@ -46,19 +47,17 @@ class CourseRepository:
             return course
         return None
 
-    def delete(self, course_id: UUID) -> bool:
+    def delete(self, course_id: UUID):
         """
         Delete a course by its unique ID.
         """
         course = self.get_by_id(course_id)
-        if course:
-            for note in course.notes:
-                self.db.delete(note)
+        if not course:
+            raise HTTPException(status_code=404, detail="Course not found")
             
-            self.db.delete(course)
-            self.db.commit()
-            return True
-        return False
+        self.db.delete(course)
+        self.db.commit()
+        return True
 
     def get_courses_with_uploaded_files(self) -> list[Course]:
         """

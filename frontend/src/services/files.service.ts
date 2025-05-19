@@ -1,6 +1,8 @@
 import config from "@/lib/config";
 import { apiRequest, multipartApiRequest } from "./api.service";
 import type {
+  DeleteFileResponse,
+  DownloadFileResponse,
   UploadFileRequest,
   UploadFileResponse,
 } from "@/types/responses/files";
@@ -26,14 +28,23 @@ const fileService = {
       data: input,
       params: undefined,
     }),
-  downloadFile: (filename: string) =>
-    apiRequest<Blob>({
-      url: `${fileURL}/${filename}`,
+  downloadFile: (file_id: string) =>
+    apiRequest<DownloadFileResponse>({
+      url: `${fileURL}/${file_id}`,
       method: "GET",
       headers: undefined,
       protected: true,
       params: undefined,
-      responseType: "blob",
+      responseType: "json",
+    }),
+  deleteFile: (file_id: string) =>
+    apiRequest<DeleteFileResponse>({
+      url: `${fileURL}/${file_id}`,
+      method: "DELETE",
+      headers: undefined,
+      protected: true,
+      params: undefined,
+      responseType: "json",
     }),
 };
 
