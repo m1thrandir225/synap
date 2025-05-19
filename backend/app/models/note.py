@@ -8,7 +8,7 @@ class NoteBase(BaseModel):
     content: str
     course_id: UUID4
 
-    model_config = ConfigDict(from_attributes=True, str_max_length=255)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CreateNoteDTO(NoteBase):
